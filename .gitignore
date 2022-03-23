@@ -1,0 +1,88 @@
+# Generated files
+.DS_Store
+.idea/*
+wandb
+outputs
+experiment_src/
+
+# certificates
+**/*.pem
+**/*.pypirc
+
+# sphinx
+_build
+public
+
+# Jupyter Notebook
+**/*.ipynb_checkpoints
+**/*.ipynb
+
+# pyenv
+.python-version
+
+# mkdocs documentation
+/site
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.pyc
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+**/*.log
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+*.cover
+.hypothesis/
+.pytest_cache/
+__pycache__
+*.xml
+train_results.yaml
+
+# Artifacts
+model.joblib
+*.json
+*.csv
+*.txt
+*.pid

@@ -1,0 +1,14 @@
+name: clpt
+channels:
+  - defaults
+dependencies:
+  - pip=20.2.2
+  - python=3.6.2
+  - pip:
+    - coverage==5.5
+    - flake8==3.8.4
+    - numpy==1.18.1
+    - pandas==1.0.3
+    - pytest==5.4.3
+    - pytest-cov==2.9.0
+    - pytest-mock==3.3.1
