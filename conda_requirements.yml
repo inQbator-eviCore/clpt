@@ -5,14 +5,19 @@ dependencies:
   - pip=20.2.2
   - python=3.6.2
   - pip:
+    - antlr4-python3-runtime==4.8
     - attrs==21.4.0
     - coverage==5.5
+    - dataclasses==0.8
     - flake8==3.8.4
+    - hydra-core==1.1.1
     - importlib-metadata==4.8.3
+    - importlib-resources==5.4.0
     - lxml==4.8.0
     - mccabe==0.6.1
     - more-itertools==8.12.0
     - numpy==1.18.1
+    - omegaconf==2.1.1
     - packaging==21.3
     - pandas==1.0.3
     - pluggy==0.13.1
@@ -25,6 +30,7 @@ dependencies:
     - pytest-mock==3.3.1
     - python-dateutil==2.8.2
     - pytz==2022.1
+    - pyyaml==6.0
     - six==1.16.0
     - typing-extensions==4.1.1
     - wcwidth==0.2.5
