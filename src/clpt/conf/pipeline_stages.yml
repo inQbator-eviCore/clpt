@@ -1,0 +1,9 @@
+---
+- type: DocumentCleaner
+#  <parameter name>: parameter values
+
+- type: SentenceBreaking
+#  <parameter name>: parameter values
+
+- type: RegexTokenization
+
