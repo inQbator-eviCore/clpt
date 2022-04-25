@@ -1,0 +1,5 @@
+pipeline:
+  - transformer1
+  - transformer2
+  - transformer3
+  - transformer4

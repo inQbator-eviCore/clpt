@@ -2,48 +2,52 @@
 
 import json
 import logging
+import os
+from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict, Generic, TypeVar, Union
 
 from lxml import etree
+from omegaconf import DictConfig
 
-from src.clao.annotations import Annotations
+from src.clao.annotations import Annotations, RawText
 
 LOGGER = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
 
+class CLAODataType(Enum):
+    TEXT = 'text'
+    # AUDIO = 'audio'
+    # VISUAL = 'visual'
+
+
 class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
-    def __init__(self, data: Union[T, Annotations], config=None):
+    def __init__(self, annotations: Annotations, name: str, cfg: DictConfig = None):
         """
 
         Args:
-            data: Object of type T or pre-annotated dict
-            config:
+            annotations: pre-annotated dict
+            name: CLAO name for serialization purposes. Usually the base name of the input file
+            cfg:
         """
-        if config is None:
-            # TODO: set default config
-            config = None
-        if isinstance(data, Annotations):
-            self.annotations = data
-        else:
-            self.annotations = self.ingest_data(data, config)
+        if cfg is None:
+            # TODO: get default cfg
+            cfg = None
+        self.annotations = annotations
+        self.name = name
 
     @classmethod
     @abstractmethod
-    def from_file(cls, input_path: str, config=None):
+    def from_file(cls, input_path: str, cfg: DictConfig = None):
         pass
 
     @classmethod
-    def from_xml(cls, input_path: str, config=None):
+    def from_xml(cls, input_path: str, cfg: DictConfig = None):
         # TODO
         with open(input_path, 'r'):
             return None
-
-    @abstractmethod
-    def ingest_data(self, data: T, config) -> Annotations:
-        pass
 
     @abstractmethod
     def insert_annotation(self) -> bool:
@@ -73,13 +77,26 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
     def _dump_clao(self):
         return json.dumps(self.annotations)
 
-    def write_as_xml(self, output_path) -> bool:
+    def write_as_json(self, output_path: str, filename: str = None) -> bool:
+        try:
+            json_dict = self.annotations.to_json()
+            file_path = os.path.join(output_path, filename if filename else self.name) + '.json'
+            with open(file_path, 'w') as json_out:
+                json.dump(json_dict, json_out, indent=True)
+        except Exception as e:
+            LOGGER.exception(f"Failed so save CLAO as JSON. "
+                             f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")
+            return False
+        return True
+
+    def write_as_xml(self, output_path: str, filename: str = None) -> bool:
         try:
             xml = self.annotations.to_xml()
             etree.indent(xml, space='    ')
-            etree.ElementTree(xml).write(output_path, pretty_print=True, xml_declaration=True, encoding='UTF-8')
+            file_path = os.path.join(output_path, filename if filename else self.name) + '.xml'
+            etree.ElementTree(xml).write(file_path, pretty_print=True, xml_declaration=True, encoding='UTF-8')
         except Exception as e:
-            LOGGER.exception(f"Failed so save CLAO. "
+            LOGGER.exception(f"Failed so save CLAO as XML. "
                              f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")
             return False
         return True
@@ -90,18 +107,17 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
 
 
 class TextCLAO(ClinicalLanguageAnnotationObject[str]):
-    def __init__(self, data: Union[str, Annotations], config=None):
+    def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
         """add docstring here"""
-        super(TextCLAO, self).__init__(data, config)
+        annot_elems = {RawText.element_name: RawText(raw_text)}
+        annotations = Annotations(annot_elems)
+        super(TextCLAO, self).__init__(annotations, name, cfg)
 
     @classmethod
-    def from_file(cls, input_path: str, config=None):
+    def from_file(cls, input_path: str, cfg: DictConfig = None):
+        name = os.path.splitext(os.path.basename(input_path))[0]
         with open(input_path, 'r') as f:
-            return cls(f.read())
-
-    def ingest_data(self, data: str, config) -> Annotations:
-        # TODO
-        return Annotations(None)
+            return cls(f.read(), name)
 
     def insert_annotation(self) -> bool:
         pass
