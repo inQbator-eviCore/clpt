@@ -2,14 +2,16 @@
 
 DocumentCleaner includes removing stop words, converting to lower case, excluding punctuations and checking spelling.
 """
-
 import re
-from pattern.en import lemma
-import nltk
-from sklearn.feature_extraction import text
-from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.clao.clao import TextCLAO
+from abc import abstractmethod
 
+import nltk
+from overrides import overrides
+# from pattern.en import lemma
+from sklearn.feature_extraction import text
+
+from src.clao.clao import TextCLAO
+from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 STOPWORD = '<stopword>'
 
@@ -68,34 +70,34 @@ class ExcludePunctuation(DocumentCleaner):
         return clean_text
 
 
-class Lemmatization(DocumentCleaner):
-    """Remove inflectional endings only and return the base or dictionary form of a word."""
-    @abstractmethod
-    @overrides
-    def __init__(self, **kwargs):
-        super(Lemmatization, self).__init__(**kwargs)
+# class Lemmatization(DocumentCleaner):
+#     """Remove inflectional endings only and return the base or dictionary form of a word."""
+#     @abstractmethod
+#     @overrides
+#     def __init__(self, **kwargs):
+#         super(Lemmatization, self).__init__(**kwargs)
+#
+#     @overrides
+#     def process(self, clao_info: TextCLAO):
+#         #TODO: update Lemmatization using function from SpaCy
+#         lemmatized_sentence = " ".join([lemma(word) for word in TextCLAO.annot_elem.split()])
+#         return lemmatized_sentence
 
-    @overrides
-    def process(self, clao_info: TextCLAO):
-        #TODO: update Lemmatization using function from SpaCy
-        lemmatized_sentence = " ".join([lemma(word) for word in TextCLAO.annot_elem.split()])
-        return lemmatized_sentence
 
-
-class Stem(DocumentCleaner):
-    """Reduce a word to its word stem that affixes to suffixes and prefixes
-    or to the roots of words known as a lemma."""
-
-    @abstractmethod
-    @overrides
-    def __init__(self, **kwargs):
-        super(Stem, self).__init__(**kwargs)
-
-    @overrides
-    def process(self, clao_info: TextCLAO):
-        sno = nltk.stem.SnowballStemmer('english')
-        stemmed_sentence = " ".join([sno.stem(word) for word in TextCLAO.annot_elem.split()])
-        return stemmed_sentence
+# class Stem(DocumentCleaner):
+#     """Reduce a word to its word stem that affixes to suffixes and prefixes
+#     or to the roots of words known as a lemma."""
+#
+#     @abstractmethod
+#     @overrides
+#     def __init__(self, **kwargs):
+#         super(Stem, self).__init__(**kwargs)
+#
+#     @overrides
+#     def process(self, clao_info: TextCLAO):
+#         sno = nltk.stem.SnowballStemmer('english')
+#         stemmed_sentence = " ".join([sno.stem(word) for word in TextCLAO.annot_elem.split()])
+#         return stemmed_sentence
 
 
 class SpellChecker(DocumentCleaner):

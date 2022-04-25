@@ -3,13 +3,14 @@ channels:
   - defaults
 dependencies:
   - pip=20.2.2
-  - python=3.6.2
+  - python=3.9.12
   - pip:
     - antlr4-python3-runtime==4.8
     - attrs==21.4.0
     - coverage==5.5
-    - dataclasses==0.8
     - flake8==3.8.4
+    - func-timeout==4.3.5
+    - future==0.18.2
     - hydra-core==1.1.1
     - importlib-metadata==4.8.3
     - importlib-resources==5.4.0
@@ -17,22 +18,25 @@ dependencies:
     - mccabe==0.6.1
     - more-itertools==8.12.0
     - nltk==3.7
-    - numpy==1.18.1
+    - numpy==1.22.3
     - omegaconf==2.1.1
+    - overrides==6.1.0
     - packaging==21.3
-    - pandas==1.0.3
-    - Pattern==3.6
+    - pandas==1.4.2
+#    - pattern==3.6
     - pluggy==0.13.1
     - py==1.11.0
     - pycodestyle==2.6.0
     - pyflakes==2.2.0
-    - pyparsing==3.0.7
+    - pyparsing==3.0.8
     - pytest==5.4.3
     - pytest-cov==2.9.0
     - pytest-mock==3.3.1
     - python-dateutil==2.8.2
     - pytz==2022.1
     - pyyaml==6.0
+    - scikit-learn==1.0.2
+    - scipy==1.8.0
     - six==1.16.0
     - typing-extensions==4.1.1
     - wcwidth==0.2.5
