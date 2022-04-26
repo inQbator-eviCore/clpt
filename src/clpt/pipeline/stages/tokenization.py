@@ -2,9 +2,10 @@
 
 import re
 from abc import abstractmethod
-from typing import List
 
 from overrides import overrides
+
+from src.clao.clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 
@@ -21,7 +22,7 @@ class Tokenization(PipelineStage):
         pass
 
     @overrides
-    def fallback(self) -> None:
+    def fallback(self, clao_info: TextCLAO) -> None:
         """
         Split on whitespace.
         """
@@ -33,7 +34,7 @@ class RegexTokenization(Tokenization):
     Attributes:
         token_regex: The regular expression to use for tokenization
     """
-    #TODO: use function from SpaCy
+    # TODO: use function from SpaCy
 
     TOKENIZATION_REGEXES = ["(?<=^)(?<=\\W)" + "(?=\\W|$)",
                             "(\\w+)"]
@@ -44,6 +45,12 @@ class RegexTokenization(Tokenization):
         super(RegexTokenization, self).__init__(**kwargs)
         self.token_regex = re.compile(self.TOKEN_REGEX_MATCH_STRING)
 
+    def process(self, clao_info: TextCLAO) -> None:
+        pass
+
+    def get_tokens(self):
+        pass
+
 
 class WhitespaceRegexTokenization(RegexTokenization):
     """Tokenization on whitespace (used as a fallback)."""
@@ -52,3 +59,9 @@ class WhitespaceRegexTokenization(RegexTokenization):
 
     def __init__(self, **kwargs):
         super(WhitespaceRegexTokenization, self).__init__(**kwargs)
+
+    def process(self, clao_info: TextCLAO) -> None:
+        pass
+
+    def get_tokens(self):
+        pass

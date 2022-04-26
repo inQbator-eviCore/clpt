@@ -5,12 +5,12 @@ DocumentCleaner includes removing stop words, converting to lower case, excludin
 import re
 from abc import abstractmethod
 
-import nltk
 from overrides import overrides
 # from pattern.en import lemma
 from sklearn.feature_extraction import text
 
 from src.clao.clao import TextCLAO
+from src.constants import RAW_TEXT
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 STOPWORD = '<stopword>'
@@ -26,7 +26,7 @@ class DocumentCleaner(PipelineStage):
 
 class RemoveStopWord(DocumentCleaner):
     """Remove stop words."""
-    @abstractmethod
+
     @overrides
     def __init__(self, **kwargs):
         super(RemoveStopWord, self).__init__(**kwargs)
@@ -40,34 +40,35 @@ class RemoveStopWord(DocumentCleaner):
             pattern = r'\s?' + pattern
 
         stopword_pattern = re.compile(pattern, flags=re.IGNORECASE)
-        return TextCLAO.annot_elems.replace(stopword_pattern, replace_token, regex=True)
+        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
+        clao_info.annotations.elements[RAW_TEXT].raw_text = stopword_pattern.sub(replace_token, raw_text)
 
 
 class ConvertToLowerCase(DocumentCleaner):
     """Converts all letters in the raw text into lower case."""
-    @abstractmethod
+
     @overrides
     def __init__(self, **kwargs):
         super(ConvertToLowerCase, self).__init__(**kwargs)
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        return TextCLAO.annot_elem.lower()
+        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
+        clao_info.annotations.elements[RAW_TEXT].raw_text = raw_text.lower()
 
 
 class ExcludePunctuation(DocumentCleaner):
     """Excludes punctuations from the raw text."""
-    @abstractmethod
+
     @overrides
     def __init__(self, **kwargs):
         super(ExcludePunctuation, self).__init__(**kwargs)
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        punctuations = ['.', ',', '!', ':', ';']
-        for p in punctuations:
-            clean_text = TextCLAO.annot_elem.replace(p, '')
-        return clean_text
+        punctuations = '.,!:;'
+        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
+        clao_info.annotations.elements[RAW_TEXT].raw_text = re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 
 # class Lemmatization(DocumentCleaner):
@@ -80,7 +81,8 @@ class ExcludePunctuation(DocumentCleaner):
 #     @overrides
 #     def process(self, clao_info: TextCLAO):
 #         #TODO: update Lemmatization using function from SpaCy
-#         lemmatized_sentence = " ".join([lemma(word) for word in TextCLAO.annot_elem.split()])
+#         lemmatized_sentence = " ".join([lemma(word)
+#                                         for word in clao_info.annotations.elements[RAW_TEXT].raw_text.split()])
 #         return lemmatized_sentence
 
 
@@ -96,7 +98,8 @@ class ExcludePunctuation(DocumentCleaner):
 #     @overrides
 #     def process(self, clao_info: TextCLAO):
 #         sno = nltk.stem.SnowballStemmer('english')
-#         stemmed_sentence = " ".join([sno.stem(word) for word in TextCLAO.annot_elem.split()])
+#         stemmed_sentence = " ".join([sno.stem(word)
+#                                      for word in clao_info.annotations.elements[RAW_TEXT].raw_text.split()])
 #         return stemmed_sentence
 
 
@@ -118,5 +121,3 @@ class SpellChecker(DocumentCleaner):
     def process(self, clao_info: TextCLAO):
         # TODO: add one method
         pass
-
-

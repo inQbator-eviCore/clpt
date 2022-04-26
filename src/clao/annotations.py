@@ -6,12 +6,8 @@ from typing import Dict, Iterable, Optional, Type, Union
 
 from lxml import etree
 
-ENTITIES = 'entities'
-HEADING = 'heading'
-PARAGRAPHS = 'paragraphs'
-SENTENCES = 'sentences'
-TEXT = 'text'
-TOKENS = 'tokens'
+from src.constants import ANNOTATION, ELEMENT, ENTITIES, ENTITY, HEADING, PARAGRAPH, PARAGRAPHS, RAW_TEXT, \
+    SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS
 
 
 class CLAOIdCounter(object):
@@ -24,7 +20,7 @@ class CLAOIdCounter(object):
 
 
 class CLAOElement:
-    element_name = 'element'
+    element_name = ELEMENT
 
     def __init__(self):
         """add docstring here"""
@@ -45,7 +41,7 @@ class CLAOElement:
 
 
 class Span(CLAOElement):
-    element_name = 'span'
+    element_name = SPAN
 
     def __init__(self, start: int, end: int):
         """add docstring here"""
@@ -62,7 +58,7 @@ class Span(CLAOElement):
 
 
 class Token(Span):
-    element_name = 'token'
+    element_name = TOKEN
 
     def __init__(self, start: int, end: int, lemma: str, stem: str, pos: str, text: str):
         """add docstring here"""
@@ -92,7 +88,7 @@ class Token(Span):
 
 
 class Heading(Span):
-    element_name = 'heading'
+    element_name = HEADING
 
     def __init__(self, start: int, end: int, text: str):
         """add docstring here"""
@@ -111,7 +107,7 @@ class Heading(Span):
 
 
 class Entity(CLAOElement):
-    element_name = 'entity'
+    element_name = ENTITY
 
     def __init__(self, tokens: Iterable[Token], entity_type: str, confidence: float, text: str):
         """add docstring here"""
@@ -142,7 +138,7 @@ class Entity(CLAOElement):
 
 
 class Sentence(Span):
-    element_name = 'sentence'
+    element_name = SENTENCE
 
     def __init__(self, entities: Iterable[Entity], tokens: Iterable[Token]):
         """add docstring here"""
@@ -166,7 +162,7 @@ class Sentence(Span):
 
 
 class Paragraph(CLAOElement):
-    element_name = 'paragraph'
+    element_name = PARAGRAPH
 
     def __init__(self, sentences: Iterable[Sentence]):
         """add docstring here"""
@@ -186,7 +182,7 @@ class Paragraph(CLAOElement):
 
 
 class Section(Span):
-    element_name = 'section'
+    element_name = SECTION
 
     def __init__(self, start: int, end: int, paragraphs: Iterable[Paragraph],
                  heading: Optional[Heading] = None):
@@ -212,7 +208,7 @@ class Section(Span):
 
 
 class Annotations(CLAOElement):
-    element_name = 'annotation'
+    element_name = ANNOTATION
 
     def __init__(self, elements: Dict[str, Union[CLAOElement, Iterable[CLAOElement]]]):
         """add docstring here"""
@@ -241,7 +237,7 @@ class Annotations(CLAOElement):
 
 
 class RawText(CLAOElement):
-    element_name = 'raw_text'
+    element_name = RAW_TEXT
 
     def __init__(self, rax_text: str):
         """add docstring here"""
@@ -254,7 +250,7 @@ class RawText(CLAOElement):
 
     def to_json(self) -> Dict:
         json_dict = super(RawText, self).to_json()
-        json_dict['raw_text'] = self.raw_text
+        json_dict[RAW_TEXT] = self.raw_text
         return json_dict
 
     def to_xml(self, parent: Optional[etree.Element]):

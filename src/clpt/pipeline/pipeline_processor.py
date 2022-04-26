@@ -1,6 +1,8 @@
 from typing import List
 
-from src.clao.clao import ClinicalLanguageAnnotationObject
+from omegaconf import DictConfig
+
+from src.clao.clao import TextCLAO
 from src.clpt.pipeline import pipeline_stage_creator
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
@@ -16,10 +18,10 @@ class NlpPipelineProcessor:
         self.pipeline_stages = stages
 
     @classmethod
-    def from_stages_config(cls, stages_config_path: str):
-        return cls(pipeline_stage_creator.build_pipeline_stages(stages_config_path))
+    def from_stages_config(cls, cfg: DictConfig):
+        return cls(pipeline_stage_creator.build_pipeline_stages(cfg))
 
-    def process(self, clao_info: ClinicalLanguageAnnotationObject) -> None:
+    def process(self, clao_info: TextCLAO) -> None:
         """
         Process documents through the NLP pipeline, editing the document objects in-place
         Args:
@@ -27,4 +29,4 @@ class NlpPipelineProcessor:
         Returns: None
         """
         for stage in self.pipeline_stages:
-            stage.process_with_fallback(clao_info)
+            stage.process(clao_info)

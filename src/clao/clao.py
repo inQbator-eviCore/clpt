@@ -110,8 +110,7 @@ class TextCLAO(ClinicalLanguageAnnotationObject[str]):
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
         """add docstring here"""
         annot_elems = {RawText.element_name: RawText(raw_text)}
-        annotations = Annotations(annot_elems)
-        super(TextCLAO, self).__init__(annotations, name, cfg)
+        super(TextCLAO, self).__init__(Annotations(annot_elems), name, cfg)
 
     @classmethod
     def from_file(cls, input_path: str, cfg: DictConfig = None):

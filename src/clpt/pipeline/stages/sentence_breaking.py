@@ -1,11 +1,7 @@
 """NLP pipeline stage for splitting the text into sentences."""
 
-import re
-from abc import abstractmethod
-from typing import List
-
+from src.clao.clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-
 
 
 class SentenceBreaking(PipelineStage):
@@ -14,3 +10,5 @@ class SentenceBreaking(PipelineStage):
     def __init__(self):
         pass
 
+    def process(self, clao_info: TextCLAO) -> None:
+        pass
