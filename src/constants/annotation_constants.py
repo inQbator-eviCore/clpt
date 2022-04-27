@@ -1,7 +1,8 @@
-CONFIG_FILE = "config.yaml"
-CONFIG_FILEPATH = "clpt/conf"
+# Span
+START_OFFSET = 'startOffset'
+END_OFFSET = 'endOffset'
+MAP = 'map'
 
-# Annotation elements
 ANNOTATION = 'annotation'
 ENTITIES = 'entities'
 ENTITY = 'entity'
@@ -18,4 +19,5 @@ TEXT = 'text'
 TOKEN = 'token'
 TOKENS = 'tokens'
 
-CONFIG_STAGE_KEY = 'type'
+INDEX = 'index'
+ID = 'id'

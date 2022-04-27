@@ -4,7 +4,7 @@ import hydra
 from omegaconf import DictConfig
 
 from src.clpt.pipeline.pipeline_processor import NlpPipelineProcessor
-from src.constants import CONFIG_FILE, CONFIG_FILEPATH
+from src.constants.constants import CONFIG_FILE, CONFIG_FILEPATH
 from src.clpt.ingestion.document_collector import DocumentCollector
 from src.utils import add_new_key_to_cfg
 
