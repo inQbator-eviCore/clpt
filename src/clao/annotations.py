@@ -87,45 +87,45 @@ class Span(CLAOElement):
 
 
 class IdSpan(Span):
-    """A basic Span with an index.
+    """A basic Span with an id.
 
     Attributes:
-        index: The index of this Span (starts at 0).
+        element_id: The id of this Span (starts at 0).
     """
     ID_FIELD = ID
 
-    def __init__(self, start_offset: int, end_offset: int, index: int, span_map=None):
+    def __init__(self, start_offset: int, end_offset: int, element_id: int, span_map=None):
         super().__init__(start_offset, end_offset, span_map)
-        self.index = index
+        self.element_id = element_id
 
     @classmethod
-    def from_span(cls, span: Span, index: int) -> 'IdSpan':
-        """Given a Span and an index, create an IdSpan"""
-        return IdSpan(span.start_offset, span.end_offset, index, span.map)
+    def from_span(cls, span: Span, elemend_id: int) -> 'IdSpan':
+        """Given a Span and an id, create an IdSpan"""
+        return IdSpan(span.start_offset, span.end_offset, elemend_id, span.map)
 
     def to_json(self):
         """Convert this IdSpan to a JSON map (invoked by subclasses)
         Returns:
             dictionary that serves as a JSON map for this object
         """
-        return {self.ID_FIELD: self.index, **super().to_json()}
+        return {self.ID_FIELD: str(self.element_id), **super().to_json()}
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.index == other.index
+        return super().__eq__(other) and self.element_id == other.element_id
 
 
 class Token(IdSpan):
     element_name = TOKEN
 
-    def __init__(self, start_offset: int, end_offset: int, index: int, text: str, span_map=None):
+    def __init__(self, start_offset: int, end_offset: int, element_id: int, text: str, span_map=None):
         """add docstring here"""
-        super(Token, self).__init__(start_offset, end_offset, index, span_map)
+        super(Token, self).__init__(start_offset, end_offset, element_id, span_map)
         self.text = text
 
     @classmethod
     def from_id_span(cls, span: IdSpan, text: str) -> 'Token':
         """Given an IdSpan, create a Token"""
-        return Token(span.start_offset, span.end_offset, span.index, text, span.map)
+        return Token(span.start_offset, span.end_offset, span.element_id, text, span.map)
 
     def to_json(self) -> Dict:
         return {TEXT: self.text, **super(Token, self).to_json()}
@@ -205,10 +205,10 @@ class Entity(Span):
 class Sentence(IdSpan):
     element_name = SENTENCE
 
-    def __init__(self, start_offset: int, end_offset: int, index: int, entities: Iterable[Entity] = (),
+    def __init__(self, start_offset: int, end_offset: int, element_id: int, entities: Iterable[Entity] = (),
                  tokens: Iterable[Token] = (), span_map=None):
         """add docstring here"""
-        super(Sentence, self).__init__(start_offset, end_offset, index, span_map)
+        super(Sentence, self).__init__(start_offset, end_offset, element_id, span_map)
         self.entities = list(entities)
         self.tokens = list(tokens)
 
@@ -235,9 +235,9 @@ class Sentence(IdSpan):
             span.adjust_offsets(delta)
 
     @classmethod
-    def from_indexed_span(cls, span: IdSpan, entities: List[Entity], tokens: List[Token], ) -> 'Sentence':
+    def from_id_span(cls, span: IdSpan, entities: List[Entity], tokens: List[Token], ) -> 'Sentence':
         """Given an IdSpan and lists of Tokens, Entities create a new Sentence"""
-        return cls(span.start_offset, span.end_offset, span.index, entities, tokens, span.map)
+        return cls(span.start_offset, span.end_offset, span.element_id, entities, tokens, span.map)
 
     def to_json(self) -> Dict:
         return {ENTITIES: [e.to_json() for e in self.entities],
