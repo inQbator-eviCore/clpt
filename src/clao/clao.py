@@ -3,14 +3,14 @@
 import json
 import logging
 import os
-from enum import Enum
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import Dict, Generic, TypeVar, Union
 
 from lxml import etree
 from omegaconf import DictConfig
 
-from src.clao.annotations import Annotations, RawText
+from src.clao.annotations import Annotations
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,18 +24,17 @@ class CLAODataType(Enum):
 
 
 class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
-    def __init__(self, annotations: Annotations, name: str, cfg: DictConfig = None):
+    def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
         """
 
         Args:
-            annotations: pre-annotated dict
+            raw_text: pre-annotated dict
             name: CLAO name for serialization purposes. Usually the base name of the input file
             cfg:
         """
-        if cfg is None:
-            # TODO: get default cfg
-            cfg = None
-        self.annotations = annotations
+
+        self.cfg = cfg if cfg else None  # TODO: get default cfg
+        self.annotations = Annotations(raw_text)
         self.name = name
 
     @classmethod
@@ -84,7 +83,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             with open(file_path, 'w') as json_out:
                 json.dump(json_dict, json_out, indent=True)
         except Exception as e:
-            LOGGER.exception(f"Failed so save CLAO as JSON. "
+            LOGGER.exception(f"Failed to save CLAO as JSON. "
                              f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")
             return False
         return True
@@ -96,7 +95,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             file_path = os.path.join(output_path, filename if filename else self.name) + '.xml'
             etree.ElementTree(xml).write(file_path, pretty_print=True, xml_declaration=True, encoding='UTF-8')
         except Exception as e:
-            LOGGER.exception(f"Failed so save CLAO as XML. "
+            LOGGER.exception(f"Failed to save CLAO as XML. "
                              f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")
             return False
         return True
@@ -109,9 +108,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
 class TextCLAO(ClinicalLanguageAnnotationObject[str]):
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
         """add docstring here"""
-        annot_elems = {RawText.element_name: RawText(raw_text)}
-        annotations = Annotations(annot_elems)
-        super(TextCLAO, self).__init__(annotations, name, cfg)
+        super(TextCLAO, self).__init__(raw_text, name, cfg)
 
     @classmethod
     def from_file(cls, input_path: str, cfg: DictConfig = None):

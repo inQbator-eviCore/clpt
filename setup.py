@@ -10,5 +10,5 @@ setup(
     url=__homepage__,
     packages=['src'],
     test_suite="tests",
-    python_requires='>=3.6'
+    python_requires='==3.8.13'
 )

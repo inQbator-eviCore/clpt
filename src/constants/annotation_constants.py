@@ -1,0 +1,23 @@
+# Span
+START_OFFSET = 'startOffset'
+END_OFFSET = 'endOffset'
+MAP = 'map'
+
+ANNOTATION = 'annotation'
+ENTITIES = 'entities'
+ENTITY = 'entity'
+ELEMENT = 'element'
+HEADING = 'heading'
+PARAGRAPH = 'paragraph'
+PARAGRAPHS = 'paragraphs'
+RAW_TEXT = 'raw_text'
+SECTION = 'section'
+SENTENCE = 'sentence'
+SENTENCES = 'sentences'
+SPAN = 'span'
+TEXT = 'text'
+TOKEN = 'token'
+TOKENS = 'tokens'
+
+INDEX = 'index'
+ID = 'id'
