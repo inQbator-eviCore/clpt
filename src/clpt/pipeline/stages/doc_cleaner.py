@@ -9,7 +9,7 @@ from overrides import overrides
 # from pattern.en import lemma
 from sklearn.feature_extraction import text
 
-from src.clao.clao import TextCLAO
+from src.clao.text_clao import TextCLAO
 from src.constants.annotation_constants import RAW_TEXT
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
@@ -40,8 +40,9 @@ class RemoveStopWord(DocumentCleaner):
             pattern = r'\s?' + pattern
 
         stopword_pattern = re.compile(pattern, flags=re.IGNORECASE)
-        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
-        clao_info.annotations.elements[RAW_TEXT].raw_text = stopword_pattern.sub(replace_token, raw_text)
+        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text = raw_text_obj.raw_text
+        raw_text_obj.raw_text = stopword_pattern.sub(replace_token, raw_text)
 
 
 class ConvertToLowerCase(DocumentCleaner):
@@ -53,8 +54,9 @@ class ConvertToLowerCase(DocumentCleaner):
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
-        clao_info.annotations.elements[RAW_TEXT].raw_text = raw_text.lower()
+        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text = raw_text_obj.raw_text
+        raw_text_obj.raw_text = raw_text.lower()
 
 
 class ExcludePunctuation(DocumentCleaner):
@@ -67,8 +69,9 @@ class ExcludePunctuation(DocumentCleaner):
     @overrides
     def process(self, clao_info: TextCLAO):
         punctuations = '.,!:;'
-        raw_text = clao_info.annotations.elements[RAW_TEXT].raw_text
-        clao_info.annotations.elements[RAW_TEXT].raw_text = re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
+        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text = raw_text_obj.raw_text
+        raw_text_obj.raw_text = re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 
 # class Lemmatization(DocumentCleaner):

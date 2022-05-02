@@ -2,7 +2,8 @@ import os
 from typing import List, Union
 import glob
 
-from src.clao.clao import CLAODataType, ClinicalLanguageAnnotationObject, TextCLAO
+from src.clao.clao import CLAODataType, ClinicalLanguageAnnotationObject
+from src.clao.text_clao import TextCLAO
 
 
 class DocumentCollector:
@@ -14,6 +15,8 @@ class DocumentCollector:
 
     @staticmethod
     def ingest(input_dir: str, data_type: CLAODataType) -> List[ClinicalLanguageAnnotationObject]:
+        # Select the appropriate CLAO class for the given data type. Text is the only type currently accepted.
+        # More types to be implemented in the future
         if data_type is CLAODataType.TEXT:
             clao_cls = TextCLAO
         else:
@@ -26,3 +29,4 @@ class DocumentCollector:
     def serialize_all(self, output_dir: str):
         for clao in self.claos:
             clao.write_as_xml(output_dir)
+            # clao.write_as_json(output_dir)

@@ -1,12 +1,33 @@
 """Initial thoughts / rough draft of some internal text annotation objects, in line with XML schema illustrated in 2022
 NaaCL paper"""
+import os
+from typing import Dict, List, Optional, Tuple
 
-from typing import Dict, Iterable, List, Optional
-
+from blist import blist
 from lxml import etree
+from omegaconf import DictConfig
 
-from src.constants.annotation_constants import ANNOTATION, ELEMENT, ENTITIES, ENTITY, HEADING, ID, PARAGRAPH, \
+from src.clao.clao import ClinicalLanguageAnnotationObject
+from src.constants.annotation_constants import ANNOTATION, ELEMENT, ENTITIES, ENTITY, HEADING, HEADINGS, ID, PARAGRAPH,\
     PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS
+
+
+class TextCLAO(ClinicalLanguageAnnotationObject[str]):
+    def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
+        """add docstring here"""
+        super(TextCLAO, self).__init__(raw_text, name, cfg)
+
+    def _init_annotations_(self, raw_text: str):
+        return Annotations(raw_text)
+
+    @classmethod
+    def from_file(cls, input_path: str, cfg: DictConfig = None):
+        name = os.path.splitext(os.path.basename(input_path))[0]
+        with open(input_path, 'r') as f:
+            return cls(f.read(), name)
+
+    def _search_by_val(self, element_type: str, value: str):
+        pass
 
 
 class CLAOElement:
@@ -174,17 +195,27 @@ class Heading(Span):
 class Entity(Span):
     element_name = ENTITY
 
-    def __init__(self, tokens: Iterable[Token], entity_type: str, confidence: float, text: str):
+    def __init__(self, entity_type: str, confidence: float, text: str, token_id_range: Tuple[int, int],
+                 clao: TextCLAO, span_map=None):
         """add docstring here"""
-        super(Entity, self).__init__()
-        self.tokens = tokens
         self.entity_type = entity_type
         self.confidence = confidence
         self.text = text
+        self.clao = clao
+        self._token_id_range = token_id_range
+
+        tokens = self.tokens
+        super(Entity, self).__init__(tokens[0].start_offset, tokens[-1].end_offset, span_map)
+
+    @property
+    def tokens(self) -> List[Token]:
+        if self._token_id_range:
+            return self.clao.search_annotations(TOKENS, self._token_id_range)
+        else:
+            return []
 
     def to_json(self) -> Dict:
-        token_ids = [token.id for token in self.tokens]
-        return {'tokens': str(token_ids),
+        return {'token_ids': f"[{self._token_id_range[0]}, {self._token_id_range[1]})",
                 'type': self.entity_type,
                 'confidence': str(self.confidence),
                 TEXT: self.text,
@@ -205,12 +236,28 @@ class Entity(Span):
 class Sentence(IdSpan):
     element_name = SENTENCE
 
-    def __init__(self, start_offset: int, end_offset: int, element_id: int, entities: Iterable[Entity] = (),
-                 tokens: Iterable[Token] = (), span_map=None):
+    def __init__(self, start_offset: int, end_offset: int, element_id: int, clao: TextCLAO,
+                 entity_id_range: Optional[Tuple[int, int]] = None, token_id_range: Optional[Tuple[int, int]] = None,
+                 span_map=None):
         """add docstring here"""
         super(Sentence, self).__init__(start_offset, end_offset, element_id, span_map)
-        self.entities = list(entities)
-        self.tokens = list(tokens)
+        self.clao = clao
+        self._entity_id_range = entity_id_range
+        self._token_id_range = token_id_range
+
+    @property
+    def entities(self) -> List[Entity]:
+        if self._entity_id_range:
+            return self.clao.search_annotations(ENTITIES, self._entity_id_range)
+        else:
+            return []
+
+    @property
+    def tokens(self) -> List[Token]:
+        if self._token_id_range:
+            return self.clao.search_annotations(TOKENS, self._token_id_range)
+        else:
+            return []
 
     def all_subspans(self) -> List[Span]:
         """
@@ -235,9 +282,10 @@ class Sentence(IdSpan):
             span.adjust_offsets(delta)
 
     @classmethod
-    def from_id_span(cls, span: IdSpan, entities: List[Entity], tokens: List[Token], ) -> 'Sentence':
+    def from_id_span(cls, span: IdSpan, entity_id_range: Optional[Tuple[int, int]] = None,
+                     token_id_range: Optional[Tuple[int, int]] = None) -> 'Sentence':
         """Given an IdSpan and lists of Tokens, Entities create a new Sentence"""
-        return cls(span.start_offset, span.end_offset, span.element_id, entities, tokens, span.map)
+        return cls(span.start_offset, span.end_offset, span.element_id, entity_id_range, token_id_range, span.map)
 
     def to_json(self) -> Dict:
         return {ENTITIES: [e.to_json() for e in self.entities],
@@ -276,7 +324,7 @@ class Sentence(IdSpan):
         else:
             return [t for t in self.tokens if span.contains(t)]
 
-    def get_entity_spans_for_span(self, span, partial=False) -> Iterable[Entity]:
+    def get_entity_spans_for_span(self, span, partial=False) -> List[Entity]:
         """
         Get the Entities in this sentence that are covered by a given Span
         Args:
@@ -298,17 +346,25 @@ class Sentence(IdSpan):
                f'entities: {len(self.entities)})'
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.tokens == other.tokens and \
-               self.entities == other.entities
+        return super().__eq__(other) and self.tokens == other.token_ids and \
+               self.entities == other.entity_ids
 
 
 class Paragraph(CLAOElement):
     element_name = PARAGRAPH
 
-    def __init__(self, sentences: Iterable[Sentence]):
+    def __init__(self, clao: TextCLAO, sentence_id_range: Optional[Tuple[int, int]] = None):
         """add docstring here"""
         super(Paragraph, self).__init__()
-        self.sentences = sentences
+        self.clao = clao
+        self._sentence_id_range = sentence_id_range
+
+    @property
+    def sentences(self) -> List[Sentence]:
+        if self._sentence_id_range:
+            return self.clao.search_annotations(SENTENCES, self._sentence_id_range)
+        else:
+            return []
 
     def to_json(self) -> Dict:
         return {SENTENCES: [s.to_json() for s in self.sentences],
@@ -330,12 +386,27 @@ class Paragraph(CLAOElement):
 class Section(Span):
     element_name = SECTION
 
-    def __init__(self, start_offset: int, end_offset: int, paragraphs: Iterable[Paragraph],
-                 heading: Optional[Heading] = None):
+    def __init__(self, start_offset: int, end_offset: int, clao: TextCLAO,
+                 paragraph_id_range: Optional[Tuple[int, int]] = None, heading_id: Optional[int] = None):
         """add docstring here"""
         super(Section, self).__init__(start_offset, end_offset)
-        self.paragraphs = paragraphs
-        self.heading = heading
+        self.clao = clao
+        self._paragraph_id_range = paragraph_id_range
+        self._heading_id = heading_id
+
+    @property
+    def paragraphs(self) -> List[Paragraph]:
+        if self._paragraph_id_range:
+            return self.clao.search_annotations(PARAGRAPHS, self._paragraph_id_range)
+        else:
+            return []
+
+    @property
+    def heading(self) -> Optional[Heading]:
+        if self._heading_id is not None:
+            return self.clao.search_annotations(HEADINGS, self._heading_id)
+        else:
+            return None
 
     def to_json(self) -> Dict:
         json_dict = {PARAGRAPHS: [p.to_json() for p in self.paragraphs],
@@ -364,6 +435,7 @@ class Section(Span):
 
 class Annotations(Span):
     element_name = ANNOTATION
+    _top_level_elements = [RAW_TEXT, SENTENCES]
 
     def __init__(self, raw_text: str):
         """add docstring here"""
@@ -372,21 +444,25 @@ class Annotations(Span):
 
     def to_json(self) -> Dict:
         json_dict = super(Annotations, self).to_json()
-        for element_type, element_value in self.elements.items():
-            if isinstance(element_value, list):
-                json_dict[element_type] = [e.to_json() for e in element_value]
-            else:
-                json_dict.update(element_value.to_json())
+        for element_type in self._top_level_elements:
+            if element_type in self.elements:
+                element_value = self.elements[element_type]
+                if isinstance(element_value, (list, blist)):
+                    json_dict[element_type] = [e.to_json() for e in element_value]
+                else:
+                    json_dict.update(element_value.to_json())
         return json_dict
 
     def to_xml(self) -> etree.Element:
         annotation = super(Annotations, self).to_xml(parent=None, attribs={})
-        for element_type, element_value in self.elements.items():
-            if isinstance(element_value, list):
-                for element in element_value:
-                    element.to_xml(parent=annotation)
-            else:
-                element_value.to_xml(parent=annotation)
+        for element_type in self._top_level_elements:
+            if element_type in self.elements:
+                element_value = self.elements[element_type]
+                if isinstance(element_value, (list, blist)):
+                    for element in element_value:
+                        element.to_xml(parent=annotation)
+                else:
+                    element_value.to_xml(parent=annotation)
         return annotation
 
     def get_text_for_offsets(self, start: int, end: int) -> str:
