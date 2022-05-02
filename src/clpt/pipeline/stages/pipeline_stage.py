@@ -3,7 +3,7 @@
 import logging
 from func_timeout import func_timeout, FunctionTimedOut
 from abc import ABC, abstractmethod
-from src.clao.clao import TextCLAO
+from src.clao.text_clao import TextCLAO
 
 logger = logging.getLogger(__name__)
 

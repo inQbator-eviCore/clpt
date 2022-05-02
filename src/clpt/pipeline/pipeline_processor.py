@@ -2,7 +2,7 @@ from typing import List
 
 from omegaconf import DictConfig
 
-from src.clao.clao import TextCLAO
+from src.clao.text_clao import TextCLAO
 from src.clpt.pipeline import pipeline_stage_creator
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 

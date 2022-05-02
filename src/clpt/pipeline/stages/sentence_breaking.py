@@ -1,6 +1,6 @@
 """NLP pipeline stage for splitting the text into sentences."""
 
-from src.clao.clao import TextCLAO
+from src.clao.text_clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 

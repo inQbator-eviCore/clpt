@@ -1,4 +1,4 @@
-from src.clao.annotations import Span
+from src.clao.text_clao import Span
 
 
 # TODO: Adapt these into equivalent objects in clao.annotations
