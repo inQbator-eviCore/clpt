@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Basic project template: app script, setup files, env creation
 - .gitlab-ci.yml
+- ClinicalLanguageAnnotationObject and subclasses
+- CLAO elements (tokens, entities, etc)
+- Ingestion engine
 
 ### Changed
 
