@@ -29,4 +29,3 @@ class DocumentCollector:
     def serialize_all(self, output_dir: str):
         for clao in self.claos:
             clao.write_as_xml(output_dir)
-            # clao.write_as_json(output_dir)

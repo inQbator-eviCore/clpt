@@ -19,6 +19,8 @@ SPAN = 'span'
 TEXT = 'text'
 TOKEN = 'token'
 TOKENS = 'tokens'
+STEM = 'stem'
+LEMMA = 'lemma'
 
 INDEX = 'index'
 ID = 'id'
