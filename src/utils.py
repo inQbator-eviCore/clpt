@@ -3,7 +3,7 @@ from typing import List
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from src.clao.pipeline_documents import Span
+from src.clao.text_clao import Span
 
 
 def add_new_key_to_cfg(cfg: DictConfig, value: str, *keys: str) -> None:

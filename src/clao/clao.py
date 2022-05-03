@@ -1,15 +1,17 @@
-"""Initial thoughts / Rough draft of CLAO skeleton"""
+"""ClinicalLanguageAnnotationObject"""
 
 import json
 import logging
 import os
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Generic, Optional, Tuple, TypeVar, Union
+from typing import Dict, Generic, Optional, Tuple, TypeVar, Union
 
 from blist import blist
 from lxml import etree
 from omegaconf import DictConfig
+
+from src.constants.annotation_constants import ELEMENT
 
 LOGGER = logging.getLogger(__name__)
 
@@ -22,8 +24,23 @@ class CLAODataType(Enum):
     # VISUAL = 'visual'
 
 
+class CLAOElement:
+    element_name = ELEMENT
+
+    def to_json(self) -> Dict:
+        return {}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        if attribs is None:
+            attribs = self.to_json()
+        if parent is None:
+            return etree.Element(self.element_name, **attribs)
+        else:
+            return etree.SubElement(parent, self.element_name, **attribs)
+
+
 class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
-    def __init__(self, raw_data, name: str, cfg: DictConfig = None):
+    def __init__(self, raw_data: CLAOElement, name: str, cfg: DictConfig = None, *args, **kwargs):
         """
 
         Args:
@@ -33,12 +50,9 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """
 
         self.cfg = cfg if cfg else None  # TODO: get default cfg
-        self.annotations = self._init_annotations_(raw_data)
+        self.elements = {raw_data.element_name: raw_data}
         self.name = name
-
-    @abstractmethod
-    def _init_annotations_(self, raw_data):
-        pass
+        super(ClinicalLanguageAnnotationObject, self).__init__(*args, **kwargs)
 
     @classmethod
     @abstractmethod
@@ -55,19 +69,19 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         if element_type_is_list:
             self.insert_annotations(element_type, [value])
         else:
-            self.annotations.elements[element_type] = value
+            self.elements[element_type] = value
 
     def insert_annotations(self, element_type: str, values):
         element_annotations = self.get_all_annotations_for_element(element_type)
         element_annotations.extend(values)
-        self.annotations.elements[element_type] = element_annotations
+        self.elements[element_type] = element_annotations
 
     def remove_annotations(self, element_type: str):
-        if element_type in self.annotations.elements:
-            del(self.annotations.elements[element_type])
+        if element_type in self.elements:
+            del(self.elements[element_type])
 
     def get_all_annotations_for_element(self, element_type):
-        return self.annotations.elements.get(element_type, blist())
+        return self.elements.get(element_type, blist())
 
     def search_annotations(self, element_type: str, key: Optional[Union[Tuple[int, int], int, str]] = None):
         if key is None:
@@ -89,15 +103,17 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
     def _search_by_val(self, element_type: str, value: T):
         pass
 
-    def print_clao(self):
-        print(self._dump_clao())
+    @abstractmethod
+    def to_json(self):
+        pass
 
-    def _dump_clao(self):
-        return json.dumps(self.annotations)
+    @abstractmethod
+    def to_xml(self):
+        pass
 
     def write_as_json(self, output_path: str, filename: str = None) -> bool:
         try:
-            json_dict = self.annotations.to_json()
+            json_dict = self.to_json()
             file_path = os.path.join(output_path, filename if filename else self.name) + '.json'
             with open(file_path, 'w') as json_out:
                 json.dump(json_dict, json_out, indent=True)
@@ -109,7 +125,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
 
     def write_as_xml(self, output_path: str, filename: str = None) -> bool:
         try:
-            xml = self.annotations.to_xml()
+            xml = self.to_xml()
             etree.indent(xml, space='    ')
             file_path = os.path.join(output_path, filename if filename else self.name) + '.xml'
             etree.ElementTree(xml).write(file_path, pretty_print=True, xml_declaration=True, encoding='UTF-8')
@@ -119,9 +135,12 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             return False
         return True
 
+    def print_clao(self):
+        print(self.to_json())
+
     def __hash__(self):
         # TODO
-        return hash(self.annotations)
+        return hash(self.elements)
 
 # class VisualCLAO(ClinicalLanguageAnnotationObject[?]):
 #     pass
