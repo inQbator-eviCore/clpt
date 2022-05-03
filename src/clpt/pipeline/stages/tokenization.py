@@ -84,12 +84,12 @@ class RegexTokenization(Tokenization):
 
     def get_tokens(self, clao_info: TextCLAO, span: Span):
         # TODO: Bring this more in line with nlp_pipeline
-        token_spans = match(self.token_regex, span.get_text_from(clao_info.annotations), span.start_offset, True)
+        token_spans = match(self.token_regex, span.get_text_from(clao_info), span.start_offset, True)
         token_id_offset = len(clao_info.get_all_annotations_for_element(TOKENS))
         tokens = blist()
         for s in token_spans:
             token_id = token_id_offset + len(tokens)
-            text = s.get_text_from(clao_info.annotations)
+            text = s.get_text_from(clao_info)
             t = Token.from_id_span(IdSpan.from_span(s, token_id), text)
             if not self.token_regex.match(text):
                 for i, ch in enumerate(text):

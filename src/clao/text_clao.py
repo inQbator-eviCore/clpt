@@ -7,50 +7,17 @@ from blist import blist
 from lxml import etree
 from omegaconf import DictConfig
 
-from src.clao.clao import ClinicalLanguageAnnotationObject
-from src.constants.annotation_constants import ANNOTATION, ELEMENT, ENTITIES, ENTITY, HEADING, HEADINGS, ID, PARAGRAPH,\
+from src.clao.clao import CLAOElement, ClinicalLanguageAnnotationObject
+from src.constants.annotation_constants import ANNOTATION, ENTITIES, ENTITY, HEADING, HEADINGS, ID, PARAGRAPH,\
     PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS
-
-
-class TextCLAO(ClinicalLanguageAnnotationObject[str]):
-    def __init__(self, raw_text: str, name: str, cfg: DictConfig = None):
-        """add docstring here"""
-        super(TextCLAO, self).__init__(raw_text, name, cfg)
-
-    def _init_annotations_(self, raw_text: str):
-        return Annotations(raw_text)
-
-    @classmethod
-    def from_file(cls, input_path: str, cfg: DictConfig = None):
-        name = os.path.splitext(os.path.basename(input_path))[0]
-        with open(input_path, 'r') as f:
-            return cls(f.read(), name)
-
-    def _search_by_val(self, element_type: str, value: str):
-        pass
-
-
-class CLAOElement:
-    element_name = ELEMENT
-
-    def to_json(self) -> Dict:
-        return {}
-
-    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
-        if attribs is None:
-            attribs = self.to_json()
-        if parent is None:
-            return etree.Element(self.element_name, **attribs)
-        else:
-            return etree.SubElement(parent, self.element_name, **attribs)
 
 
 class Span(CLAOElement):
     element_name = SPAN
 
-    def __init__(self, start_offset: int, end_offset: int, span_map=None):
+    def __init__(self, start_offset: int, end_offset: int, span_map=None, *args, **kwargs):
         """add docstring here"""
-        super(Span, self).__init__()
+        super(Span, self).__init__(*args, **kwargs)
         self.start_offset = start_offset
         self.end_offset = end_offset
         self.map = {} if span_map is None else span_map
@@ -67,15 +34,15 @@ class Span(CLAOElement):
         self.end_offset += delta
 
     def to_json(self) -> Dict:
-        return {'start': str(self.start_offset),
+        return {**super(Span, self).to_json(),
+                'start': str(self.start_offset),
                 'end': str(self.end_offset),
-                **self.map,
-                **super(Span, self).to_json()}
+                **self.map}
 
-    def get_text_from(self, annotation: 'Annotations') -> str:
+    def get_text_from(self, text_clao: 'TextCLAO') -> str:
         """
         """
-        return annotation.get_text_for_span(self)
+        return text_clao.get_text_for_span(self)
 
     def overlaps(self, other):
         """
@@ -106,6 +73,66 @@ class Span(CLAOElement):
 
     def __repr__(self):
         return str(self)
+
+
+class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
+    element_name = ANNOTATION
+    _top_level_elements = [RAW_TEXT, SENTENCES]
+
+    def __init__(self, raw_text: str, name: str, cfg: DictConfig = None, *args, **kwargs):
+        """add docstring here"""
+        super(TextCLAO, self).__init__(start_offset=0, end_offset=len(raw_text), raw_data=RawText(raw_text), name=name,
+                                       cfg=cfg, *args, **kwargs)
+
+    @classmethod
+    def from_file(cls, input_path: str, cfg: DictConfig = None):
+        name = os.path.splitext(os.path.basename(input_path))[0]
+        with open(input_path, 'r') as f:
+            return cls(f.read(), name)
+
+    def _search_by_val(self, element_type: str, value: str):
+        pass
+
+    def to_json(self) -> Dict:
+        json_dict = super(TextCLAO, self).to_json()
+        for element_type in self._top_level_elements:
+            if element_type in self.elements:
+                element_value = self.elements[element_type]
+                if isinstance(element_value, (list, blist)):
+                    json_dict[element_type] = [e.to_json() for e in element_value]
+                else:
+                    json_dict.update(element_value.to_json())
+        return json_dict
+
+    def to_xml(self) -> etree.Element:
+        annotation = super(TextCLAO, self).to_xml(parent=None, attribs={})
+        for element_type in self._top_level_elements:
+            if element_type in self.elements:
+                element_value = self.elements[element_type]
+                if isinstance(element_value, (list, blist)):
+                    for element in element_value:
+                        element.to_xml(parent=annotation)
+                else:
+                    element_value.to_xml(parent=annotation)
+        return annotation
+
+    def get_text_for_offsets(self, start: int, end: int) -> str:
+        """
+        Get the text between two offsets. Offsets should not be adjusted to account for the document's start_offset,
+        as that is handled within this method.
+        Args:
+            start: Starting (absolute) offset
+            end: Ending (absolute) offset
+
+        Returns:
+            The text between the two specified offsets
+        """
+        return self.elements[RAW_TEXT].raw_text[start - self.start_offset:end - self.start_offset]
+
+    def get_text_for_span(self, span: Span) -> str:
+        """Get the text for a given span contained within this document.
+           annotations.get_text_for_span(span) and span.get_text_from(annotations) are equivalent calls."""
+        return self.get_text_for_offsets(span.start_offset, span.end_offset)
 
 
 class IdSpan(Span):
@@ -150,7 +177,7 @@ class Token(IdSpan):
         return Token(span.start_offset, span.end_offset, span.element_id, text, span.map)
 
     def to_json(self) -> Dict:
-        return {TEXT: self.text, **super(Token, self).to_json()}
+        return {**super(Token, self).to_json(), TEXT: self.text}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -179,7 +206,7 @@ class Heading(Span):
         self.text = text
 
     def to_json(self) -> Dict:
-        return {TEXT: self.text, **super(Heading, self).to_json()}
+        return {**super(Heading, self).to_json(), TEXT: self.text}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -193,20 +220,21 @@ class Heading(Span):
         return heading
 
 
-class Entity(Span):
+class Entity(IdSpan):
     element_name = ENTITY
 
-    def __init__(self, entity_type: str, confidence: float, text: str, token_id_range: Tuple[int, int],
+    def __init__(self, element_id: int, entity_type: str, confidence: float, token_id_range: Tuple[int, int],
                  clao: TextCLAO, span_map=None):
         """add docstring here"""
         self.entity_type = entity_type
         self.confidence = confidence
-        self.text = text
         self.clao = clao
         self._token_id_range = token_id_range
 
         tokens = self.tokens
-        super(Entity, self).__init__(tokens[0].start_offset, tokens[-1].end_offset, span_map)
+        super(Entity, self).__init__(tokens[0].start_offset, tokens[-1].end_offset, element_id, span_map)
+
+        self.text = self.get_text_from(clao)
 
     @property
     def tokens(self) -> List[Token]:
@@ -216,11 +244,11 @@ class Entity(Span):
             return []
 
     def to_json(self) -> Dict:
-        return {'token_ids': f"[{self._token_id_range[0]}, {self._token_id_range[1]})",
+        return {**super(Entity, self).to_json(),
+                'token_ids': f"[{self._token_id_range[0]}, {self._token_id_range[1]})",
                 'type': self.entity_type,
                 'confidence': str(self.confidence),
-                TEXT: self.text,
-                **super(Entity, self).to_json()}
+                TEXT: self.text}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -283,15 +311,15 @@ class Sentence(IdSpan):
             span.adjust_offsets(delta)
 
     @classmethod
-    def from_id_span(cls, span: IdSpan, entity_id_range: Optional[Tuple[int, int]] = None,
+    def from_id_span(cls, span: IdSpan, clao: TextCLAO, entity_id_range: Optional[Tuple[int, int]] = None,
                      token_id_range: Optional[Tuple[int, int]] = None) -> 'Sentence':
         """Given an IdSpan and lists of Tokens, Entities create a new Sentence"""
-        return cls(span.start_offset, span.end_offset, span.element_id, entity_id_range, token_id_range, span.map)
+        return cls(span.start_offset, span.end_offset, span.element_id, clao, entity_id_range, token_id_range, span.map)
 
     def to_json(self) -> Dict:
-        return {ENTITIES: [e.to_json() for e in self.entities],
-                TOKENS: [t.to_json() for t in self.tokens],
-                **super(Sentence, self).to_json()}
+        return {**super(Sentence, self).to_json(),
+                ENTITIES: [e.to_json() for e in self.entities],
+                TOKENS: [t.to_json() for t in self.tokens]}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -368,8 +396,7 @@ class Paragraph(CLAOElement):
             return []
 
     def to_json(self) -> Dict:
-        return {SENTENCES: [s.to_json() for s in self.sentences],
-                **super(Paragraph, self).to_json()}
+        return {**super(Paragraph, self).to_json(), SENTENCES: [s.to_json() for s in self.sentences]}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -410,8 +437,7 @@ class Section(Span):
             return None
 
     def to_json(self) -> Dict:
-        json_dict = {PARAGRAPHS: [p.to_json() for p in self.paragraphs],
-                     **super(Section, self).to_json()}
+        json_dict = {**super(Section, self).to_json(), PARAGRAPHS: [p.to_json() for p in self.paragraphs]}
         if self.heading is not None:
             json_dict[HEADING] = self.heading.to_json()
         return json_dict
@@ -434,57 +460,6 @@ class Section(Span):
         return section
 
 
-class Annotations(Span):
-    element_name = ANNOTATION
-    _top_level_elements = [RAW_TEXT, SENTENCES]
-
-    def __init__(self, raw_text: str):
-        """add docstring here"""
-        super(Annotations, self).__init__(0, len(raw_text))
-        self.elements = {RawText.element_name: RawText(raw_text)}
-
-    def to_json(self) -> Dict:
-        json_dict = super(Annotations, self).to_json()
-        for element_type in self._top_level_elements:
-            if element_type in self.elements:
-                element_value = self.elements[element_type]
-                if isinstance(element_value, (list, blist)):
-                    json_dict[element_type] = [e.to_json() for e in element_value]
-                else:
-                    json_dict.update(element_value.to_json())
-        return json_dict
-
-    def to_xml(self) -> etree.Element:
-        annotation = super(Annotations, self).to_xml(parent=None, attribs={})
-        for element_type in self._top_level_elements:
-            if element_type in self.elements:
-                element_value = self.elements[element_type]
-                if isinstance(element_value, (list, blist)):
-                    for element in element_value:
-                        element.to_xml(parent=annotation)
-                else:
-                    element_value.to_xml(parent=annotation)
-        return annotation
-
-    def get_text_for_offsets(self, start: int, end: int) -> str:
-        """
-        Get the text between two offsets. Offsets should not be adjusted to account for the document's start_offset,
-        as that is handled within this method.
-        Args:
-            start: Starting (absolute) offset
-            end: Ending (absolute) offset
-
-        Returns:
-            The text between the two specified offsets
-        """
-        return self.elements[RAW_TEXT].raw_text[start - self.start_offset:end - self.start_offset]
-
-    def get_text_for_span(self, span: Span) -> str:
-        """Get the text for a given span contained within this document.
-           annotations.get_text_for_span(span) and span.get_text_from(annotations) are equivalent calls."""
-        return self.get_text_for_offsets(span.start_offset, span.end_offset)
-
-
 class RawText(Span):
     element_name = RAW_TEXT
 
@@ -494,8 +469,7 @@ class RawText(Span):
         self.raw_text = rax_text
 
     def to_json(self) -> Dict:
-        return {RAW_TEXT: self.raw_text,
-                **super(RawText, self).to_json()}
+        return {**super(RawText, self).to_json(), RAW_TEXT: self.raw_text}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
