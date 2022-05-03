@@ -69,6 +69,7 @@ class Span(CLAOElement):
     def to_json(self) -> Dict:
         return {'start': str(self.start_offset),
                 'end': str(self.end_offset),
+                **self.map,
                 **super(Span, self).to_json()}
 
     def get_text_from(self, annotation: 'Annotations') -> str:

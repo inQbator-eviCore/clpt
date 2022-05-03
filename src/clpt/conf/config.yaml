@@ -9,5 +9,7 @@ pipeline_stages:
   - type: ExcludePunctuation
 #  - type: SentenceBreaking
   - type: RegexTokenization
+  - type: PorterStemming
+  - type: SpaCyLemma #WordnetLemma
 
 
