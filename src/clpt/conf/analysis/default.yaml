@@ -1,5 +1,9 @@
-pipeline:
-  - transformer1
-  - transformer2
-  - transformer3
-  - transformer4
+pipeline_stages:
+  - type: RemoveStopWord
+    # add params here
+  - type: ConvertToLowerCase
+  - type: ExcludePunctuation
+#  - type: SentenceBreaking
+  - type: RegexTokenization
+  - type: PorterStemming
+  - type: SpaCyLemma

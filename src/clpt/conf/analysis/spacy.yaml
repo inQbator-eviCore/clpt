@@ -1,0 +1,6 @@
+pipeline_stages:
+  - type: SpaCyProcessing
+    pos: True
+    lemma: True
+    break_sentences: True
+  - type: PorterStemming

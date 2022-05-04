@@ -11,7 +11,7 @@ from src.constants.annotation_constants import LEMMA, POS, SENTENCES, TOKENS
 class SpaCyStage(PipelineStage, ABC):
     def __init__(self, timeout_seconds=1, disable=None, **kwargs):
         """add docstring here"""
-        super(SpaCyStage, self).__init__(timeout_seconds, **kwargs)
+        super(SpaCyStage, self).__init__(timeout_seconds=timeout_seconds, **kwargs)
 
         # Other ways to download spacy 'en' model:
         #  1) `python -m spacy download en_core_web_sm`

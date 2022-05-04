@@ -34,7 +34,7 @@ def build_pipeline_stages(cfg: DictConfig) -> List[PipelineStage]:
     """
 
     stages = []
-    for stage_cfg in cfg.pipeline_stages:
+    for stage_cfg in cfg.analysis.pipeline_stages:
         stage_dict = dict(stage_cfg)
         stage_type = stage_dict.pop(CONFIG_STAGE_KEY)
 
