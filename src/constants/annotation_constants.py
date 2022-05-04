@@ -21,6 +21,7 @@ TOKEN = 'token'
 TOKENS = 'tokens'
 STEM = 'stem'
 LEMMA = 'lemma'
+POS = 'pos'
 
 INDEX = 'index'
 ID = 'id'

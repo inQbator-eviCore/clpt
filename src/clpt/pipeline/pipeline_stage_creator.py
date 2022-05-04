@@ -10,12 +10,13 @@ from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.clpt.pipeline.stages.sentence_breaking import SentenceBreaking
 from src.clpt.pipeline.stages.stemming import PorterStemming
 from src.clpt.pipeline.stages.tokenization import RegexTokenization
+from src.clpt.pipeline.stages.spacy_processing import SpaCyProcessing
 from src.constants.constants import CONFIG_STAGE_KEY
 
 logger = logging.getLogger(__name__)
 
 ALL_KNOWN_STAGES = [ConvertToLowerCase, RemoveStopWord, ExcludePunctuation, SentenceBreaking,
-                    RegexTokenization, PorterStemming, WordnetLemma, SpaCyLemma]
+                    RegexTokenization, PorterStemming, WordnetLemma, SpaCyLemma, SpaCyProcessing]
 STAGE_TYPES = {s.__name__: s for s in ALL_KNOWN_STAGES}
 
 
@@ -33,7 +34,7 @@ def build_pipeline_stages(cfg: DictConfig) -> List[PipelineStage]:
     """
 
     stages = []
-    for stage_cfg in cfg.pipeline_stages:
+    for stage_cfg in cfg.analysis.pipeline_stages:
         stage_dict = dict(stage_cfg)
         stage_type = stage_dict.pop(CONFIG_STAGE_KEY)
 
