@@ -3,13 +3,10 @@ defaults:
   - analysis: default
   - classification: default
 pipeline_stages:
-  - type: RemoveStopWord
-    # add params here
-  - type: ConvertToLowerCase
-  - type: ExcludePunctuation
-#  - type: SentenceBreaking
-  - type: RegexTokenization
+  - type: SpaCyProcessing
+    pos: True
+    lemma: True
+    break_sentences: True
   - type: PorterStemming
-  - type: SpaCyLemma #WordnetLemma
 
 

@@ -1,11 +1,12 @@
 """Add the corresponding stem to each tokens."""
 from abc import abstractmethod
-from overrides import overrides
+
 from nltk.stem import PorterStemmer
+from overrides import overrides
 
 from src.clao.text_clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import TOKENS, STEM
+from src.constants.annotation_constants import STEM, TOKENS
 
 
 class Stemming(PipelineStage):

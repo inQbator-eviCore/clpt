@@ -10,8 +10,8 @@ from overrides import overrides
 from sklearn.feature_extraction import text
 
 from src.clao.text_clao import TextCLAO
-from src.constants.annotation_constants import RAW_TEXT
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
+from src.constants.annotation_constants import RAW_TEXT
 
 STOPWORD = '<stopword>'
 

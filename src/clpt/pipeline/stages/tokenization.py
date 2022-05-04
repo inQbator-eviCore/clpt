@@ -1,13 +1,12 @@
 """NLP pipeline stage for tokenizing sentences."""
-
+import logging
 import re
 from abc import abstractmethod
 
 from blist import blist
 from overrides import overrides
 
-from src.clao.text_clao import IdSpan, Sentence, Span, Token
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import IdSpan, Sentence, Span, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.constants.annotation_constants import RAW_TEXT, SENTENCES, TOKENS
 from src.constants.regex_constants import BIGRAM_FOUR_DIGIT_YEAR_MONTH, BIGRAM_TEXT_MONTH_DAY, BIGRAM_TEXT_MONTH_YEAR, \
@@ -16,14 +15,16 @@ from src.constants.regex_constants import BIGRAM_FOUR_DIGIT_YEAR_MONTH, BIGRAM_T
     UNIGRAM_YEAR, UNIT_WITH_SLASH
 from src.utils import match
 
+logger = logging.getLogger(__name__)
+
 
 class Tokenization(PipelineStage):
     """Abstract tokenization stage"""
 
     @abstractmethod
     @overrides
-    def __init__(self, timeout_seconds=5):
-        super(Tokenization, self).__init__(timeout_seconds)
+    def __init__(self, timeout_seconds=5, **kwargs):
+        super(Tokenization, self).__init__(timeout_seconds, **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
         raw_text = clao_info.get_all_annotations_for_element(RAW_TEXT).raw_text
