@@ -6,7 +6,7 @@ from overrides import overrides
 
 from src.clao.text_clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import STEM, TOKENS
+from src.constants.annotation_constants import STEM, TOKENS, SPELL_CORRECTED_TOKEN
 
 
 class Stemming(PipelineStage):
@@ -27,4 +27,7 @@ class PorterStemming(Stemming):
     @overrides
     def process(self, clao_info: TextCLAO):
         for token in clao_info.get_all_annotations_for_element(TOKENS):
-            token.map[STEM] = self.ps.stem(token.text)
+            if SPELL_CORRECTED_TOKEN in token.map:
+                token.map[STEM] = self.ps.stem(token.map[SPELL_CORRECTED_TOKEN])
+            else:
+                token.map[STEM] = self.ps.stem(token.text)

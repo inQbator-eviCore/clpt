@@ -1,9 +1,10 @@
 pipeline_stages:
+  # add params here
   - type: RemoveStopWord
-    # add params here
   - type: ConvertToLowerCase
   - type: ExcludePunctuation
-#  - type: SentenceBreaking
+  - type: SentenceBreaking
   - type: RegexTokenization
+  - type: SpellCorrectLevenshtein
   - type: PorterStemming
-  - type: SpaCyLemma
+#  - type: SpaCyLemma

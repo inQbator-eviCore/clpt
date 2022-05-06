@@ -1,6 +1,6 @@
 defaults:
   - ingestion: default
-  - analysis: default
+  - analysis: default #spacy
   - classification: default
 
 
