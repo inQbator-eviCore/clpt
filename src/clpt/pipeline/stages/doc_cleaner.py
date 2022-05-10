@@ -6,12 +6,11 @@ import re
 from abc import abstractmethod
 
 from overrides import overrides
-# from pattern.en import lemma
 from sklearn.feature_extraction import text
 
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import RawText, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import RAW_TEXT
+from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT
 
 STOPWORD = '<stopword>'
 
@@ -40,7 +39,7 @@ class RemoveStopWord(DocumentCleaner):
             pattern = r'\s?' + pattern
 
         stopword_pattern = re.compile(pattern, flags=re.IGNORECASE)
-        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
         raw_text = raw_text_obj.raw_text
         raw_text_obj.raw_text = stopword_pattern.sub(replace_token, raw_text)
 
@@ -54,7 +53,7 @@ class ConvertToLowerCase(DocumentCleaner):
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
         raw_text = raw_text_obj.raw_text
         raw_text_obj.raw_text = raw_text.lower()
 
@@ -69,58 +68,16 @@ class ExcludePunctuation(DocumentCleaner):
     @overrides
     def process(self, clao_info: TextCLAO):
         punctuations = '.,!:;'
-        raw_text_obj = clao_info.get_all_annotations_for_element(RAW_TEXT)
+        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
         raw_text = raw_text_obj.raw_text
         raw_text_obj.raw_text = re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 
-# class Lemmatization(DocumentCleaner):
-#     """Remove inflectional endings only and return the base or dictionary form of a word."""
-#     @abstractmethod
-#     @overrides
-#     def __init__(self, **kwargs):
-#         super(Lemmatization, self).__init__(**kwargs)
-#
-#     @overrides
-#     def process(self, clao_info: TextCLAO):
-#         #TODO: update Lemmatization using function from SpaCy
-#         lemmatized_sentence = " ".join([lemma(word)
-#                                         for word in clao_info.annotations.elements[RAW_TEXT].raw_text.split()])
-#         return lemmatized_sentence
-
-
-# class Stem(DocumentCleaner):
-#     """Reduce a word to its word stem that affixes to suffixes and prefixes
-#     or to the roots of words known as a lemma."""
-#
-#     @abstractmethod
-#     @overrides
-#     def __init__(self, **kwargs):
-#         super(Stem, self).__init__(**kwargs)
-#
-#     @overrides
-#     def process(self, clao_info: TextCLAO):
-#         sno = nltk.stem.SnowballStemmer('english')
-#         stemmed_sentence = " ".join([sno.stem(word)
-#                                      for word in clao_info.annotations.elements[RAW_TEXT].raw_text.split()])
-#         return stemmed_sentence
-
-
-class SpellChecker(DocumentCleaner):
-    """Check spells and corrects.
-
-    Reference:
-    1. Peter Norvig’s spell checker implementation (​http://www.norvig.com/spell-correct.html​)
-    2. MedCat: A word is spelled against the VCB, but corrected only against the CDB.
-    3. Others
-    """
-
-    @abstractmethod
-    @overrides
+class DoNothingDocCleaner(DocumentCleaner):
+    """DocCleaner that just created CLEANED_TEXT directly from RAW_TEXT. Useful for testing/debugging purposes"""
     def __init__(self, **kwargs):
-        super(SpellChecker, self).__init__(**kwargs)
+        super(DoNothingDocCleaner, self).__init__(**kwargs)
 
-    @overrides
-    def process(self, clao_info: TextCLAO):
-        # TODO: add one method
-        pass
+    def process(self, clao_info: TextCLAO) -> None:
+        raw_text = clao_info.get_annotations(RAW_TEXT).raw_text
+        clao_info.insert_annotation(CLEANED_TEXT, RawText(raw_text), element_type_is_list=False)
