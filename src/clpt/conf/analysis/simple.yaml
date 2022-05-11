@@ -1,6 +1,6 @@
 pipeline_stages:
   # add params here
-  - type: SimpleDocCleaner
+  - type: DoNothingDocCleaner
   - type: WordnetLemma
   - type: RegexSentenceBreaking
   - type: RegexTokenization #WhitespaceRegexTokenization

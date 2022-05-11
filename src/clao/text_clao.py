@@ -239,7 +239,8 @@ class Token(IdSpan, EmbeddingContainer):
         else:
             attribs = self.to_json()
 
-        attribs[EMBEDDING_ID] = str(attribs[EMBEDDING_ID])
+        if EMBEDDING_ID in attribs:
+            attribs[EMBEDDING_ID] = str(attribs[EMBEDDING_ID])
 
         text = attribs.pop(TEXT)
         token = super(Token, self).to_xml(parent, attribs)
@@ -422,7 +423,8 @@ class Sentence(IdSpan, TokenContainer, EntityContainer, EmbeddingContainer):
         else:
             attribs = self.to_json()
 
-        attribs[EMBEDDING_ID] = str(attribs[EMBEDDING_ID])
+        if EMBEDDING_ID in attribs:
+            attribs[EMBEDDING_ID] = str(attribs[EMBEDDING_ID])
         attribs.pop(ENTITIES)
         attribs.pop(TOKENS)
         sentence = super(Sentence, self).to_xml(parent, attribs)

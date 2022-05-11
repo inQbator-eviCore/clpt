@@ -7,7 +7,7 @@ from gensim.models.keyedvectors import KeyedVectors
 
 from src.clao.text_clao import Embedding, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import EMBEDDINGS, SENTENCES, TOKENS
+from src.constants.annotation_constants import EMBEDDINGS, SENTENCES, SPELL_CORRECTED_TOKEN, TOKENS
 
 OOV = '<OOV>'
 
@@ -40,7 +40,7 @@ class SimpleWordEmbeddings(EmbeddingsStage):
         key_to_embedding_id = {OOV: 0}
 
         for token in clao_info.get_annotations(TOKENS):
-            key = token.text
+            key = token.map.get(SPELL_CORRECTED_TOKEN, token.text)
             if key not in key_to_embedding_id:
                 try:
                     embedding = Embedding(len(embeddings), self.model.get_vector(key))
