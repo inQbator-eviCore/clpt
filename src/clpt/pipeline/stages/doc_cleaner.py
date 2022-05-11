@@ -22,26 +22,43 @@ class DocumentCleaner(PipelineStage):
     def __init__(self, **kwargs):
         super(DocumentCleaner, self).__init__(**kwargs)
 
+    def process(self, clao_info: TextCLAO) -> None:
+        cleaned_text_obj = clao_info.get_annotations(CLEANED_TEXT)
+        if cleaned_text_obj:
+            raw_text = cleaned_text_obj.raw_text
+        else:
+            raw_text_obj = clao_info.get_annotations(RAW_TEXT)
+            raw_text = raw_text_obj.raw_text
+
+        cleaned_text = self.clean_text(raw_text)
+
+        clao_info.insert_annotation(CLEANED_TEXT, RawText(cleaned_text), element_type_is_list=False)
+
+    @abstractmethod
+    def clean_text(self, raw_text: str) -> str:
+        pass
+
 
 class RemoveStopWord(DocumentCleaner):
     """Remove stop words."""
 
     @overrides
-    def __init__(self, **kwargs):
+    def __init__(self, stopwords=None, replace=False, **kwargs):
         super(RemoveStopWord, self).__init__(**kwargs)
 
-    @overrides
-    def process(self, clao_info: TextCLAO, stopwords=None, replace=False):
         stopwords = stopwords if stopwords else text.ENGLISH_STOP_WORDS
-        replace_token = STOPWORD if replace else ''
         pattern = r'\b(' + '|'.join(stopwords) + r')\b'
         if not replace:
             pattern = r'\s?' + pattern
+            self.replace_token = ''
+        else:
+            self.replace_token = STOPWORD
 
-        stopword_pattern = re.compile(pattern, flags=re.IGNORECASE)
-        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
-        raw_text = raw_text_obj.raw_text
-        raw_text_obj.raw_text = stopword_pattern.sub(replace_token, raw_text)
+        self.stopword_pattern = re.compile(pattern, flags=re.IGNORECASE)
+
+    @overrides
+    def clean_text(self, raw_text: str) -> str:
+        return self.stopword_pattern.sub(self.replace_token, raw_text)
 
 
 class ConvertToLowerCase(DocumentCleaner):
@@ -52,10 +69,8 @@ class ConvertToLowerCase(DocumentCleaner):
         super(ConvertToLowerCase, self).__init__(**kwargs)
 
     @overrides
-    def process(self, clao_info: TextCLAO):
-        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
-        raw_text = raw_text_obj.raw_text
-        raw_text_obj.raw_text = raw_text.lower()
+    def clean_text(self, raw_text: str) -> str:
+        return raw_text.lower()
 
 
 class ExcludePunctuation(DocumentCleaner):
@@ -66,11 +81,9 @@ class ExcludePunctuation(DocumentCleaner):
         super(ExcludePunctuation, self).__init__(**kwargs)
 
     @overrides
-    def process(self, clao_info: TextCLAO):
+    def clean_text(self, raw_text: str) -> str:
         punctuations = '.,!:;'
-        raw_text_obj = clao_info.get_annotations(RAW_TEXT)
-        raw_text = raw_text_obj.raw_text
-        raw_text_obj.raw_text = re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
+        return re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 
 class DoNothingDocCleaner(DocumentCleaner):
@@ -78,6 +91,5 @@ class DoNothingDocCleaner(DocumentCleaner):
     def __init__(self, **kwargs):
         super(DoNothingDocCleaner, self).__init__(**kwargs)
 
-    def process(self, clao_info: TextCLAO) -> None:
-        raw_text = clao_info.get_annotations(RAW_TEXT).raw_text
-        clao_info.insert_annotation(CLEANED_TEXT, RawText(raw_text), element_type_is_list=False)
+    def clean_text(self, raw_text: str) -> str:
+        return raw_text
