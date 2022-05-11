@@ -49,7 +49,7 @@ class SpaCyProcessing(SpaCyStage):
         spacy_doc = self.nlp(span_text)
 
         new_tokens = []
-        first_token_id = len(clao_info.get_all_annotations_for_element(TOKENS))
+        first_token_id = len(clao_info.get_annotations(TOKENS))
         for i, token in enumerate(spacy_doc):
             element_id = first_token_id + i
             start_offset = clao_info.start_offset + token.idx
@@ -60,12 +60,12 @@ class SpaCyProcessing(SpaCyStage):
                 token_map[POS] = token.pos_
             if token.lemma:
                 token_map[LEMMA] = token.lemma_
-            new_tokens.append(Token(start_offset, end_offset, element_id, token_text, token_map))
+            new_tokens.append(Token(start_offset, end_offset, element_id, clao_info, token_text, token_map))
         clao_info.insert_annotations(TOKENS, new_tokens)
 
         if self.break_sentences:
             new_sentences = []
-            first_sentence_id = len(clao_info.get_all_annotations_for_element(SENTENCES))
+            first_sentence_id = len(clao_info.get_annotations(SENTENCES))
             for i, sent in enumerate(spacy_doc.sents):
                 start_offset = sent.start_char
                 end_offset = sent.end_char

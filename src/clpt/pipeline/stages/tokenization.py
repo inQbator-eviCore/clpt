@@ -27,10 +27,10 @@ class Tokenization(PipelineStage):
         super(Tokenization, self).__init__(timeout_seconds, **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
-        raw_text = clao_info.get_all_annotations_for_element(RAW_TEXT).raw_text
-        if len(clao_info.get_all_annotations_for_element(SENTENCES)) == 0:
+        raw_text = clao_info.get_annotations(RAW_TEXT).raw_text
+        if len(clao_info.get_annotations(SENTENCES)) == 0:
             clao_info.insert_annotation(SENTENCES, Sentence(0, len(raw_text), 0, clao_info))
-        for sentence in clao_info.get_all_annotations_for_element(SENTENCES):
+        for sentence in clao_info.get_annotations(SENTENCES):
             tokens = self.get_tokens(clao_info, sentence)
             clao_info.insert_annotations(TOKENS, tokens)
             sentence._token_id_range = (tokens[0].element_id, tokens[-1].element_id + 1)
@@ -86,18 +86,18 @@ class RegexTokenization(Tokenization):
     def get_tokens(self, clao_info: TextCLAO, span: Span):
         # TODO: Bring this more in line with nlp_pipeline
         token_spans = match(self.token_regex, span.get_text_from(clao_info), span.start_offset, True)
-        token_id_offset = len(clao_info.get_all_annotations_for_element(TOKENS))
+        token_id_offset = len(clao_info.get_annotations(TOKENS))
         tokens = blist()
         for s in token_spans:
             token_id = token_id_offset + len(tokens)
             text = s.get_text_from(clao_info)
-            t = Token.from_id_span(IdSpan.from_span(s, token_id), text)
+            t = Token.from_id_span(IdSpan.from_span(s, token_id), text, clao_info)
             if not self.token_regex.match(text):
                 for i, ch in enumerate(text):
                     if not ch.isspace():
                         start = t.start_offset + i
                         end = t.start_offset + i + 1
-                        tokens.append(Token(start, end, token_id, text, {}))
+                        tokens.append(Token(start, end, token_id, clao_info, text, span_map={}))
             else:
                 tokens.append(t)
         return tokens

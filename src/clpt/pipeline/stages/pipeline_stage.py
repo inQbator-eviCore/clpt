@@ -2,7 +2,9 @@
 
 import logging
 from abc import ABC, abstractmethod
+from typing import List
 
+import nltk
 from func_timeout import FunctionTimedOut, func_timeout
 
 from src.clao.text_clao import TextCLAO
@@ -72,3 +74,18 @@ class PipelineStage(ABC):
 
     def __eq__(self, other: 'PipelineStage'):
         return isinstance(other, self.__class__)
+
+
+class NltkStage(PipelineStage):
+    def __init__(self, nltk_reqs: List, **kwargs):
+        """add docstring here"""
+        super(NltkStage, self).__init__(**kwargs)
+        for req in nltk_reqs:
+            try:
+                nltk.data.find(req)
+            except LookupError:
+                nltk.download(req.split('/')[-1])
+
+    @abstractmethod
+    def process(self, clao_info: TextCLAO) -> None:
+        pass

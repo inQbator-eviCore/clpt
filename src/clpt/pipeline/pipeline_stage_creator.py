@@ -4,21 +4,25 @@ from typing import List
 
 from omegaconf import DictConfig
 
-from src.clpt.pipeline.stages.doc_cleaner import ConvertToLowerCase, ExcludePunctuation, RemoveStopWord
+from src.clpt.pipeline.stages.doc_cleaner import ConvertToLowerCase, ExcludePunctuation, RemoveStopWord, \
+    DoNothingDocCleaner
+from src.clpt.pipeline.stages.embeddings import SimpleSentenceEmbeddings, SimpleWordEmbeddings
 from src.clpt.pipeline.stages.lemmatization import SpaCyLemma, WordnetLemma
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.clpt.pipeline.stages.sentence_breaking import SentenceBreaking
-from src.clpt.pipeline.stages.tokenization import RegexTokenization
+from src.clpt.pipeline.stages.pos_tagger import SimplePOSTagger
+from src.clpt.pipeline.stages.sentence_breaking import RegexSentenceBreaking, SentenceBreaking
+from src.clpt.pipeline.stages.spacy_processing import SpaCyProcessing
 from src.clpt.pipeline.stages.spell_correct import SpellCorrectLevenshtein
 from src.clpt.pipeline.stages.stemming import PorterStemming
-from src.clpt.pipeline.stages.spacy_processing import SpaCyProcessing
+from src.clpt.pipeline.stages.tokenization import RegexTokenization, WhitespaceRegexTokenization
 from src.constants.constants import CONFIG_STAGE_KEY
 
 logger = logging.getLogger(__name__)
 
-ALL_KNOWN_STAGES = [ConvertToLowerCase, RemoveStopWord, ExcludePunctuation, SentenceBreaking,
-                    RegexTokenization, SpellCorrectLevenshtein, PorterStemming, WordnetLemma, SpaCyLemma,
-                    SpaCyProcessing]
+ALL_KNOWN_STAGES = [ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, PorterStemming, RegexSentenceBreaking,
+                    RegexTokenization, RemoveStopWord, SentenceBreaking, SimplePOSTagger, SimpleSentenceEmbeddings,
+                    SimpleWordEmbeddings, SpaCyLemma, SpaCyProcessing, SpellCorrectLevenshtein,
+                    WhitespaceRegexTokenization, WordnetLemma]
 STAGE_TYPES = {s.__name__: s for s in ALL_KNOWN_STAGES}
 
 
