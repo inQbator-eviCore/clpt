@@ -7,6 +7,7 @@ from omegaconf import DictConfig
 from src.clpt.pipeline.stages.doc_cleaner import ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, \
     RemoveStopWord
 from src.clpt.pipeline.stages.embeddings import FastTextEmbeddings, SentenceEmbeddings, WordEmbeddings
+from src.clpt.pipeline.stages.entities import GroupEntities, MentionDetection
 from src.clpt.pipeline.stages.lemmatization import SpaCyLemma, WordnetLemma
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.clpt.pipeline.stages.pos_tagger import SimplePOSTagger
@@ -19,10 +20,10 @@ from src.constants.constants import CONFIG_STAGE_KEY
 
 logger = logging.getLogger(__name__)
 
-ALL_KNOWN_STAGES = [ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, FastTextEmbeddings, PorterStemming,
-                    RegexSentenceBreaking, RegexTokenization, RemoveStopWord, SentenceBreaking, SentenceEmbeddings,
-                    SimplePOSTagger, SpaCyLemma, SpaCyProcessing, SpellCorrectLevenshtein, WhitespaceRegexTokenization,
-                    WordEmbeddings, WordnetLemma]
+ALL_KNOWN_STAGES = [ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, FastTextEmbeddings, GroupEntities,
+                    MentionDetection, PorterStemming, RegexSentenceBreaking, RegexTokenization, RemoveStopWord,
+                    SentenceBreaking, SentenceEmbeddings, SimplePOSTagger, SpaCyLemma, SpaCyProcessing,
+                    SpellCorrectLevenshtein, WhitespaceRegexTokenization, WordEmbeddings, WordnetLemma]
 STAGE_TYPES = {s.__name__: s for s in ALL_KNOWN_STAGES}
 
 

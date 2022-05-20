@@ -1,5 +1,4 @@
 pipeline_stages:
-  # add params here
   - type: DoNothingDocCleaner
   - type: WordnetLemma
   - type: RegexSentenceBreaking
@@ -8,7 +7,6 @@ pipeline_stages:
 #  - type: SimpleWordEmbeddings
 #    embeddings_file_path: ../../../single_vec.bin
 #    binary: True
-#  - type: SimpleSentenceEmbeddings
 #  - type: SpellCorrectLevenshtein
   - type: FastTextEmbeddings
     vector_size: 200
@@ -17,4 +15,8 @@ pipeline_stages:
     epochs: 10
     save_embeddings: True
     saved_file_name: my_cool_embeddings.bin
+  - type: MentionDetection
+    rules_file: ../../../resources/mention-detection-rules.yaml
+  - type: GroupEntities
+    entity_type: MENTION
   - type: PorterStemming
