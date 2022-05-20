@@ -9,9 +9,9 @@ from lxml import etree
 from omegaconf import DictConfig
 
 from src.clao.clao import CLAOElement, CLAOElementContainer, ClinicalLanguageAnnotationObject, IdCLAOElement
-from src.constants.annotation_constants import ANNOTATION, EMBEDDING, EMBEDDINGS, EMBEDDING_ID, ENTITIES, ENTITY, \
-    HEADING, HEADINGS, PARAGRAPH, PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS, \
-    VECTOR
+from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, EMBEDDING, EMBEDDINGS, EMBEDDING_ID, ENTITIES,\
+    ENTITY, ENTITY_GROUP, ENTITY_GROUPS, EntityType, HEADING, HEADINGS, LITERAL, PARAGRAPH, PARAGRAPHS, RAW_TEXT, \
+    SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS, VECTOR
 
 
 class Span(CLAOElement):
@@ -36,10 +36,11 @@ class Span(CLAOElement):
         self.end_offset += delta
 
     def to_json(self) -> Dict:
+        span_map = {k: str(v) for k, v in self.map.items()}
         return {**super(Span, self).to_json(),
                 'start': str(self.start_offset),
                 'end': str(self.end_offset),
-                **self.map}
+                **span_map}
 
     def get_text_from(self, text_clao: 'TextCLAO') -> str:
         """
@@ -115,7 +116,7 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
                              elements to be serialized should be contained within one of these
     """
     element_name = ANNOTATION
-    _top_level_elements = [RAW_TEXT, SENTENCES, EMBEDDINGS]
+    _top_level_elements = [RAW_TEXT, SENTENCES, EMBEDDINGS, ENTITY_GROUPS]
 
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None, *args, **kwargs):
         super(TextCLAO, self).__init__(start_offset=0, end_offset=len(raw_text), raw_data=RawText(raw_text), name=name,
@@ -164,7 +165,11 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         Returns:
             The text between the two specified offsets
         """
-        return self.elements[RAW_TEXT].raw_text[start - self.start_offset:end - self.start_offset]
+        if CLEANED_TEXT in self.elements:
+            text = self.elements[CLEANED_TEXT].raw_text
+        else:
+            text = self.elements[RAW_TEXT].raw_text
+        return text[start - self.start_offset:end - self.start_offset]
 
     def get_text_for_span(self, span: Span) -> str:
         """Get the text for a given Span contained within this document.
@@ -326,29 +331,40 @@ class Entity(IdSpan, TokenContainer):
 
     Properties:
         tokens: List of tokens that make up the entity
-        entity_type: Type of entity represented (e.g 'ner' or 'fact')
-        confidence: percentage of confidence in accuracy of entity
     """
     element_name = ENTITY
 
-    def __init__(self, element_id: int, entity_type: str, confidence: float, token_id_range: Tuple[int, int],
-                 clao: TextCLAO, span_map=None):
+    def __init__(self, element_id: int, entity_type: EntityType, confidence: float, literal: str, label: str,
+                 token_id_range: Tuple[int, int], clao: TextCLAO, span_map=None):
+        """Create an Entity CLAOElement
+
+        Args:
+            element_id: unique id for this element
+            entity_type: Type of entity represented (e.g NER or FACT)
+            confidence: percentage of confidence in accuracy of entity
+            literal: name of the concept represented by this entity
+            label: type of concept represented by this entity
+            token_id_range: range [x,y) of token ids contained within this entity, where x is inclusive and y exclusive
+            clao: TextCLAO this Entity is contained within
+            span_map: Arbitrary dict of extra properties for this element
+        """
         self.entity_type = entity_type
         self.confidence = confidence
+        self.literal = literal
+        self.label = label
 
         start_offset = clao.get_annotations(TOKENS, token_id_range[0]).start_offset
         end_offset = clao.get_annotations(TOKENS, token_id_range[1]-1).end_offset
         super(Entity, self).__init__(start_offset=start_offset, end_offset=end_offset, element_id=element_id, clao=clao,
                                      token_id_range=token_id_range, span_map=span_map)
 
-        self.text = self.get_text_from(clao)
-
     def to_json(self) -> Dict:
         return {**super(Entity, self).to_json(),
                 'token_ids': f"[{self._token_id_range[0]}, {self._token_id_range[1]})",
-                'type': self.entity_type,
+                'type': self.entity_type.name,
                 'confidence': str(self.confidence),
-                TEXT: self.text}
+                'label': str(self.label),
+                LITERAL: self.literal}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -356,13 +372,13 @@ class Entity(IdSpan, TokenContainer):
         else:
             attribs = self.to_json()
 
-        text = attribs.pop(TEXT)
+        literal = attribs.pop(LITERAL)
         entity = super(Entity, self).to_xml(parent, attribs)
-        entity.text = text
+        entity.text = literal
         return entity
 
     def __str__(self):
-        return f'Entity({self.start_offset}, {self.end_offset}, {self.entity_type}, tokens: {len(self.tokens)})'
+        return f'Entity({self.start_offset}, {self.end_offset}, {self.entity_type.name}, tokens: {len(self.tokens)})'
 
     def __eq__(self, other):
         return super().__eq__(other) \
@@ -383,6 +399,37 @@ class EntityContainer(CLAOElementContainer):
             return self.clao.get_annotations(ENTITIES, self._entity_id_range)
         else:
             return []
+
+
+class EntityGroup(IdCLAOElement):
+    element_name = ENTITY_GROUP
+
+    def __init__(self, element_id: int, entity_type: EntityType, literal: str, **kwargs):
+        super(EntityGroup, self).__init__(element_id=element_id, **kwargs)
+        self.entity_type = entity_type
+        self.literal = literal
+
+    def to_json(self) -> Dict:
+        return {**super(EntityGroup, self).to_json(),
+                'entity_type': self.entity_type.name,
+                'literal': self.literal}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+
+        literal = attribs.pop(LITERAL)
+        entity_group = super(EntityGroup, self).to_xml(parent, attribs)
+        entity_group.text = literal
+        return entity_group
+
+    def __str__(self):
+        return f'EntityGroup({self.entity_type.name}, {self.literal})'
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.entity_type == other.entity_type and self.literal == other.literal
 
 
 class Sentence(IdSpan, TokenContainer, EntityContainer, EmbeddingContainer):

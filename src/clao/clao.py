@@ -229,7 +229,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         except Exception as e:
             LOGGER.exception(f"Failed to save CLAO as XML. "
                              f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")
-            return False
+            raise e
         return True
 
     def __hash__(self):

@@ -33,5 +33,5 @@ class NlpPipelineProcessor:
             stage.process(clao_info)
 
     def process_multiple(self, claos: List[TextCLAO]):
-        for stage in [ps for ps in self.all_clao_pipeline_stages]:
+        for stage in [ps for ps in self.all_claos_pipeline_stages]:
             stage.process(claos)

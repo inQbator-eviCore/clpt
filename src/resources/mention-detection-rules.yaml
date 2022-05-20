@@ -1,0 +1,17 @@
+- literal: "fibrous encapsulation"
+  category: "SOMETHING"
+- literal: "Type II Diabetes Mellitus"
+  category: "PROBLEM"
+  pattern:
+    - LOWER: "type"
+    - LOWER:
+        IN:
+          - "2"
+          - "ii"
+          - "two"
+    - LOWER:
+        IN:
+          - "dm"
+          - "diabetes"
+    - LOWER: "mellitus"
+      OP: "?"
