@@ -1,7 +1,7 @@
 """Initial thoughts / rough draft of some internal text annotation objects, in line with XML schema illustrated in 2022
 NaaCL paper"""
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 from blist import blist
@@ -68,6 +68,30 @@ class Span(CLAOElement):
             Whether or not `other` is wholly contained within this Span
         """
         return self.start_offset <= other.start_offset and self.end_offset >= other.end_offset
+
+    def get_span_embedding(self, method: Callable[[List[np.ndarray], Any], np.ndarray] = np.mean, **method_args
+                           ) -> np.ndarray:
+        """Get embedding vector for a span. Span must either be a EmbeddingContainer or TokenContainer. If span is
+        a TokenContainer, embedding will be calculated using `method` argument on all sub-embeddings. `method` must take
+        a list of numpy.ndarrays as its first argument and return a single numpy.ndarray.
+
+        Args:
+            method: method used to calculate Span embedding from sub embeddings. Defaults to numpy.mean()
+            **method_args: extra arguments to be passed in to `method`
+
+        Returns:
+
+        """
+        if not method_args:
+            method_args = {'axis': 0}
+        if isinstance(self, EmbeddingContainer) and self.embedding is not None:
+            return self.embedding.vector
+        elif isinstance(self, TokenContainer):
+            embedding_vectors = [t.embedding.vector for t in self.tokens]
+            return method(embedding_vectors, **method_args)
+        else:
+            raise NotImplementedError('Embedding vector cannot be calculated for Spans that are not Tokens or do not '
+                                      'contain Tokens with pre-calculated embeddings')
 
     def __len__(self):
         return self.end_offset - self.start_offset
@@ -367,7 +391,7 @@ class Sentence(IdSpan, TokenContainer, EntityContainer, EmbeddingContainer):
     Properties:
         tokens: List of tokens contained in the sentence
         entities: List of entities contained in the sentence
-        embedding: Optional word embedding for this token
+        embedding: Optional embedding for this Sentence
     """
     element_name = SENTENCE
 

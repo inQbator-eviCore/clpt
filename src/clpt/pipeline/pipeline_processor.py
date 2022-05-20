@@ -8,18 +8,19 @@ from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 
 class NlpPipelineProcessor:
-    """Class handling the processing of CLAO through the NLP pipeline.
+    def __init__(self, single_clao_stages: List[PipelineStage], all_claos_stages: List[PipelineStage]):
+        """Class handling the processing of CLAO through the NLP pipeline.
 
-    Attributes:
-        pipeline_stages: The PipelineStages to run CLAO through.
-    """
-
-    def __init__(self, stages: List[PipelineStage]):
-        self.pipeline_stages = stages
+        Args:
+            single_clao_stages: PipelineStages to run a single CLAO through at a time.
+            all_claos_stages: PipelineStages that run over a series of CLAOs
+        """
+        self.single_clao_pipeline_stages = single_clao_stages
+        self.all_claos_pipeline_stages = all_claos_stages
 
     @classmethod
     def from_stages_config(cls, cfg: DictConfig):
-        return cls(pipeline_stage_creator.build_pipeline_stages(cfg))
+        return cls(*pipeline_stage_creator.build_pipeline_stages(cfg))
 
     def process(self, clao_info: TextCLAO) -> None:
         """
@@ -28,5 +29,9 @@ class NlpPipelineProcessor:
             clao_info: The CLAO information to process.
         Returns: None
         """
-        for stage in self.pipeline_stages:
+        for stage in [ps for ps in self.single_clao_pipeline_stages]:
             stage.process(clao_info)
+
+    def process_multiple(self, claos: List[TextCLAO]):
+        for stage in [ps for ps in self.all_clao_pipeline_stages]:
+            stage.process(claos)

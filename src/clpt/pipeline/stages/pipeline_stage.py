@@ -17,6 +17,7 @@ class PipelineStage(ABC):
     @abstractmethod
     def __init__(self, timeout_seconds=1, **kwargs):
         self.timeout_seconds = timeout_seconds
+        self.single_clao = True  # TODO handle this much better
 
     @classmethod
     def from_config(cls, **kwargs):

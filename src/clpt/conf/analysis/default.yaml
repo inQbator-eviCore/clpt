@@ -3,7 +3,7 @@ pipeline_stages:
   - type: RemoveStopWord
   - type: ConvertToLowerCase
   - type: ExcludePunctuation
-  - type: SentenceBreaking
+  - type: RegexSentenceBreaking
   - type: RegexTokenization
   - type: SpellCorrectLevenshtein
   - type: PorterStemming
