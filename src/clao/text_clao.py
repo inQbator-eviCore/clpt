@@ -8,9 +8,9 @@ from lxml import etree
 from omegaconf import DictConfig
 
 from src.clao.clao import CLAOElement, CLAOElementContainer, ClinicalLanguageAnnotationObject, IdCLAOElement
-from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, DESCRIPTION, EMBEDDING, EMBEDDINGS, \
-    EMBEDDING_ID, ENTITIES, ENTITY, ENTITY_GROUP, ENTITY_GROUPS, EntityType, HEADING, HEADINGS, LITERAL, PARAGRAPH, \
-    PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TEXT_ELEMENT, TOKEN, TOKENS, VECTOR
+from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, DESCRIPTION, EMBEDDING, EMBEDDING_ID, \
+    ENTITIES, ENTITY, ENTITY_GROUP, EntityType, HEADING, LITERAL, PARAGRAPH, PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, \
+    SENTENCES, SPAN, TEXT, TEXT_ELEMENT, TOKEN, TOKENS, VECTOR
 
 
 class TextCLAOElement(CLAOElement):
@@ -128,7 +128,7 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
                              elements to be serialized should be contained within one of these
     """
     element_name = ANNOTATION
-    _top_level_elements = [TEXT_ELEMENT, SENTENCES, EMBEDDINGS, ENTITY_GROUPS]
+    _top_level_elements = [TEXT_ELEMENT, SENTENCE, EMBEDDING, ENTITY_GROUP]
     _text_clao_element_dict = None
 
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None, *args, **kwargs):
@@ -183,8 +183,8 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         Returns:
             The text between the two specified offsets
         """
-        text = (self.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
-                or self.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})).raw_text
+        text = (self.get_annotations(Text, {'description': CLEANED_TEXT})
+                or self.get_annotations(Text, {'description': RAW_TEXT})).raw_text
         return text[start - self.start_offset:end - self.start_offset]
 
     def get_text_for_span(self, span: Span) -> str:
@@ -286,7 +286,7 @@ class EmbeddingContainer(TextCLAOElementContainer):
     @property
     def embedding(self) -> Optional[Embedding]:
         if self._embedding_id is not None:
-            return self.clao.get_annotations(EMBEDDINGS, self._embedding_id)
+            return self.clao.get_annotations(Embedding, self._embedding_id)
         else:
             return None
 
@@ -359,7 +359,7 @@ class TokenContainer(TextCLAOElementContainer):
     @property
     def tokens(self) -> List[Token]:
         if self._token_id_range:
-            return self.clao.get_annotations(TOKENS, self._token_id_range)
+            return self.clao.get_annotations(Token, self._token_id_range)
         else:
             return []
 
@@ -433,8 +433,8 @@ class Entity(IdSpan, TokenContainer):
         self.literal = literal
         self.label = label
 
-        start_offset = start_offset if start_offset else clao.get_annotations(TOKENS, token_id_range[0]).start_offset
-        end_offset = end_offset if end_offset else clao.get_annotations(TOKENS, token_id_range[1]-1).end_offset
+        start_offset = start_offset if start_offset else clao.get_annotations(Token, token_id_range[0]).start_offset
+        end_offset = end_offset if end_offset else clao.get_annotations(Token, token_id_range[1]-1).end_offset
         super(Entity, self).__init__(start_offset=start_offset, end_offset=end_offset, element_id=element_id, clao=clao,
                                      token_id_range=token_id_range, span_map=span_map)
 
@@ -491,7 +491,7 @@ class EntityContainer(TextCLAOElementContainer):
     @property
     def entities(self) -> List[Entity]:
         if self._entity_id_range:
-            return self.clao.get_annotations(ENTITIES, self._entity_id_range)
+            return self.clao.get_annotations(Entity, self._entity_id_range)
         else:
             return []
 
@@ -681,7 +681,7 @@ class SentenceContainer(TextCLAOElementContainer):
     @property
     def sentences(self) -> List[Sentence]:
         if self._sentence_id_range:
-            return self.clao.get_annotations(SENTENCES, self._sentence_id_range)
+            return self.clao.get_annotations(Sentence, self._sentence_id_range)
         else:
             return []
 
@@ -734,7 +734,7 @@ class ParagraphContainer(TextCLAOElementContainer):
     @property
     def paragraphs(self) -> List[Paragraph]:
         if self._paragraph_id_range:
-            return self.clao.get_annotations(PARAGRAPHS, self._paragraph_id_range)
+            return self.clao.get_annotations(Paragraph, self._paragraph_id_range)
         else:
             return []
 
@@ -757,7 +757,7 @@ class Section(Span, ParagraphContainer):
     @property
     def heading(self) -> Optional[Heading]:
         if self._heading_id is not None:
-            return self.clao.get_annotations(HEADINGS, self._heading_id)
+            return self.clao.get_annotations(Heading, self._heading_id)
         else:
             return None
 

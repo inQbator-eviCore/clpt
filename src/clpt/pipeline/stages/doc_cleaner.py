@@ -10,7 +10,7 @@ from sklearn.feature_extraction import text
 
 from src.clao.text_clao import Text, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, TEXT_ELEMENT
+from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT
 
 STOPWORD = '<stopword>'
 
@@ -23,13 +23,13 @@ class DocumentCleaner(PipelineStage):
         super(DocumentCleaner, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
-        text_obj = clao_info.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
+        text_obj = clao_info.get_annotations(Text, {'description': CLEANED_TEXT})
         if text_obj:
             text_obj.raw_text = self.clean_text(text_obj.raw_text)
         else:
-            text_obj = clao_info.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})
+            text_obj = clao_info.get_annotations(Text, {'description': RAW_TEXT})
             cleaned_text = self.clean_text(text_obj.raw_text)
-            clao_info.insert_annotation(TEXT_ELEMENT, Text(cleaned_text, CLEANED_TEXT))
+            clao_info.insert_annotation(Text, Text(cleaned_text, CLEANED_TEXT))
 
     @abstractmethod
     def clean_text(self, raw_text: str) -> str:

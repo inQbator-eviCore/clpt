@@ -6,9 +6,9 @@ from blist import blist
 from gensim.models import FastText
 from gensim.models.keyedvectors import KeyedVectors
 
-from src.clao.text_clao import Embedding, TextCLAO
+from src.clao.text_clao import Embedding, Sentence, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import EMBEDDINGS, SENTENCES, SPELL_CORRECTED_TOKEN, TOKENS
+from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN
 
 OOV = '<OOV>'
 
@@ -44,7 +44,7 @@ class WordEmbeddings(EmbeddingsStage):
         else:
             key_to_embedding_id = {}
 
-        for token in clao_info.get_annotations(TOKENS):
+        for token in clao_info.get_annotations(Token):
             key = token.map.get(SPELL_CORRECTED_TOKEN, token.text)
             if key not in key_to_embedding_id:
                 try:
@@ -58,7 +58,7 @@ class WordEmbeddings(EmbeddingsStage):
                     else:
                         raise e
             token._embedding_id = key_to_embedding_id[key]
-        clao_info.insert_annotations(EMBEDDINGS, embeddings)
+        clao_info.insert_annotations(Embedding, embeddings)
 
 
 class FastTextEmbeddings(WordEmbeddings):
@@ -94,7 +94,7 @@ class FastTextEmbeddings(WordEmbeddings):
         corpus: List[List[str]] = []
         for clao in claos:
             sent_tokens = [[token.map.get(SPELL_CORRECTED_TOKEN, token.text) for token in sent.tokens]
-                           for sent in clao.get_annotations(SENTENCES)]
+                           for sent in clao.get_annotations(Sentence)]
             corpus.extend(sent_tokens)
 
         self.model.build_vocab(corpus_iterable=corpus)
@@ -114,11 +114,11 @@ class SentenceEmbeddings(EmbeddingsStage):
         super(SentenceEmbeddings, self).__init__(embeddings_file_path=None)
 
     def process(self, clao_info: TextCLAO) -> None:
-        embeddings = clao_info.get_annotations(EMBEDDINGS)
+        embeddings = clao_info.get_annotations(Embedding)
         embedding_id_offset = len(embeddings)
         sent_embeddings = blist()
-        for i, sent in enumerate(clao_info.get_annotations(SENTENCES)):
+        for i, sent in enumerate(clao_info.get_annotations(Sentence)):
             embedding = Embedding(embedding_id_offset + i, sent.get_span_embedding())
             sent_embeddings.append(embedding)
             sent._embedding_id = embedding.element_id
-        clao_info.insert_annotations(EMBEDDINGS, sent_embeddings)
+        clao_info.insert_annotations(Embedding, sent_embeddings)

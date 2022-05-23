@@ -4,9 +4,9 @@ from abc import abstractmethod
 from nltk.stem import PorterStemmer
 from overrides import overrides
 
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN, STEM, TOKENS
+from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN, STEM
 
 
 class Stemming(PipelineStage):
@@ -26,7 +26,7 @@ class PorterStemming(Stemming):
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        for token in clao_info.get_annotations(TOKENS):
+        for token in clao_info.get_annotations(Token):
             if SPELL_CORRECTED_TOKEN in token.map:
                 token.map[STEM] = self.ps.stem(token.map[SPELL_CORRECTED_TOKEN])
             else:
