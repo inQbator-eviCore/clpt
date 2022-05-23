@@ -1,4 +1,3 @@
-# Span
 from enum import Enum
 
 START_OFFSET = 'startOffset'
@@ -6,6 +5,7 @@ END_OFFSET = 'endOffset'
 MAP = 'map'
 
 ANNOTATION = 'annotation'
+DESCRIPTION = 'description'
 EMBEDDING = 'embedding'
 EMBEDDING_ID = 'embedding_id'
 EMBEDDINGS = 'embeddings'
@@ -31,6 +31,7 @@ SPAN = 'span'
 SPELL_CORRECTED_TOKEN = 'spell_corrected_token'
 STEM = 'stem'
 TEXT = 'text'
+TEXT_ELEMENT = 'text'
 TOKEN = 'token'
 TOKENS = 'tokens'
 VECTOR = 'vector'

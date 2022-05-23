@@ -8,9 +8,9 @@ from abc import abstractmethod
 from overrides import overrides
 from sklearn.feature_extraction import text
 
-from src.clao.text_clao import RawText, TextCLAO
+from src.clao.text_clao import Text, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT
+from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, TEXT_ELEMENT
 
 STOPWORD = '<stopword>'
 
@@ -23,16 +23,13 @@ class DocumentCleaner(PipelineStage):
         super(DocumentCleaner, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
-        cleaned_text_obj = clao_info.get_annotations(CLEANED_TEXT)
-        if cleaned_text_obj:
-            raw_text = cleaned_text_obj.raw_text
+        text_obj = clao_info.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
+        if text_obj:
+            text_obj.raw_text = self.clean_text(text_obj.raw_text)
         else:
-            raw_text_obj = clao_info.get_annotations(RAW_TEXT)
-            raw_text = raw_text_obj.raw_text
-
-        cleaned_text = self.clean_text(raw_text)
-
-        clao_info.insert_annotation(CLEANED_TEXT, RawText(cleaned_text), element_type_is_list=False)
+            text_obj = clao_info.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})
+            cleaned_text = self.clean_text(text_obj.raw_text)
+            clao_info.insert_annotation(TEXT_ELEMENT, Text(cleaned_text, CLEANED_TEXT))
 
     @abstractmethod
     def clean_text(self, raw_text: str) -> str:

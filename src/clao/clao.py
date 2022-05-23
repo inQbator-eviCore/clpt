@@ -42,6 +42,14 @@ class CLAOElement:
         else:
             return etree.SubElement(parent, self.element_name, **attribs)
 
+    @classmethod
+    def from_json(cls, json_dict: dict):
+        pass
+
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element):
+        pass
+
 
 class IdCLAOElement(CLAOElement):
     """CLAO element with an ID attribute
@@ -68,7 +76,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             raw_data: CLAOElement representing the raw data of the document represented by the CLAO
             name: CLAO name for serialization purposes. Usually the base name of the input file
         """
-        self.elements = {raw_data.element_name: raw_data}
+        self.elements = {raw_data.element_name: blist([raw_data])}
         self.name = name
 
     @classmethod
@@ -84,21 +92,16 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         with open(input_path, 'r'):
             return None
 
-    def insert_annotation(self, element_type: str, value, element_type_is_list: bool = True):
+    def insert_annotation(self, element_type: str, value):
         """Insert a single annotation of a specific type into the CLAO. Annotation will be appended to its collection
 
         Args:
             element_type: Name of element type
             value: Value to be appended
-            element_type_is_list: True if the CLAO is meant to contain a collection of {element_type}s rather than a
-                                  singleton {element_type}
 
         Returns: None
         """
-        if element_type_is_list:
-            self.insert_annotations(element_type, [value])
-        else:
-            self.elements[element_type] = value
+        self.insert_annotations(element_type, [value])
 
     def insert_annotations(self, element_type: str, values):
         """Insert annotations of a specific type into the CLAO. Annotations will be appended to their collections
@@ -135,7 +138,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """
         return self.elements.get(element_type, blist())
 
-    def get_annotations(self, element_type: str, key: Optional[Union[Tuple[int, int], int, str]] = None
+    def get_annotations(self, element_type: str, key: Optional[Union[Tuple[int, int], int, dict]] = None
                         ) -> Union[CLAOElement, List[CLAOElement]]:
         """Get specific annotation(s) for an element type based on key. If key is int or tuple of int, will fetch by
         element ID. A key of string will search annotations by value (currently not implemented. TODO).
@@ -156,7 +159,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             return self.get_all_annotations_for_element(element_type)
         if isinstance(key, (tuple, int)):
             return self._search_by_id(element_type, key)
-        if isinstance(key, str):
+        if isinstance(key, dict):
             return self._search_by_val(element_type, key)
         raise ValueError(f"Parameter 'key' must be of type int or str. Got {type(key).__name__}.")
 
@@ -179,8 +182,12 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         else:
             return element_annotations[slice(*key)]
 
-    def _search_by_val(self, element_type: str, value: T):
-        raise NotImplementedError()
+    def _search_by_val(self, element_type: str, values: dict):
+        element_annotations = self.get_all_annotations_for_element(element_type)
+        for elem in element_annotations:
+            if values.items() <= elem.__dict__.items():
+                return elem
+        return None
 
     @abstractmethod
     def to_json(self):

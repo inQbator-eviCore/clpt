@@ -5,7 +5,7 @@ from blist import blist
 
 from src.clao.text_clao import Sentence, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, SENTENCES
+from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, TEXT_ELEMENT, SENTENCES
 from src.constants.regex_constants import SENTENCE_REGEX
 from src.utils import match
 
@@ -27,8 +27,8 @@ class RegexSentenceBreaking(PipelineStage):
         self.pattern = re.compile(SENTENCE_REGEX)
 
     def process(self, clao_info: TextCLAO) -> None:
-        text = (clao_info.get_annotations(CLEANED_TEXT)
-                or clao_info.get_annotations(RAW_TEXT)).raw_text
+        text = (clao_info.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
+                or clao_info.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})).raw_text
         sentence_spans = match(self.pattern, text, clao_info.start_offset, False)
         sentences = clao_info.get_annotations(SENTENCES)
         sentence_idx_offset = len(sentences)

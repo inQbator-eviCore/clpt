@@ -8,7 +8,7 @@ from overrides import overrides
 
 from src.clao.text_clao import IdSpan, Sentence, Span, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import RAW_TEXT, SENTENCES, TOKENS
+from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, TEXT_ELEMENT, SENTENCES, TOKENS
 from src.constants.regex_constants import BIGRAM_FOUR_DIGIT_YEAR_MONTH, BIGRAM_TEXT_MONTH_DAY, BIGRAM_TEXT_MONTH_YEAR, \
     BIGRAM_TEXT_YEAR_MONTH, CONTRACTION, DATE, DOT_JOINED_NUMBER, HYPHENATED_TOKEN, ICD10_CODE, INITIAL, LONG_NUMBER, \
     NUMBER, PERSONAL_TITLE, TIME_12HR, TIME_24HR, TRIGRAM_QUADGRAM_DATE_DATETIME, UNIGRAM_MONTH, UNIGRAM_MONTH_YEAR, \
@@ -27,7 +27,8 @@ class Tokenization(PipelineStage):
         super(Tokenization, self).__init__(timeout_seconds, **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
-        raw_text = clao_info.get_annotations(RAW_TEXT).raw_text
+        raw_text = (clao_info.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
+                    or clao_info.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})).raw_text
         if len(clao_info.get_annotations(SENTENCES)) == 0:
             clao_info.insert_annotation(SENTENCES, Sentence(0, len(raw_text), 0, clao_info))
         for sentence in clao_info.get_annotations(SENTENCES):

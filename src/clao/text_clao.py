@@ -4,17 +4,29 @@ import os
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
-from blist import blist
 from lxml import etree
 from omegaconf import DictConfig
 
 from src.clao.clao import CLAOElement, CLAOElementContainer, ClinicalLanguageAnnotationObject, IdCLAOElement
-from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, EMBEDDING, EMBEDDINGS, EMBEDDING_ID, ENTITIES,\
-    ENTITY, ENTITY_GROUP, ENTITY_GROUPS, EntityType, HEADING, HEADINGS, LITERAL, PARAGRAPH, PARAGRAPHS, RAW_TEXT, \
-    SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TOKEN, TOKENS, VECTOR
+from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, DESCRIPTION, EMBEDDING, EMBEDDINGS, \
+    EMBEDDING_ID, ENTITIES, ENTITY, ENTITY_GROUP, ENTITY_GROUPS, EntityType, HEADING, HEADINGS, LITERAL, PARAGRAPH, \
+    PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TEXT_ELEMENT, TOKEN, TOKENS, VECTOR
 
 
-class Span(CLAOElement):
+class TextCLAOElement(CLAOElement):
+    def __init__(self, *args, **kwargs):
+        super(TextCLAOElement, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def from_json(cls, json_dict: dict, clao: ClinicalLanguageAnnotationObject):
+        pass
+
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: ClinicalLanguageAnnotationObject):
+        pass
+
+
+class Span(TextCLAOElement):
     """CLAOElement representing a span of text"""
     element_name = SPAN
 
@@ -116,11 +128,12 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
                              elements to be serialized should be contained within one of these
     """
     element_name = ANNOTATION
-    _top_level_elements = [RAW_TEXT, SENTENCES, EMBEDDINGS, ENTITY_GROUPS]
+    _top_level_elements = [TEXT_ELEMENT, SENTENCES, EMBEDDINGS, ENTITY_GROUPS]
+    _text_clao_element_dict = None
 
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None, *args, **kwargs):
-        super(TextCLAO, self).__init__(start_offset=0, end_offset=len(raw_text), raw_data=RawText(raw_text), name=name,
-                                       cfg=cfg, *args, **kwargs)
+        super(TextCLAO, self).__init__(start_offset=0, end_offset=len(raw_text), raw_data=Text(raw_text, RAW_TEXT),
+                                       name=name, cfg=cfg, *args, **kwargs)
 
     @classmethod
     def from_file(cls, input_path: str):
@@ -128,31 +141,36 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         with open(input_path, 'r') as f:
             return cls(f.read(), name)
 
-    def _search_by_val(self, element_type: str, value: str):
-        raise NotImplementedError()
-
     def to_json(self) -> Dict:
         json_dict = super(TextCLAO, self).to_json()
         for element_type in self._top_level_elements:
             if element_type in self.elements:
-                element_value = self.elements[element_type]
-                if isinstance(element_value, (list, blist)):
-                    json_dict[element_type] = [e.to_json() for e in element_value]
-                else:
-                    json_dict.update(element_value.to_json())
+                json_dict[element_type] = [e.to_json() for e in self.elements[element_type]]
         return json_dict
 
     def to_xml(self) -> etree.Element:
         annotation = super(TextCLAO, self).to_xml(parent=None, attribs={})
         for element_type in self._top_level_elements:
             if element_type in self.elements:
-                element_value = self.elements[element_type]
-                if isinstance(element_value, (list, blist)):
-                    for element in element_value:
-                        element.to_xml(parent=annotation)
-                else:
-                    element_value.to_xml(parent=annotation)
+                for element in self.elements[element_type]:
+                    element.to_xml(parent=annotation)
         return annotation
+
+    @classmethod
+    def from_xml_file(cls, file_name: str):
+        xml = etree.parse(file_name)
+        annotation = xml.getroot()
+        xml_elements = annotation.getchildren()
+        raw_text = xml_elements.pop(0)
+        clao = cls(raw_text.text, file_name)
+        for xml_element in xml_elements:
+            element_cls = cls.text_clao_element_dict()[xml_element.tag]
+            clao_element = element_cls.from_xml(xml_element, clao)
+            clao.insert_annotation(xml_element.tag, clao_element)
+        return clao
+
+    def from_xml(cls, xml_element: etree._Element, clao: ClinicalLanguageAnnotationObject):
+        raise NotImplementedError()
 
     def get_text_for_offsets(self, start: int, end: int) -> str:
         """
@@ -165,10 +183,8 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         Returns:
             The text between the two specified offsets
         """
-        if CLEANED_TEXT in self.elements:
-            text = self.elements[CLEANED_TEXT].raw_text
-        else:
-            text = self.elements[RAW_TEXT].raw_text
+        text = (self.get_annotations(TEXT_ELEMENT, {'description': CLEANED_TEXT})
+                or self.get_annotations(TEXT_ELEMENT, {'description': RAW_TEXT})).raw_text
         return text[start - self.start_offset:end - self.start_offset]
 
     def get_text_for_span(self, span: Span) -> str:
@@ -177,9 +193,25 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         """
         return self.get_text_for_offsets(span.start_offset, span.end_offset)
 
+    @classmethod
+    def text_clao_element_dict(cls):
+        if not cls._text_clao_element_dict:
+            cls._text_clao_element_dict = {c.element_name: c for c in TextCLAOElement.__subclasses__()}
+            for c in list(cls._text_clao_element_dict.values()):
+                cls._text_clao_element_dict.update(TextCLAO._get_subclass_element_dict(c))
+        return cls._text_clao_element_dict
+
+    @classmethod
+    def _get_subclass_element_dict(cls, subclass):
+        classes = {c.element_name: c for c in subclass.__subclasses__()}
+        for c in list(classes.values()):
+            classes.update(cls._get_subclass_element_dict(c))
+        return classes
+
 
 class IdSpan(IdCLAOElement, Span):
     """A basic Span with an id"""
+    element_name = 'id_span'
 
     def __init__(self, start_offset: int, end_offset: int, element_id: int, span_map=None, **kwargs):
         super().__init__(element_id=element_id, start_offset=start_offset, end_offset=end_offset, span_map=span_map,
@@ -194,7 +226,7 @@ class IdSpan(IdCLAOElement, Span):
         return super().__eq__(other) and self.element_id == other.element_id
 
 
-class Embedding(IdCLAOElement):
+class Embedding(IdCLAOElement, TextCLAOElement):
     """CLAO element representing an embedding vector"""
     element_name = EMBEDDING
 
@@ -216,6 +248,10 @@ class Embedding(IdCLAOElement):
         embedding.text = str(vector)
         return embedding
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: ClinicalLanguageAnnotationObject):
+        return cls(xml_element.attrib['id'], np.fromstring(xml_element.text[1:-1], sep=', '))
+
     def __eq__(self, other):
         return super(Embedding, self).__eq__() and all(self.vector == other.vector)
 
@@ -223,7 +259,25 @@ class Embedding(IdCLAOElement):
         return f'Embedding({len(self.vector)})'
 
 
-class EmbeddingContainer(CLAOElementContainer):
+class TextCLAOElementContainer(CLAOElementContainer):
+    def __init__(self, clao: TextCLAO, **kwargs):
+        super(TextCLAOElementContainer, self).__init__(clao=clao, **kwargs)
+
+    @classmethod
+    def _from_xml_process_children(cls, xml_element: etree._Element, clao: TextCLAO):
+        children_ranges = {}
+        for child_elem in xml_element.getchildren():
+            tag = child_elem.tag
+            element_cls = clao.text_clao_element_dict()[tag]
+            element = element_cls.from_xml(child_elem, clao)
+            if tag not in children_ranges:
+                children_ranges[tag] = [element.element_id, 0]
+            children_ranges[tag][1] = element.element_id + 1
+            clao.insert_annotation(tag, element)
+        return {k: tuple(v) for k, v in children_ranges.items()}
+
+
+class EmbeddingContainer(TextCLAOElementContainer):
     """Add class to any CLAOElement class to create a container for an embedding"""
     def __init__(self, embedding_id: int, clao: TextCLAO, **kwargs):
         self._embedding_id = embedding_id
@@ -276,6 +330,19 @@ class Token(IdSpan, EmbeddingContainer):
         token.text = text
         return token
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        start_offset = int(xml_element.attrib.pop('start'))
+        end_offset = int(xml_element.attrib.pop('end'))
+        element_id = int(xml_element.attrib.pop('id'))
+        text = xml_element.text
+        try:
+            embedding_id = int(xml_element.attrib.pop('embedding_id'))
+        except KeyError:
+            embedding_id = None
+
+        return cls(start_offset, end_offset, element_id, clao, text, embedding_id, xml_element.attrib)
+
     def __str__(self):
         return f'Token({self.start_offset}, {self.end_offset}, {self.text})'
 
@@ -283,7 +350,7 @@ class Token(IdSpan, EmbeddingContainer):
         return super().__eq__(other) and self._embedding_id == other._embedding_id
 
 
-class TokenContainer(CLAOElementContainer):
+class TokenContainer(TextCLAOElementContainer):
     """Add class to any CLAOElement class to create a container for tokens"""
     def __init__(self, token_id_range: Tuple[int, int], clao: TextCLAO, **kwargs):
         self._token_id_range = token_id_range
@@ -319,6 +386,14 @@ class Heading(Span):
         heading.text = text
         return heading
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        start_offset = int(xml_element.attrib.pop('start'))
+        end_offset = int(xml_element.attrib.pop('end'))
+        text = xml_element.text
+
+        return cls(start_offset, end_offset, text)
+
     def __str__(self):
         return f'Heading({self.start_offset}, {self.end_offset}, {self.text})'
 
@@ -335,7 +410,8 @@ class Entity(IdSpan, TokenContainer):
     element_name = ENTITY
 
     def __init__(self, element_id: int, entity_type: EntityType, confidence: float, literal: str, label: str,
-                 token_id_range: Tuple[int, int], clao: TextCLAO, span_map=None):
+                 token_id_range: Tuple[int, int], clao: TextCLAO, start_offset: int = None, end_offset: int = None,
+                 span_map=None):
         """Create an Entity CLAOElement
 
         Args:
@@ -346,6 +422,10 @@ class Entity(IdSpan, TokenContainer):
             label: type of concept represented by this entity
             token_id_range: range [x,y) of token ids contained within this entity, where x is inclusive and y exclusive
             clao: TextCLAO this Entity is contained within
+            start_offset: Beginning index of this element in text (only needs to be included if Tokens in token_id_range
+                          do not yet exist
+            end_offset: Ending index (non-inclusive) of this element in text (only needs to be included if Tokens in
+                        token_id_range do not yet exist
             span_map: Arbitrary dict of extra properties for this element
         """
         self.entity_type = entity_type
@@ -353,8 +433,8 @@ class Entity(IdSpan, TokenContainer):
         self.literal = literal
         self.label = label
 
-        start_offset = clao.get_annotations(TOKENS, token_id_range[0]).start_offset
-        end_offset = clao.get_annotations(TOKENS, token_id_range[1]-1).end_offset
+        start_offset = start_offset if start_offset else clao.get_annotations(TOKENS, token_id_range[0]).start_offset
+        end_offset = end_offset if end_offset else clao.get_annotations(TOKENS, token_id_range[1]-1).end_offset
         super(Entity, self).__init__(start_offset=start_offset, end_offset=end_offset, element_id=element_id, clao=clao,
                                      token_id_range=token_id_range, span_map=span_map)
 
@@ -377,6 +457,21 @@ class Entity(IdSpan, TokenContainer):
         entity.text = literal
         return entity
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        element_id = int(xml_element.attrib.pop('id'))
+        start_offset = int(xml_element.attrib.pop('start'))
+        end_offset = int(xml_element.attrib.pop('end'))
+        entity_type = EntityType(xml_element.attrib.pop('type'))
+        confidence = float(xml_element.attrib.pop('confidence'))
+        label = xml_element.attrib.pop('label')
+        literal = xml_element.text
+        token_id_range = xml_element.attrib.pop('token_ids')[1:-1].split(', ')
+        token_id_range = tuple(int(i) for i in token_id_range)
+
+        return cls(element_id, entity_type, confidence, literal, label, token_id_range, clao, start_offset, end_offset,
+                   xml_element.attrib)
+
     def __str__(self):
         return f'Entity({self.start_offset}, {self.end_offset}, {self.entity_type.name}, tokens: {len(self.tokens)})'
 
@@ -387,7 +482,7 @@ class Entity(IdSpan, TokenContainer):
                and self._token_id_range == other._token_id_range
 
 
-class EntityContainer(CLAOElementContainer):
+class EntityContainer(TextCLAOElementContainer):
     """Add class to any CLAOElement class to create a container for entities"""
     def __init__(self, entity_id_range: Tuple[int, int], clao: TextCLAO, **kwargs):
         self._entity_id_range = entity_id_range
@@ -401,7 +496,7 @@ class EntityContainer(CLAOElementContainer):
             return []
 
 
-class EntityGroup(IdCLAOElement):
+class EntityGroup(IdCLAOElement, TextCLAOElement):
     element_name = ENTITY_GROUP
 
     def __init__(self, element_id: int, entity_type: EntityType, literal: str, **kwargs):
@@ -424,6 +519,15 @@ class EntityGroup(IdCLAOElement):
         entity_group = super(EntityGroup, self).to_xml(parent, attribs)
         entity_group.text = literal
         return entity_group
+
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+
+        element_id = int(xml_element.attrib.pop('id'))
+        entity_type = EntityType(xml_element.attrib.pop('entity_type'))
+        literal = xml_element.text
+
+        return cls(element_id, entity_type, literal)
 
     def __str__(self):
         return f'EntityGroup({self.entity_type.name}, {self.literal})'
@@ -505,6 +609,24 @@ class Sentence(IdSpan, TokenContainer, EntityContainer, EmbeddingContainer):
             token.to_xml(sentence)
         return sentence
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        children_ranges = cls._from_xml_process_children(xml_element, clao)
+
+        start_offset = int(xml_element.attrib.pop('start'))
+        end_offset = int(xml_element.attrib.pop('end'))
+        element_id = int(xml_element.attrib.pop('id'))
+        entity_id_range = children_ranges.get(Entity.element_name)
+        token_id_range = children_ranges.get(Token.element_name)
+
+        try:
+            embedding_id = int(xml_element.attrib.pop('embedding_id'))
+        except KeyError:
+            embedding_id = None
+
+        return cls(start_offset, end_offset, element_id, clao, entity_id_range, token_id_range, embedding_id,
+                   xml_element.attrib)
+
     def get_tokens_for_span(self, span: Span, partial=False) -> List[Token]:
         """Get the Tokens in this sentence that are covered by a given Span
 
@@ -550,7 +672,7 @@ class Sentence(IdSpan, TokenContainer, EntityContainer, EmbeddingContainer):
                and self._embedding_id == other._embedding_id
 
 
-class SentenceContainer(CLAOElementContainer):
+class SentenceContainer(TextCLAOElementContainer):
     """Add class to any CLAOElement class to create a container for sentences"""
     def __init__(self, sentence_id_range: Tuple[int, int], clao: TextCLAO, **kwargs):
         self._sentence_id_range = sentence_id_range
@@ -564,7 +686,7 @@ class SentenceContainer(CLAOElementContainer):
             return []
 
 
-class Paragraph(CLAOElement, SentenceContainer):
+class Paragraph(TextCLAOElement, SentenceContainer):
     """CLAO element representing a paragraph
 
     Properties:
@@ -590,6 +712,12 @@ class Paragraph(CLAOElement, SentenceContainer):
             sentence.to_xml(parent=paragraph)
         return paragraph
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        children_ranges = cls._from_xml_process_children(xml_element, clao)
+        sentence_id_range = children_ranges.get(Sentence.element_name)
+        return cls(clao, sentence_id_range)
+
     def __str__(self):
         return f'Paragraph(sentences: {len(self.sentences)})'
 
@@ -597,7 +725,7 @@ class Paragraph(CLAOElement, SentenceContainer):
         return super().__eq__(other) and self._sentence_id_range == other._sentence_id_range
 
 
-class ParagraphContainer(CLAOElementContainer):
+class ParagraphContainer(TextCLAOElementContainer):
     """Add class to any CLAOElement class to create a container for paragraphs"""
     def __init__(self, paragraph_id_range: Tuple[int, int], clao: TextCLAO, **kwargs):
         self._paragraph_id_range = paragraph_id_range
@@ -656,6 +784,21 @@ class Section(Span, ParagraphContainer):
             paragraph.to_xml(parent=section)
         return section
 
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        children_ranges = cls._from_xml_process_children(xml_element, clao)
+
+        start_offset = int(xml_element.attrib.pop('start'))
+        end_offset = int(xml_element.attrib.pop('end'))
+        paragraph_id_range = children_ranges.get(Paragraph.element_name)
+
+        try:
+            heading_id = int(xml_element.attrib.pop('heading_id'))
+        except KeyError:
+            heading_id = None
+
+        return cls(start_offset, end_offset, clao, paragraph_id_range, heading_id)
+
     def __str__(self):
         return f'Section({self.start_offset}, {self.end_offset}, paragraphs: {len(self.paragraphs)})'
 
@@ -665,16 +808,17 @@ class Section(Span, ParagraphContainer):
                and self._heading_id == other._heading_id
 
 
-class RawText(Span):
+class Text(Span):
     """CLAO object representing unannotated text"""
-    element_name = RAW_TEXT
+    element_name = TEXT_ELEMENT
 
-    def __init__(self, rax_text: str):
-        super(RawText, self).__init__(0, len(rax_text))
+    def __init__(self, rax_text: str, description: str):
+        super(Text, self).__init__(0, len(rax_text))
         self.raw_text = rax_text
+        self.description = description
 
     def to_json(self) -> Dict:
-        return {**super(RawText, self).to_json(), RAW_TEXT: self.raw_text}
+        return {**super(Text, self).to_json(), TEXT: self.raw_text, DESCRIPTION: self.description}
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         if attribs:
@@ -682,10 +826,17 @@ class RawText(Span):
         else:
             attribs = self.to_json()
 
-        text = attribs.pop(RAW_TEXT)
-        raw_text = super(RawText, self).to_xml(parent, attribs)
+        text = attribs.pop(TEXT)
+        raw_text = super(Text, self).to_xml(parent, attribs)
         raw_text.text = text
         return raw_text
+
+    @classmethod
+    def from_xml(cls, xml_element: etree._Element, clao: TextCLAO):
+        description = xml_element.attrib.pop(DESCRIPTION)
+        text = xml_element.text
+
+        return cls(text, description)
 
     def __str__(self):
         return f'RawText({len(self.raw_text)})'
