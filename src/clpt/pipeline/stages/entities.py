@@ -9,7 +9,7 @@ from spacy.tokens import Doc
 
 from src.clao.text_clao import Entity, EntityGroup, Sentence, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import ENTITIES, ENTITY_GROUP, ENTITY_GROUPS, EntityType, SENTENCES
+from src.constants.annotation_constants import ENTITY_GROUP, EntityType
 
 OOV = '<OOV>'
 
@@ -35,8 +35,8 @@ class MentionDetection(PipelineStage):
         target_rules = [TargetRule(**rule) for rule in self.custom_rules]
         target_matcher.add(target_rules)
 
-        entity_index_offset = len(clao_info.get_annotations(ENTITIES))
-        sents: List[Sentence] = clao_info.get_annotations(SENTENCES)
+        entity_index_offset = len(clao_info.get_annotations(Entity))
+        sents: List[Sentence] = clao_info.get_annotations(Sentence)
         all_entities = blist()
         for sent in sents:
             token_id_offset = sent._token_id_range[0]
@@ -55,7 +55,7 @@ class MentionDetection(PipelineStage):
                 entity_index_offset += len(entities)
                 sent._entity_id_range = (entities[0].element_id, entities[-1].element_id + 1)
                 all_entities.extend(entities)
-        clao_info.insert_annotations(ENTITIES, all_entities)
+        clao_info.insert_annotations(Entity, all_entities)
 
 
 class GroupEntities(PipelineStage):
@@ -64,8 +64,8 @@ class GroupEntities(PipelineStage):
         super(GroupEntities, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
-        entities = clao_info.get_annotations(ENTITIES)
-        entity_group_id_offset = len(clao_info.get_annotations(ENTITY_GROUPS))
+        entities = clao_info.get_annotations(Entity)
+        entity_group_id_offset = len(clao_info.get_annotations(EntityGroup))
         entity_groups = {}
         for entity in entities:
             if entity.entity_type == self.entity_type:
@@ -73,4 +73,4 @@ class GroupEntities(PipelineStage):
                     entity_groups[entity.literal] = EntityGroup(entity_group_id_offset + len(entity_groups),
                                                                 self.entity_type, entity.literal)
                 entity.map[ENTITY_GROUP] = entity_groups[entity.literal].element_id
-        clao_info.insert_annotations(ENTITY_GROUPS, list(entity_groups.values()))
+        clao_info.insert_annotations(EntityGroup, list(entity_groups.values()))

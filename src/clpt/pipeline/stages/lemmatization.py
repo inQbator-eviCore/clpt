@@ -4,10 +4,10 @@ from abc import abstractmethod
 from nltk.stem import WordNetLemmatizer
 from overrides import overrides
 
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import NltkStage, PipelineStage
 from src.clpt.pipeline.stages.spacy_processing import SpaCyStage
-from src.constants.annotation_constants import LEMMA, TOKENS
+from src.constants.annotation_constants import LEMMA
 
 
 class Lemmatization(PipelineStage):
@@ -26,7 +26,7 @@ class WordnetLemma(Lemmatization, NltkStage):
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        for token in clao_info.get_annotations(TOKENS):
+        for token in clao_info.get_annotations(Token):
             token.map[LEMMA] = self.lemmatizer.lemmatize(token.text)
 
 
@@ -39,6 +39,6 @@ class SpaCyLemma(SpaCyStage, Lemmatization):
 
     @overrides
     def process(self, clao_info: TextCLAO):
-        for token in clao_info.get_annotations(TOKENS):
+        for token in clao_info.get_annotations(Token):
             for t in self.nlp(token.text):
                 token.map[LEMMA] = t.lemma_

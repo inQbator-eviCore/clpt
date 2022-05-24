@@ -2,9 +2,9 @@
 
 from spellchecker import SpellChecker
 
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN, TOKENS
+from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN
 
 
 class SpellCorrectLevenshtein(PipelineStage):
@@ -26,7 +26,7 @@ class SpellCorrectLevenshtein(PipelineStage):
         # https://math.wvu.edu/~hdiamond/Math222F17/Sigurd_et_al-2004-Studia_Linguistica.pdf
 
         # TODO: optimize the threshold for spell check if the token is long by modifying the spell.distance
-        for token in clao_info.get_annotations(TOKENS):
+        for token in clao_info.get_annotations(Token):
             if len(token.text) >= 14:
                 token.map[SPELL_CORRECTED_TOKEN] = self.spell_long.correction(token.text)
             else:

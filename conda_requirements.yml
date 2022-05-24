@@ -9,6 +9,7 @@ dependencies:
   - pip:
     - antlr4-python3-runtime==4.8
     - attrs==21.4.0
+    - cached_property==1.5.2
     - coverage==5.5
     - cython==0.29.29
     - flake8==3.8.4

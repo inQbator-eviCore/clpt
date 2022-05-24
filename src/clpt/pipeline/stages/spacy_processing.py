@@ -5,7 +5,7 @@ import spacy
 from src.clao.text_clao import Sentence, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.clpt.pipeline.stages.tokenization import logger
-from src.constants.annotation_constants import LEMMA, POS, SENTENCES, TOKENS
+from src.constants.annotation_constants import LEMMA, POS
 
 
 class SpaCyStage(PipelineStage, ABC):
@@ -49,7 +49,7 @@ class SpaCyProcessing(SpaCyStage):
         spacy_doc = self.nlp(span_text)
 
         new_tokens = []
-        first_token_id = len(clao_info.get_annotations(TOKENS))
+        first_token_id = len(clao_info.get_annotations(Token))
         for i, token in enumerate(spacy_doc):
             element_id = first_token_id + i
             start_offset = clao_info.start_offset + token.idx
@@ -61,11 +61,11 @@ class SpaCyProcessing(SpaCyStage):
             if token.lemma:
                 token_map[LEMMA] = token.lemma_
             new_tokens.append(Token(start_offset, end_offset, element_id, clao_info, token_text, token_map))
-        clao_info.insert_annotations(TOKENS, new_tokens)
+        clao_info.insert_annotations(Token, new_tokens)
 
         if self.break_sentences:
             new_sentences = []
-            first_sentence_id = len(clao_info.get_annotations(SENTENCES))
+            first_sentence_id = len(clao_info.get_annotations(Sentence))
             for i, sent in enumerate(spacy_doc.sents):
                 start_offset = sent.start_char
                 end_offset = sent.end_char
@@ -74,4 +74,4 @@ class SpaCyProcessing(SpaCyStage):
                 end_token_id = sent.end + first_token_id
                 new_sentences.append(Sentence(start_offset, end_offset, element_id, clao_info, None,
                                               (start_token_id, end_token_id)))
-            clao_info.insert_annotations(SENTENCES, new_sentences)
+            clao_info.insert_annotations(Sentence, new_sentences)
