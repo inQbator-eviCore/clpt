@@ -96,7 +96,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """Insert a single annotation of a specific type into the CLAO. Annotation will be appended to its collection
 
         Args:
-            element_class: Name of element type
+            element_class: Subclass of CLAOElement (or its element_name) to be inserted
             value: Value to be appended
 
         Returns: None
@@ -107,7 +107,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """Insert annotations of a specific type into the CLAO. Annotations will be appended to their collections
 
         Args:
-            element_class: Name of element type
+            element_class: Subclass of CLAOElement (or its element_name) to be inserted
             values: List of values to be appended
 
         Returns: None
@@ -120,7 +120,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """Remove an entire collection of annotations from the CLAO
 
         Args:
-            element_class: Type to be removed
+            element_class: Subclass of CLAOElement (or its element_name) to be removed
 
         Returns: None
         """
@@ -133,9 +133,9 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         """Get the entire collection of annotations for the given type
 
         Args:
-            element_class: Type to be returned
+            element_class: Subclass of CLAOElement (or its element_name) to be fetched
 
-        Returns: List of List of CLAOElements of element_type, or single CLAOElement of element_type
+        Returns: List of List of CLAOElements of type element_class, or single CLAOElement of type element_class
 
         """
         return self.elements.get(self._get_element_name(element_class), blist())
@@ -145,18 +145,21 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
                         key: Optional[Union[Tuple[int, int], int, dict]] = None
                         ) -> Union[CLAOElement, List[CLAOElement]]:
         """Get specific annotation(s) for an element type based on key. If key is int or tuple of int, will fetch by
-        element ID. A key of string will search annotations by value (currently not implemented. TODO).
+        element ID. A key of dict will search annotations by value.
 
         To return all annotations for a type key should be None
         To return a single annotation for a type key should be in int representing the element id
         To return a range of annotations key should be a tuple of ints (x,y) representing a range of element ids where x
             is inclusive and y exclusive
+        To return a single annotation matching specific attributes, key should be a dict. Will return the first matching
+            annotation. E.g. to return the first matching Entity with Entity.type == MENTION and Entity.label ==
+            MEDICATION use clao.get_annotations(Entity, {'type': 'MENTION', 'label': 'MEDICATION'})
 
         Args:
-            element_class: Type of element to return
-            key: element id or range of ids to return
+            element_class: Subclass of CLAOElement (or its element_name) to be fetched
+            key: key used to find proper annotation
 
-        Returns: List of element_type, or single CLAOElement of element_type
+        Returns: List of type element_class, or single CLAOElement of type element_class
 
         """
         if key is None:
@@ -186,15 +189,34 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         else:
             return element_annotations[slice(*key)]
 
-    def _search_by_val(self, element_class: Union[Type[CLAOElement], str], values: dict):
+    def _search_by_val(self, element_class: Union[Type[CLAOElement], str], key: dict):
+        """Get specific annotation(s) for an element type based on key. Will return the first matching
+            annotation. E.g. to return the first matching Entity with Entity.type == MENTION and Entity.label ==
+            MEDICATION use self._search_by_val(Entity, {'type': 'MENTION', 'label': 'MEDICATION'})
+
+        Args:
+            element_class: Subclass of CLAOElement (or its element_name) to be fetched
+            key: key used to find proper annotation
+
+        Returns: List of type element_class, or single CLAOElement of type element_class
+
+        """
         element_annotations = self.get_all_annotations_for_element(element_class)
         for elem in element_annotations:
-            if values.items() <= elem.__dict__.items():
+            if key.items() <= elem.__dict__.items():
                 return elem
         return None
 
     @staticmethod
-    def _get_element_name(element_class: Union[Type[CLAOElement], str]):
+    def _get_element_name(element_class: Union[Type[CLAOElement], str]) -> str:
+        """Get the proper element name of a given class.
+
+        Args:
+            element_class: Subclass of CLAOElement (or its element_name)
+
+        Returns: element_name for element_class
+
+        """
         return element_class.element_name if issubclass(element_class, CLAOElement) else element_class
 
     @abstractmethod

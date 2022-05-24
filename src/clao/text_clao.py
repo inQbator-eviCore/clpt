@@ -1,7 +1,7 @@
 """Initial thoughts / rough draft of some internal text annotation objects, in line with XML schema illustrated in 2022
 NaaCL paper"""
 import os
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 import numpy as np
 from lxml import etree
@@ -15,6 +15,8 @@ from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, DESCRIP
 
 class TextCLAOElement(CLAOElement):
     def __init__(self, *args, **kwargs):
+        """Generic CLAOElement specifically for use with TextCLAOs
+        """
         super(TextCLAOElement, self).__init__(*args, **kwargs)
 
     @classmethod
@@ -137,7 +139,7 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
 
     @classmethod
     def from_file(cls, input_path: str):
-        name = os.path.splitext(os.path.basename(input_path))[0]
+        name = TextCLAO.get_base_name_from_path(input_path)
         with open(input_path, 'r') as f:
             return cls(f.read(), name)
 
@@ -157,20 +159,21 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         return annotation
 
     @classmethod
-    def from_xml_file(cls, file_name: str):
-        xml = etree.parse(file_name)
+    def from_xml_file(cls, file_path: str):
+        xml = etree.parse(file_path)
         annotation = xml.getroot()
         xml_elements = annotation.getchildren()
         raw_text = xml_elements.pop(0)
-        clao = cls(raw_text.text, file_name)
+        clao = cls(raw_text.text, cls.get_base_name_from_path(file_path))
         for xml_element in xml_elements:
             element_cls = cls.text_clao_element_dict()[xml_element.tag]
             clao_element = element_cls.from_xml(xml_element, clao)
             clao.insert_annotation(xml_element.tag, clao_element)
         return clao
 
+    @classmethod
     def from_xml(cls, xml_element: etree._Element, clao: ClinicalLanguageAnnotationObject):
-        raise NotImplementedError()
+        raise NotImplementedError("Method not implemented for class TextCLAO. Use from_xml_file() instead")
 
     def get_text_for_offsets(self, start: int, end: int) -> str:
         """
@@ -194,7 +197,8 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         return self.get_text_for_offsets(span.start_offset, span.end_offset)
 
     @classmethod
-    def text_clao_element_dict(cls):
+    def text_clao_element_dict(cls) -> Dict[str, Type[TextCLAOElement]]:
+        """Get dict of TextCLAOElement.element_name -> TextCLAOElement. Used for recreating CLAOs from files"""
         if not cls._text_clao_element_dict:
             cls._text_clao_element_dict = {c.element_name: c for c in TextCLAOElement.__subclasses__()}
             for c in list(cls._text_clao_element_dict.values()):
@@ -202,11 +206,16 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         return cls._text_clao_element_dict
 
     @classmethod
-    def _get_subclass_element_dict(cls, subclass):
+    def _get_subclass_element_dict(cls, subclass) -> Dict[str, Type[TextCLAOElement]]:
+        """Helper method of cls.text_clao_element_dict to make recursive calls into subclasses"""
         classes = {c.element_name: c for c in subclass.__subclasses__()}
         for c in list(classes.values()):
             classes.update(cls._get_subclass_element_dict(c))
         return classes
+
+    @staticmethod
+    def get_base_name_from_path(file_path):
+        return os.path.splitext(os.path.basename(file_path))[0]
 
 
 class IdSpan(IdCLAOElement, Span):
@@ -264,7 +273,8 @@ class TextCLAOElementContainer(CLAOElementContainer):
         super(TextCLAOElementContainer, self).__init__(clao=clao, **kwargs)
 
     @classmethod
-    def _from_xml_process_children(cls, xml_element: etree._Element, clao: TextCLAO):
+    def _from_xml_process_children(cls, xml_element: etree._Element, clao: TextCLAO) -> Dict[str, Tuple[int, int]]:
+        """Process any child elements of XML tree, and return element id ranges for each child type"""
         children_ranges = {}
         for child_elem in xml_element.getchildren():
             tag = child_elem.tag
