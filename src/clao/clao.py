@@ -169,10 +169,10 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
         To return all annotations for a type, key should be None.
         To return a single annotation for a type, key should be in int representing the element id.
         To return a range of annotations, key should be a tuple of ints (x,y) representing a range of element ids where
-            x is inclusive and y exclusive.
+        x is inclusive and y exclusive.
         To return a single annotation matching specific attributes, key should be a dict. Will return the first matching
-            annotation. E.g. to return the first matching Entity with Entity.type == MENTION and Entity.label ==
-            MEDICATION use clao.get_annotations(Entity, {'type': 'MENTION', 'label': 'MEDICATION'})
+        annotation. E.g. to return the first matching Entity with Entity.type == MENTION and Entity.label ==
+        MEDICATION use clao.get_annotations(Entity, {'type': 'MENTION', 'label': 'MEDICATION'})
 
         Args:
             element_class (Union[Type[CLAOElement], str]): Subclass of CLAOElement (or its element_name) to be fetched

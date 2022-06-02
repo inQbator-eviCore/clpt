@@ -10,6 +10,7 @@ function printhelp() {
     echo "   (u)nit-(t)est:               run unit tests on project"
     echo "   (l)int-(t)est                run lint (flake8) tests"
     echo "   (e)xport:                    export dependencies"
+    echo "   (g)enerate-(d)ocumentation:  generate sphinx documentation for the project"
     echo "   (s)tatic-(a)nalysis          run static analysis by calling Flake8"
     echo "   (c)overage                   review lines covered by backend unit tests"
     echo "   (d)elete-environment:        delete environment"
@@ -76,6 +77,19 @@ elif [[ $COMMAND == 'e' || $COMMAND == 'export' ]]; then
   activateCondaEnv $@
   conda env export -n $CONDA_ENVIRONMENT_NAME -f $CONDA_ENVIRONMENT_FILE
   echo -e "Dependencies Exported"
+
+elif [[ $COMMAND == 'gd' || $COMMAND == 'generate-documentation' ]]; then
+  activateCondaEnv $@
+  export RST_BUILD_DIR=src/docs
+  export VERSION=$(grep '__version__' src/__init__.py | awk -F ' ' '{print $3}')
+  export PROJECT_NAME=clpt
+  export HTTP_HOSTING_PATH=/var/www/projects/html/docs/${PROJECT_NAME}
+  export DOC_BUILD_DIR=src/latest
+  export WEB_DOC_PATH=docs
+  export TMP_DOC_DIR=transient
+  export CODE_DIR=src
+  sphinx-apidoc -o ${RST_BUILD_DIR} -f -d 2 -F -e --implicit-namespaces -M -V ${VERSION} -H ${PROJECT_NAME} -a -t ${RST_BUILD_DIR}/_templates ${CODE_DIR}
+  sphinx-build -b html ${RST_BUILD_DIR} ${DOC_BUILD_DIR}
 
 elif [[ $COMMAND == 'd' || $COMMAND == 'delete-environment' ]]; then
   deactivateCondaEnv

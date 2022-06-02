@@ -1,7 +1,7 @@
 """Root package information for the CLPT library."""
 
 __name__ = 'clpt'
-__version__ = '0.1.0'
+__version__ = '0.0.1'
 __author__ = ['Will Buchanan', 'Saranya Krishnamoorthy', 'John Ortega', 'Ayush Singh', 'Yanyi Jiang']
 __author_email__ = ['wbuchanan1@evicore.com', 'Saranya.Krishnamoorthy@evicore.com', 'John.Ortega@evicore.com',
                     'Ayush.Singh@evicore.com', 'Yanyi.Jiang@evicore.com']
