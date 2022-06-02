@@ -1,9 +1,13 @@
+"""Utilities to be used throughout the CLAO and the pipeline.
+
+A set of utility functions.
+"""
 import re
 from typing import List
-
 from omegaconf import DictConfig, OmegaConf, open_dict
-
-from src.clao.text_clao import Span
+import numpy as np
+from datetime import datetime
+from src.clao.text_clao import Span, Entity, ActualLabel, PredictProbabilities, Predictions
 
 
 def add_new_key_to_cfg(cfg: DictConfig, value: str, *keys: str) -> None:
@@ -58,3 +62,83 @@ def match(regex: re.Pattern, string: str, offset: int, keep_between: bool) -> Li
         cursor = end_index
 
     return span_array
+
+
+def stringify(obj):
+    """Helps serialize numpy objects.
+
+    Args:
+        obj: object that will be serialized
+
+    Returns:
+        obj: original value of the obj for actual data type of the object
+    """
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, datetime):
+        return obj.__str__()
+    else:
+        return obj
+
+
+def extract_group_entity_to_list(clao_info):
+    """Extract the predicted entity_group from a CLAO.
+        Args:
+            clao: a ClinicalLanguageAnnotationObject
+
+        Returns:
+            group_entity_list: a list that contains the predicted entity
+        """
+    entities = clao_info.get_annotations(Entity)
+    entity_groups = []
+    for entity in entities:
+        if entity.literal not in entity_groups:
+            entity_groups.append(entity.literal)
+    return entity_groups
+
+
+def extract_group_entity_from_claos(claos):
+    """Extract the predicted entity_group from all CLAOs.
+    Args:
+        clao: a list of ClinicalLanguageAnnotationObject, e.g. dc.claos
+
+    Returns:
+        entity_groups_dict: a dictionary that contains the document name as the key and the list of predicted
+        entity_group as the value
+    """
+    group_entity_from_claos_dict = {}
+
+    for clao in claos:
+        group_entity_from_claos_dict[clao.name] = extract_group_entity_to_list(clao)
+    return group_entity_from_claos_dict
+
+
+def extract_gold_standard_outcome_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    gold_standard_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(ActualLabel):
+            gold_standard_dic[clao.name] = t.actual_label_value
+    return gold_standard_dic
+
+
+def extract_predicted_probability_from_claos(claos):
+    """Extract the predicted probability from CLAO."""
+    predicted_probability_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(PredictProbabilities):
+            predicted_probability_dic[clao.name] = t.probability
+    return predicted_probability_dic
+
+
+def extract_prediction_from_claos(claos):
+    """Extract the prediction from CLAO."""
+    predictions_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(Predictions):
+            predictions_dic[clao.name] = t.prediction
+    return predictions_dic

@@ -1,3 +1,4 @@
+"""Some pre-processing methods to Nlp Pipeline using spaCy."""
 from abc import ABC
 
 import spacy
@@ -9,8 +10,16 @@ from src.constants.annotation_constants import LEMMA, POS
 
 
 class SpaCyStage(PipelineStage, ABC):
+    """Prepare a class for NLP pipeline stages using stages from spaCy."""
     def __init__(self, timeout_seconds=1, disable=None, **kwargs):
-        """add docstring here"""
+        """Load the English model needed to for using spaCy.
+
+        The default English model needed is `en_core_web_sm`.
+
+        Args:
+            timeout_seconds: time out second, and the default is 1
+            disable: a list of pipeline stages in spaCy to be disabled
+        """
         super(SpaCyStage, self).__init__(timeout_seconds=timeout_seconds, **kwargs)
 
         # Other ways to download spacy 'en' model:
@@ -29,8 +38,15 @@ class SpaCyStage(PipelineStage, ABC):
 
 
 class SpaCyProcessing(SpaCyStage):
+    """Prepare NLP pipeline stages using spaCy pipeline."""
     def __init__(self, pos: bool = False, lemma: bool = False, break_sentences: bool = False, **kwargs):
-        """add docstring here"""
+        """Add methods from spaCy to Nlp pipeline stages.
+
+        Args:
+            pos: if pos stage is added in the spaCy pipeline. The default is False.
+            lemma: if lemma stage is added in the spaCy pipeline. The default is False.
+            break_sentences: if break_sentences stage is added in the spaCy pipeline. The default is False.
+        """
         disable = ['ner']
         if (lemma or break_sentences) and not pos:
             logger.info('lemmatization and sentence breaking require part-of-speech tags. Enabling POS for this run')
@@ -45,6 +61,11 @@ class SpaCyProcessing(SpaCyStage):
         super(SpaCyProcessing, self).__init__(disable=disable, **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Apply the pipeline stages from spaCy to process CLAO information.
+
+        Args:
+            clao_info: the CLAO information to process
+        """
         span_text = clao_info.get_text_from(clao_info)
         spacy_doc = self.nlp(span_text)
 

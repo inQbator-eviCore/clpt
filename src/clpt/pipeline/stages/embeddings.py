@@ -1,3 +1,4 @@
+"""NLP Analysis stage for creating embedding."""
 import logging
 from abc import abstractmethod
 from typing import List
@@ -14,10 +15,14 @@ OOV = '<OOV>'
 
 logger = logging.getLogger(__name__)
 
-# TODO Add documentation to this module
-
 
 class EmbeddingsStage(PipelineStage):
+    """Abstract embedding class with trained embeddings able to be saved in word2vec format.
+
+    Args:
+        embeddings_file_path: a file which stores the embedding vector
+        binary: if True, the data will be saved in binary word2vec format, else it will be saved in plain text.
+    """
     def __init__(self, embeddings_file_path, binary: bool = True, **kwargs):
         super(EmbeddingsStage, self).__init__(**kwargs)
         self.vectors: KeyedVectors
@@ -26,15 +31,27 @@ class EmbeddingsStage(PipelineStage):
 
     @abstractmethod
     def process(self, clao_info: TextCLAO) -> None:
+        """Process text in CLAO with embedding method."""
         pass
 
 
 class WordEmbeddings(EmbeddingsStage):
+    """Create word embedding(s) using word2vec.
+
+    Attributes:
+        replace_oov: if to replace out-of-vocabulary (OOV)
+
+    """
     def __init__(self, replace_oov: bool = True, **kwargs):
         super(WordEmbeddings, self).__init__(**kwargs)
         self.replace_oov = replace_oov
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Process a single tokenized CLAOs to add embeddings for all tokens.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         embeddings = blist()
 
         if self.replace_oov:
@@ -62,6 +79,7 @@ class WordEmbeddings(EmbeddingsStage):
 
 
 class FastTextEmbeddings(WordEmbeddings):
+    """FastText Embedding."""
     def __init__(self, vector_size, window=3, min_count=1, epochs=10, save_embeddings: bool = False,
                  saved_file_name: str = None, **kwargs):
         """Use Gensim's implementation of FastText* to train embeddings on a corpus of tokenized CLAOs.
@@ -91,6 +109,11 @@ class FastTextEmbeddings(WordEmbeddings):
         self.single_clao = False  # TODO handle this much better
 
     def process(self, claos: List[TextCLAO]) -> None:
+        """Train embeddings on a corpus of tokenized CLAOs using Gensim's implementation of FastText.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         corpus: List[List[str]] = []
         for clao in claos:
             sent_tokens = [[token.map.get(SPELL_CORRECTED_TOKEN, token.text) for token in sent.tokens]
@@ -109,11 +132,16 @@ class FastTextEmbeddings(WordEmbeddings):
 
 
 class SentenceEmbeddings(EmbeddingsStage):
-    """Embeddings can be generated on the fly for any sentence whose tokens have embeddings"""
+    """Embeddings can be generated on the fly for any sentence whose tokens have embeddings."""
     def __init__(self):
         super(SentenceEmbeddings, self).__init__(embeddings_file_path=None)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Create sentence embeddings for any CLAO with Sentences and Embeddings for Tokens.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         embeddings = clao_info.get_annotations(Embedding)
         embedding_id_offset = len(embeddings)
         sent_embeddings = blist()

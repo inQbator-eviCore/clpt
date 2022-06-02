@@ -15,3 +15,5 @@
           - "diabetes"
     - LOWER: "mellitus"
       OP: "?"
+- literal: "toxic"
+  category: "HARM"

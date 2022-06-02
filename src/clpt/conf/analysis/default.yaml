@@ -2,9 +2,21 @@ pipeline_stages:
   # add params here
   - type: RemoveStopWord
   - type: ConvertToLowerCase
-  - type: ExcludePunctuation
+#  - type: ExcludePunctuation
   - type: RegexSentenceBreaking
   - type: RegexTokenization
   - type: SpellCorrectLevenshtein
   - type: PorterStemming
 #  - type: SpaCyLemma
+  - type: FastTextEmbeddings
+    vector_size: 200
+    window: 3
+    min_count: 2
+    epochs: 10
+    save_embeddings: True
+    saved_file_name: my_cool_embeddings.bin
+  - type: MentionDetection
+    rules_file: ../../../resources/mention-detection-rules.yaml
+  - type: GroupEntities
+    entity_type: MENTION
+  - type: PorterStemming

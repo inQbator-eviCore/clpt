@@ -13,9 +13,19 @@ logger = logging.getLogger(__name__)
 
 
 class PipelineStage(ABC):
+    """Abstract base class for NLP pipeline stages.
 
+    Properties:
+        single_clao: True if this stage is meant to operate on one single CLAO at a time. False if it operates on all
+        CLAOs. The default is True.
+    """
     @abstractmethod
     def __init__(self, timeout_seconds=1, **kwargs):
+        """Abstract base class for NLP pipeline stages.
+
+        Args:
+            timeout_seconds: seconds until stage is considered timed out. The default is 1
+        """
         self.timeout_seconds = timeout_seconds
         self.single_clao = True  # TODO handle this much better
 
@@ -26,23 +36,25 @@ class PipelineStage(ABC):
 
     @abstractmethod
     def process(self, clao_info: TextCLAO) -> None:
-        """
-        Apply this stage to the given CLAO info, updating the object as necessary
+        """Apply this stage to the given CLAO info, updating the object as necessary.
+
         Args:
-            clao_info: The CLAO info to process
-        Returns: None
+            clao_info: the CLAO info to process
+
+        Returns:
+            None
         """
         pass
 
     def process_with_fallback(self, clao_info: TextCLAO) -> None:
-        """
-        Apply this stage's self.process() to the given CLAO info, falling back to self.fallback() if self.process()
-        times out or returns another error
+        """Apply this stage's self.process() to the given CLAO info, falling back to self.fallback() if self.process()
+        times out or returns another error.
+
         Args:
-            clao_info: The CLAO info to process
+            clao_info: the CLAO info to process
+
         Returns:
             None
-
         """
         class_name = '.'.join([self.__class__.__module__, self.__class__.__name__])
         try:
@@ -58,19 +70,18 @@ class PipelineStage(ABC):
         self.fallback(clao_info)
 
     def fallback(self, clao_info: TextCLAO) -> None:
-        """
-        If self.process() times out or returns another error, run this method instead
-        Args:
-            clao_info: The CLAO info to process
+        """If self.process() times out or returns another error, run this method instead.
 
-        Returns: None
+        Args:
+            clao_info: the CLAO info to process
+
+        Returns:
+            None
         """
         return
 
     def timeout(self) -> int:
-        """
-        Returns: Time in seconds to wait for process to finish before falling back to self.fallback()
-        """
+        """Return: Time in seconds to wait for process to finish before falling back to self.fallback()."""
         return self.timeout_seconds
 
     def __eq__(self, other: 'PipelineStage'):
@@ -79,7 +90,11 @@ class PipelineStage(ABC):
 
 class NltkStage(PipelineStage):
     def __init__(self, nltk_reqs: List, **kwargs):
-        """add docstring here"""
+        """Add to the pipeline class using the NLTK stages.
+
+        Args:
+            nltk_reqs (list): a list of files to be found in the NLTK Data Package
+        """
         super(NltkStage, self).__init__(**kwargs)
         for req in nltk_reqs:
             try:
@@ -89,4 +104,5 @@ class NltkStage(PipelineStage):
 
     @abstractmethod
     def process(self, clao_info: TextCLAO) -> None:
+        """Process CLAO information."""
         pass
