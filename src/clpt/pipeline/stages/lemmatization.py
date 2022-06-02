@@ -1,4 +1,4 @@
-"""Add the corresponding stem to each tokens."""
+"""Add the corresponding lemmas to each token."""
 from abc import abstractmethod
 
 from nltk.stem import WordNetLemmatizer
@@ -11,6 +11,7 @@ from src.constants.annotation_constants import LEMMA
 
 
 class Lemmatization(PipelineStage):
+    """Apply lemmatization method to each token."""
     @abstractmethod
     @overrides
     def __init__(self, **kwargs):
@@ -18,7 +19,7 @@ class Lemmatization(PipelineStage):
 
 
 class WordnetLemma(Lemmatization, NltkStage):
-    """Reduce a word tothe roots of words known as a lemma by NLTK WordNetLemmatizer."""
+    """Reduce a word to its lemma using NLTK WordNetLemmatizer."""
     @overrides
     def __init__(self, **kwargs):
         super(WordnetLemma, self).__init__(nltk_reqs=['corpora/wordnet', 'corpora/omw-1.4'], **kwargs)
@@ -26,12 +27,17 @@ class WordnetLemma(Lemmatization, NltkStage):
 
     @overrides
     def process(self, clao_info: TextCLAO):
+        """Use NLTK WordNetLemmatizer for lemmatization and store the lemma to CLAO(s).
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         for token in clao_info.get_annotations(Token):
             token.map[LEMMA] = self.lemmatizer.lemmatize(token.text)
 
 
 class SpaCyLemma(SpaCyStage, Lemmatization):
-    """Reduce a word tothe roots of words known as a lemma by spaCy."""
+    """Reduce a word to its lemma using spaCy."""
 
     @overrides
     def __init__(self, **kwargs):
@@ -39,6 +45,11 @@ class SpaCyLemma(SpaCyStage, Lemmatization):
 
     @overrides
     def process(self, clao_info: TextCLAO):
+        """Use lemmatization method in spaCy and store the lemma to CLAO(s).
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         for token in clao_info.get_annotations(Token):
             for t in self.nlp(token.text):
                 token.map[LEMMA] = t.lemma_

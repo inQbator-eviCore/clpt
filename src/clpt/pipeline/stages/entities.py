@@ -1,3 +1,4 @@
+"""NLP classification stage for extracting entities and performing Mention Detection task."""
 import logging
 from typing import List
 
@@ -15,11 +16,16 @@ OOV = '<OOV>'
 
 logger = logging.getLogger(__name__)
 
-# TODO Add documentation to this module
-
 
 class MentionDetection(PipelineStage):
+    """Detect mentions.
+
+    Attributes:
+        rules_file: a file that contains the rule set used for Mention Detection. In the default configs, this file is
+        `src/resources/mention-detection-rules.yaml`.
+    """
     def __init__(self, rules_file, **kwargs):
+        """Load medspacy model."""
         super(MentionDetection, self).__init__(**kwargs)
         # Load medspacy model
         self.nlp = medspacy.load()
@@ -28,6 +34,12 @@ class MentionDetection(PipelineStage):
         self.custom_rules = rules_dict
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Extract mention based on the rules and add the extracted entities into CLAO(s) with the attributes of each of
+        entities.
+
+        Args:
+            clao_info: the CLAO information to process
+        """
         entity_type = EntityType.MENTION
 
         # Add rules for target concept extraction
@@ -59,18 +71,31 @@ class MentionDetection(PipelineStage):
 
 
 class GroupEntities(PipelineStage):
+    """Group entities into EntityGroup.
+
+    Attributes:
+        entity_type (EntityType): the type of entity to group
+    """
     def __init__(self, entity_type: str, **kwargs):
         self.entity_type = EntityType(entity_type)
         super(GroupEntities, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Extract entities and group relevant entities into a entity group and add entity group to CLAO.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         entities = clao_info.get_annotations(Entity)
         entity_group_id_offset = len(clao_info.get_annotations(EntityGroup))
         entity_groups = {}
         for entity in entities:
+            entity_tuples = (entity.literal, entity.label)
             if entity.entity_type == self.entity_type:
-                if entity.literal not in entity_groups:
-                    entity_groups[entity.literal] = EntityGroup(entity_group_id_offset + len(entity_groups),
-                                                                self.entity_type, entity.literal)
-                entity.map[ENTITY_GROUP] = entity_groups[entity.literal].element_id
+                if entity_tuples not in entity_groups:
+                    entity_groups[entity_tuples] = EntityGroup(entity_group_id_offset + len(entity_groups),
+                                                               self.entity_type, entity.literal, entity.label)
+
+                entity.map[ENTITY_GROUP] = entity_groups[entity_tuples].element_id
+
         clao_info.insert_annotations(EntityGroup, list(entity_groups.values()))

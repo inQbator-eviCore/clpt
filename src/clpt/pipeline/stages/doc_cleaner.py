@@ -1,6 +1,6 @@
 """NLP DocumentCleaner stage for cleaning the CLAO.
 
-DocumentCleaner includes removing stop words, converting to lower case, excluding punctuations and checking spelling.
+DocumentCleaner includes removing stop words, converting to lower case, and excluding punctuations.
 """
 import re
 from abc import abstractmethod
@@ -16,13 +16,18 @@ STOPWORD = '<stopword>'
 
 
 class DocumentCleaner(PipelineStage):
-    """Clean the raw texts in CLAO."""
+    """Clean the raw texts in CLAO(s) and add the cleaned text to CLAO(s)."""
     @abstractmethod
     @overrides
     def __init__(self, **kwargs):
         super(DocumentCleaner, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Clean the raw texts in CLAO(s) and add the cleaned text to CLAO(s).
+
+        Args:
+            clao_info (TextCLAO): The CLAO information to process
+        """
         text_obj = clao_info.get_annotations(Text, {'description': CLEANED_TEXT})
         if text_obj:
             text_obj.raw_text = self.clean_text(text_obj.raw_text)
@@ -33,6 +38,11 @@ class DocumentCleaner(PipelineStage):
 
     @abstractmethod
     def clean_text(self, raw_text: str) -> str:
+        """Clean the raw texts in CLAO(s).
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
         pass
 
 
@@ -41,6 +51,12 @@ class RemoveStopWord(DocumentCleaner):
 
     @overrides
     def __init__(self, stopwords=None, replace=False, **kwargs):
+        """Remove stop words from text in the CLAO(s).
+
+        Args:
+            stopwords: a list of stop words to be removed
+            replace: if True, replace stop words with ''
+        """
         super(RemoveStopWord, self).__init__(**kwargs)
 
         stopwords = stopwords if stopwords else text.ENGLISH_STOP_WORDS
@@ -55,11 +71,16 @@ class RemoveStopWord(DocumentCleaner):
 
     @overrides
     def clean_text(self, raw_text: str) -> str:
+        """Remove stop words.
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
         return self.stopword_pattern.sub(self.replace_token, raw_text)
 
 
 class ConvertToLowerCase(DocumentCleaner):
-    """Converts all letters in the raw text into lower case."""
+    """Convert all letters in the text into lower case."""
 
     @overrides
     def __init__(self, **kwargs):
@@ -67,11 +88,16 @@ class ConvertToLowerCase(DocumentCleaner):
 
     @overrides
     def clean_text(self, raw_text: str) -> str:
+        """Convert all letters in the text into lower case.
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
         return raw_text.lower()
 
 
 class ExcludePunctuation(DocumentCleaner):
-    """Excludes punctuations from the raw text."""
+    """Exclude punctuations from the text."""
 
     @overrides
     def __init__(self, **kwargs):
@@ -79,14 +105,26 @@ class ExcludePunctuation(DocumentCleaner):
 
     @overrides
     def clean_text(self, raw_text: str) -> str:
+        """Exclude punctuations from the text.
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
         punctuations = '.,!:;'
         return re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 
 class DoNothingDocCleaner(DocumentCleaner):
-    """DocCleaner that just created CLEANED_TEXT directly from RAW_TEXT. Useful for testing/debugging purposes"""
+    """DocCleaner that just creates CLEANED_TEXT directly from RAW_TEXT.
+
+    Useful for testing/debugging purposes"""
     def __init__(self, **kwargs):
         super(DoNothingDocCleaner, self).__init__(**kwargs)
 
     def clean_text(self, raw_text: str) -> str:
+        """Return the raw text.
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
         return raw_text

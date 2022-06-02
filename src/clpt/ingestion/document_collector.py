@@ -1,3 +1,4 @@
+"""DocumentCollector is a document reader to read in data and store in the CLAO(s)."""
 import os
 from typing import List, Union
 import glob
@@ -7,14 +8,31 @@ from src.clao.text_clao import TextCLAO
 
 
 class DocumentCollector:
-    def __init__(self, input_dir, data_type: Union[str, CLAODataType]):
-        """add docstring here"""
+    """DocumentCollector to read in data and ingest the data in the CLAO(s)."""
+    def __init__(self, input_dir, data_type: Union[str, CLAODataType], files_to_ignore):
+        """Ingest raw data to a list of CLAOs.
+
+        Argus:
+            input_dir: the path to the input file(s)
+            data_type(Union[str, CLAODataType]): the type of raw data to ingest into CLAO
+            file_to_ignore: files that will not be ingested with DocumentCollector()
+        """
         if isinstance(data_type, str):
             data_type = CLAODataType(data_type)
-        self.claos = self.ingest(input_dir, data_type)
+        self.claos = self.ingest(input_dir, data_type, files_to_ignore)
 
     @staticmethod
-    def ingest(input_dir: str, data_type: CLAODataType) -> List[ClinicalLanguageAnnotationObject]:
+    def ingest(input_dir: str, data_type: CLAODataType, files_to_ignore) -> List[ClinicalLanguageAnnotationObject]:
+        """Ingest raw data into CLAO(s).
+
+        Args:
+            input_dir: the path to the input file(s)
+            data_type(Union[str, CLAODataType]): the type of raw data to ingest into CLAO
+            file_to_ignore: files that will not be ingested with DocumentCollector()
+
+        Returns:
+            A list of CLAOs with raw data ingested into each of the CLAOs
+        """
         # Select the appropriate CLAO class for the given data type. Text is the only type currently accepted.
         # More types to be implemented in the future
         if data_type is CLAODataType.TEXT:
@@ -24,8 +42,13 @@ class DocumentCollector:
 
         return [clao_cls.from_file(os.path.join(input_dir, file))
                 for file in glob.glob(os.path.join(input_dir, '*'))
-                if os.path.isfile(file)]
+                if os.path.isfile(file) and not file.endswith(tuple(files_to_ignore))]
 
     def serialize_all(self, output_dir: str):
+        """Serialize to the XML format.
+
+        Args:
+            output_dir(str): an output location for the serialized CLAO(s)
+        """
         for clao in self.claos:
             clao.write_as_xml(output_dir)

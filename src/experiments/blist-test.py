@@ -1,5 +1,6 @@
 """
 python blist-test.py
+
 list creation times: [9.358998635, 9.171715939, 9.334420755]
 blist creation times: [10.672724386999999, 11.64826429, 11.026489831999996]
 
@@ -8,10 +9,8 @@ blist slicing times: [12.468614235000132, 11.690742849999879, 11.607023963999836
 
 Process finished with exit code 0
 """
-
 import timeit
 from random import random, randrange
-
 from blist import blist
 
 N = 1000000

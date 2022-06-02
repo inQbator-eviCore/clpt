@@ -27,6 +27,14 @@ class Tokenization(PipelineStage):
         super(Tokenization, self).__init__(timeout_seconds, **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Tokenize sentences in the CLAO(s) and add the tokens back to CLAO(s).
+
+        If cleaned text exists, then will tokenize sentences from the cleaned text. If not, then will tokenize
+        sentences in the raw text.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
         raw_text = (clao_info.get_annotations(Text, {'description': CLEANED_TEXT})
                     or clao_info.get_annotations(Text, {'description': RAW_TEXT})).raw_text
         if len(clao_info.get_annotations(Sentence)) == 0:
@@ -38,13 +46,12 @@ class Tokenization(PipelineStage):
 
     @abstractmethod
     def get_tokens(self, clao_info: TextCLAO, span: Span):
+        """Get tokens."""
         pass
 
     @overrides
     def fallback(self, clao_info: TextCLAO) -> None:
-        """
-        Split on whitespace.
-        """
+        """Split on whitespace."""
         WhitespaceRegexTokenization().process(clao_info)
 
 
@@ -85,6 +92,12 @@ class RegexTokenization(Tokenization):
         self.token_regex = re.compile(self.TOKEN_REGEX_MATCH_STRING)
 
     def get_tokens(self, clao_info: TextCLAO, span: Span):
+        """Get tokens based on regular expression.
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+            span: Span class, which is a TextCLAOElement representing a span of text
+        """
         # TODO: Bring this more in line with nlp_pipeline
         token_spans = match(self.token_regex, span.get_text_from(clao_info), span.start_offset, True)
         token_id_offset = len(clao_info.get_annotations(Token))
@@ -113,7 +126,9 @@ class WhitespaceRegexTokenization(RegexTokenization):
         super(WhitespaceRegexTokenization, self).__init__(**kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Process sentences based on whitespace (used as a fallback).."""
         pass
 
     def get_tokens(self, clao_info: TextCLAO, span: Span):
+        """Get tokens."""
         pass

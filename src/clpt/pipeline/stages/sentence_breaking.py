@@ -11,8 +11,7 @@ from src.utils import match
 
 
 class SentenceBreaking(PipelineStage):
-    """Abstract sentence breaking class. Splits sentences using a regular expression or space.
-    """
+    """Abstract sentence breaking class. Splits sentences using a regular expression or space."""
     def __init__(self):
         pass
 
@@ -21,12 +20,20 @@ class SentenceBreaking(PipelineStage):
 
 
 class RegexSentenceBreaking(PipelineStage):
+    """Splits sentences using a regular expression."""
     def __init__(self, **kwargs):
-        """add docstring here"""
+        """Load regular expression for sentences breaking."""
         super(RegexSentenceBreaking, self).__init__(**kwargs)
         self.pattern = re.compile(SENTENCE_REGEX)
 
     def process(self, clao_info: TextCLAO) -> None:
+        """Split sentences based on regular expression and add the split sentences into CLAO(s).
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        Returns:
+            None
+        """
         text = (clao_info.get_annotations(Text, {'description': CLEANED_TEXT})
                 or clao_info.get_annotations(Text, {'description': RAW_TEXT})).raw_text
         sentence_spans = match(self.pattern, text, clao_info.start_offset, False)
