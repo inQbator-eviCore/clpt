@@ -1,12 +1,14 @@
 """Some pre-processing methods to Nlp Pipeline using spaCy."""
+import logging
 from abc import ABC
 
 import spacy
 
 from src.clao.text_clao import Sentence, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.clpt.pipeline.stages.tokenization import logger
 from src.constants.annotation_constants import LEMMA, POS
+
+logger = logging.getLogger(__name__)
 
 
 class SpaCyStage(PipelineStage, ABC):

@@ -25,16 +25,12 @@ class TruthCollector:
         self.outcome_file = outcome_file
         self.outcome_type = outcome_type
 
-    @staticmethod
-    def load_outcome_from_csv(dc: DocumentCollector, outcome_file: str):
+    def load_outcome_from_csv(self):
         """Load a gold-standard outcome from a csv file into a Pandas DataFrame and add each label to CLAOs.
 
-        Args:
-            dc (DocumentCollector): DocumentCollector with a list of CLAOs
-            outcome_file (str): the name of the file that contains the target outcome(s)
         """
-        outcomes = pd.read_csv(outcome_file)
-        for clao in dc.claos:
+        outcomes = pd.read_csv(self.outcome_file)
+        for clao in self.dc.claos:
             if ACTUAL_LABEL in outcomes.columns:
                 actual_label = outcomes.loc[outcomes['doc_name'].astype(str) == clao.name, ACTUAL_LABEL].item()
                 clao.insert_annotation(ActualLabel, ActualLabel(actual_label))
@@ -45,17 +41,12 @@ class TruthCollector:
                 probability = outcomes.loc[outcomes['doc_name'].astype(str) == clao.name, PROBABILITY].item()
                 clao.insert_annotation(PredictProbabilities, PredictProbabilities(probability))
 
-    @staticmethod
-    def load_entity_from_json(dc: DocumentCollector, outcome_file: str):
+    def load_entity_from_json(self):
         """Load a gold-standard entity from the annotation file into a dictionary format and add to CLAOs.
-
-        Args:
-            dc (DocumentCollector): DocumentCollector with a list of CLAOs
-            outcome_file (str): the name of the file that contains the gold-standard annotations in json format
         """
-        with open(outcome_file, 'r') as f:
+        with open(self.outcome_file, 'r') as f:
             outcomes = json.load(f)
-        for clao in dc.claos:
+        for clao in self.dc.claos:
             actual_label = outcomes[clao.name]
             clao.insert_annotation(ActualLabel, ActualLabel(actual_label))
 
@@ -77,9 +68,9 @@ class TruthCollector:
         else:
             logger.warning("A gold standard file is not provided.")
         if self.outcome_type == 'binary':
-            self.load_outcome_from_csv(dc=self.dc, outcome_file=self.outcome_file)
+            self.load_outcome_from_csv()
         if self.outcome_type == 'entity':
-            self.load_entity_from_json(dc=self.dc, outcome_file=self.outcome_file)
+            self.load_entity_from_json()
         if self.outcome_type == 'span':
             raise NotImplementedError(f"Loading span (start index and end index) is not implemented."
                                       f"for outcome '{self.outcome_type}'")

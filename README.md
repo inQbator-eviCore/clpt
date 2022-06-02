@@ -43,7 +43,7 @@ Each is responsible for a different processing in the pipeline. As the names imp
 
 ## Using the CLPT
 ### Provide data and gold standard outcomes file
-- Provide the raw text files in a designated folder and specify the dir in `src/clpt/conf/ingestion/default.yaml`. For example, our test data is in `src/clpt/sample_docs/`.
+- Provide the raw text files in a designated folder and specify the dir in `src/clpt/conf/ingestion/default.yaml`. For example, our test data is in `src/resources/sample_docs/`.
 - Provide the gold standard outcomes files in the above same folder. If gold standard is annotations, structure them in json file with the name of the raw text file to be the key and the annotations to be in a list. For example, `{"1": ["difficulty", "discharge medications", "rehabilitation", "the"], "2": ["evaluation", "found down", "treatment", "syncope", "toxic", "the"]}`. If the target label is at document level, you could provide a csv file with `doc_name` to be the name of the raw text file and `actual_label` to the target label for classification/prediction.
 
 ### Update the Configuration Files
