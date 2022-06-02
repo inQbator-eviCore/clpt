@@ -33,7 +33,7 @@ class Span(TextCLAOElement):
     """TextCLAOElement representing a span of text.
 
     Attributes:
-        element_name: Name of element as it should appear in an XML tag, defualt is span
+        element_name: Name of element as it should appear in an XML tag, default is span
         start_offset(int): start offset for a Span
         end_offset(int): ending offset for a Span
         span_map: arbitrary dict of extra properties for this element. Default is None
@@ -147,7 +147,7 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
     Class Attributes:
         element_name: Name of element as it should appear in an XML tag; default is annotation
         _top_level_elements: List of elements to be serialized in the top level of the annotation schema. All other CLAO
-                             elements to be serialized should be contained within one of these
+        elements to be serialized should be contained within one of these
     """
     element_name = ANNOTATION
     _top_level_elements = [TEXT_ELEMENT, SENTENCE, EMBEDDING, ENTITY_GROUP, ACTUAL_LABEL, PREDICTION, PROBABILITY]
