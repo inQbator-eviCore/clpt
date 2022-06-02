@@ -1,3 +1,5 @@
+"""Run CLPT based on configuration specified in src/clpt/conf"""
+
 import logging
 import os
 import hydra
