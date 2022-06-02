@@ -4,24 +4,27 @@ from typing import List, Tuple
 
 from omegaconf import DictConfig
 
-from src.clpt.pipeline.stages.doc_cleaner import ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, \
+from src.clpt.pipeline.stages.analysis.doc_cleaner import ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, \
     RemoveStopWord
-from src.clpt.pipeline.stages.embeddings import FastTextEmbeddings, SentenceEmbeddings, WordEmbeddings
-from src.clpt.pipeline.stages.entities import GroupEntities, MentionDetection
-from src.clpt.pipeline.stages.lemmatization import SpaCyLemma, WordnetLemma
+from src.clpt.pipeline.stages.analysis.embeddings import FastTextEmbeddings, SentenceEmbeddings, WordEmbeddings
+from src.clpt.pipeline.stages.analysis.lemmatization import SpaCyLemma, WordnetLemma
+from src.clpt.pipeline.stages.analysis.pos_tagger import SimplePOSTagger
+from src.clpt.pipeline.stages.analysis.sentence_breaking import RegexSentenceBreaking, SentenceBreaking
+from src.clpt.pipeline.stages.analysis.spacy_processing import SpaCyProcessing
+from src.clpt.pipeline.stages.analysis.spell_correct import SpellCorrectLevenshtein
+from src.clpt.pipeline.stages.analysis.stemming import PorterStemming
+from src.clpt.pipeline.stages.analysis.tokenization import RegexTokenization, WhitespaceRegexTokenization
+from src.clpt.pipeline.stages.classification.abbreviation_expansion import AbbreviationExpansion
+from src.clpt.pipeline.stages.classification.entities import CoreferenceResolution, FactExtraction, GroupEntities, \
+    MentionDetection, RelationExtraction
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.clpt.pipeline.stages.pos_tagger import SimplePOSTagger
-from src.clpt.pipeline.stages.sentence_breaking import RegexSentenceBreaking, SentenceBreaking
-from src.clpt.pipeline.stages.spacy_processing import SpaCyProcessing
-from src.clpt.pipeline.stages.spell_correct import SpellCorrectLevenshtein
-from src.clpt.pipeline.stages.stemming import PorterStemming
-from src.clpt.pipeline.stages.tokenization import RegexTokenization, WhitespaceRegexTokenization
 from src.constants.constants import CONFIG_STAGE_KEY
 
 logger = logging.getLogger(__name__)
 
-ALL_KNOWN_STAGES = [ConvertToLowerCase, DoNothingDocCleaner, ExcludePunctuation, FastTextEmbeddings, GroupEntities,
-                    MentionDetection, PorterStemming, RegexSentenceBreaking, RegexTokenization, RemoveStopWord,
+ALL_KNOWN_STAGES = [AbbreviationExpansion, ConvertToLowerCase, CoreferenceResolution, DoNothingDocCleaner,
+                    ExcludePunctuation, FactExtraction, FastTextEmbeddings, GroupEntities, MentionDetection,
+                    PorterStemming, RegexSentenceBreaking, RegexTokenization, RelationExtraction, RemoveStopWord,
                     SentenceBreaking, SentenceEmbeddings, SimplePOSTagger, SpaCyLemma, SpaCyProcessing,
                     SpellCorrectLevenshtein, WhitespaceRegexTokenization, WordEmbeddings, WordnetLemma]
 STAGE_TYPES = {s.__name__: s for s in ALL_KNOWN_STAGES}

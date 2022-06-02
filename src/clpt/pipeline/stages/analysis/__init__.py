@@ -8,6 +8,4 @@ pre-processing techniques in the CLPT.
 
 Embeddings are stored in CLAO objects to allow comparison between tokens and spans of tokens. This is done by assigning
 a vector to each token or token group where the group returns an average of all of the embeddings within it. The CLPT
-also has a configuration mechanism for changing the token group method of calculation.
-
-In the current design, the functions for pre-processing mentioned above are located under the pipeline model."""
+also has a configuration mechanism for changing the token group method of calculation."""

@@ -1,4 +1,4 @@
-input_dir: ../../../clpt/sample_docs
+input_dir: ../../../resources/sample_docs
 data_type: text
 outcome_file_name: gold_standard_outcome.csv #test_gold_standard_entity.json
 outcome_type: binary #entity

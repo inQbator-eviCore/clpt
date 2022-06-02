@@ -99,3 +99,48 @@ class GroupEntities(PipelineStage):
                 entity.map[ENTITY_GROUP] = entity_groups[entity_tuples].element_id
 
         clao_info.insert_annotations(EntityGroup, list(entity_groups.values()))
+
+
+class CoreferenceResolution(PipelineStage):
+    """Group co-referential entities
+    """
+    def __init__(self, **kwargs):
+        super(CoreferenceResolution, self).__init__(**kwargs)
+
+    def process(self, clao_info: TextCLAO) -> None:
+        """Group co-referential entities in a single CLAO
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
+        logger.info("CoreferenceResolution not yet implemented. Skipping")
+
+
+class FactExtraction(PipelineStage):
+    """Extract clinical concepts from found entities
+    """
+    def __init__(self, **kwargs):
+        super(FactExtraction, self).__init__(**kwargs)
+
+    def process(self, clao_info: TextCLAO) -> None:
+        """Extract clinical concepts from found entities in a single CLAO
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
+        logger.info("FactExtraction not yet implemented. Skipping")
+
+
+class RelationExtraction(PipelineStage):
+    """Link entities based on their relation to each other
+    """
+    def __init__(self, **kwargs):
+        super(RelationExtraction, self).__init__(**kwargs)
+
+    def process(self, clao_info: TextCLAO) -> None:
+        """Link entities within a single CLAO based on their relation to each other
+
+        Args:
+            clao_info (TextCLAO): the CLAO information to process
+        """
+        logger.info("RelationExtraction not yet implemented. Skipping")

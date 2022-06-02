@@ -9,6 +9,5 @@ used to extract clinical concepts from the mentions to better disambiguate clini
 evidence for classification; (4) relationship extraction is used to further expand mention detection to allow linking
 entities and the creation of a knowledge graph – to be presented as future work.
 
-In the current design, a light Mention Detection is provided and is located under the pipeline model. We are in active
-development of a more complex Mention Detection methods as well as other components for classification, which will be
-released when they are ready."""
+In the current design, a light Mention Detection is provided. We are in active development of a more complex
+MentionDetection methods as well as other components for classification, which will be released when they are ready."""

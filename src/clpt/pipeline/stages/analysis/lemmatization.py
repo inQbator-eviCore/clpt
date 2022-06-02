@@ -6,7 +6,7 @@ from overrides import overrides
 
 from src.clao.text_clao import TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import NltkStage, PipelineStage
-from src.clpt.pipeline.stages.spacy_processing import SpaCyStage
+from src.clpt.pipeline.stages.analysis.spacy_processing import SpaCyStage
 from src.constants.annotation_constants import LEMMA
 
 

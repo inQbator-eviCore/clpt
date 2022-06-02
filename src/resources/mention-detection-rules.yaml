@@ -1,5 +1,11 @@
-- literal: "fibrous encapsulation"
-  category: "SOMETHING"
+- literal: "atrial fibrillation"
+  category: "PROBLEM"
+- literal: "atrial fibrillation"
+  category: "PROBLEM"
+  pattern:
+    - LOWER: "afib"
+- literal: "pneumonia"
+  category: "PROBLEM"
 - literal: "Type II Diabetes Mellitus"
   category: "PROBLEM"
   pattern:
@@ -17,3 +23,65 @@
       OP: "?"
 - literal: "toxic"
   category: "HARM"
+- literal: "warfarin"
+  category: "MEDICATION"
+- literal: "difficulty"
+  category: "PROBLEM"
+  pattern:
+    - LOWER:
+        IN:
+          - "difficulty"
+          - "difficult"
+- literal: "discharge medication"
+  category: "TREATMENT"
+  pattern:
+    - LOWER: "discharge"
+    - LOWER:
+        IN:
+          - "medication"
+          - "medications"
+- literal: "rehabilitation"
+  category: "TREATMENT"
+  pattern:
+    - LOWER:
+        IN:
+          - "rehabilitation"
+          - "rehab"
+- literal: "evaluation"
+  category: "TEST"
+  pattern:
+    - LOWER:
+        IN:
+          - "evaluation"
+          - "eval"
+- literal: "treatment"
+  category: "TREATMENT"
+- literal: "syncope"
+  category: "PROBLEM"
+- literal: "intravenous fluids"
+  category: "TREATMENT"
+- literal: "pain"
+  category: "PROBLEM"
+- literal: "oral medication"
+  category: "TREATMENT"
+- literal: "penrose drain"
+  category: "TREATMENT"
+- literal: "hematocrit"
+  category: "TEST"
+  pattern:
+    - LOWER:
+        IN:
+          - "hematocrit"
+          - "haematocrit"
+- literal: "foley catheter"
+  category: "TREATMENT"
+- literal: "coumadin"
+  category: "MEDICATION"
+- literal: "procedure"
+  category: "TREATMENT"
+  pattern:
+    - LOWER: "the"
+      OP: "?"
+    - LOWER: "procedure"
+- literal: "radical retropubic prostatectomy"
+  category: "TREATMENT"
