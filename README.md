@@ -9,7 +9,6 @@ The CLPT is currently in active development. The current published version mainl
 ## Docs
 * [latest](https://inqbator-evicore.github.io/clpt/index.html)
 
-### Clinical Language Processing Toolkit Workflow
 
 ## Environment Setup
 **To build the environment that the code runs from:**
