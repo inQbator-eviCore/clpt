@@ -92,4 +92,4 @@ inside the CLAO after each stage.
 - John E. Ortega
 
 ## Contact
-Please email Saranya.Krishnamoorthy@evicore if you have any questions.
+Please email Saranya.Krishnamoorthy@evicore.com if you have any questions.
