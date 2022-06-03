@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.evaluation.score_calculations &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../src.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.clpt.evaluation.score_calculations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.clpt.evaluation.score_calculations</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Metrics Calculation module for evaluating models.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">auc</span><span class="p">,</span> <span class="n">precision_recall_curve</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">average_precision_score</span>
+<span class="kn">from</span> <span class="nn">src.constants.constants</span> <span class="kn">import</span> <span class="n">POSITIVE_LABEL</span><span class="p">,</span> <span class="n">NEGATIVE_LABEL</span><span class="p">,</span> <span class="n">METRICS_FILE</span><span class="p">,</span> <span class="n">PROBABILITY_FILE</span><span class="p">,</span> \
+    <span class="n">METRICS_DEFAULT_FILE</span><span class="p">,</span> <span class="n">PROBABILITY_DEFAULT_FILE</span>
+<span class="kn">from</span> <span class="nn">src.constants.annotation_constants</span> <span class="kn">import</span> <span class="n">PROBABILITY</span><span class="p">,</span> <span class="n">PREDICTION</span><span class="p">,</span> <span class="n">ACTUAL_LABEL</span>
+<span class="kn">from</span> <span class="nn">src.utils</span> <span class="kn">import</span> <span class="n">stringify</span>
+
+
+<div class="viewcode-block" id="ConfusionMatrixMetrics"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics">[docs]</a><span class="k">class</span> <span class="nc">ConfusionMatrixMetrics</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class to calculate the confusion matrix methods to evaluate a model.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        tn: a float that represents the number of true negatives</span>
+<span class="sd">        fp: a float that represents the number of false positives</span>
+<span class="sd">        tp: a float that represents the number of true positives</span>
+<span class="sd">        fn: a float that represents the number of false negatives</span>
+<span class="sd">        split_type: a string the represents the type of dataset split</span>
+<span class="sd">        logger: logger</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">tn</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">split_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initailize the class to calculate the confusion matric metrics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tp (float): true posititve</span>
+<span class="sd">            fp (float): false positive</span>
+<span class="sd">            tn (float): true negative</span>
+<span class="sd">            fn (float): false negative</span>
+<span class="sd">            split_type (str): the type of dataset split</span>
+<span class="sd">            logger (logging.Logger): logger</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the volume is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">=</span> <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Evaluation volume should be greater than 0.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="o">=</span> <span class="n">split_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;FP:</span><span class="si">%s</span><span class="s2">, TP:</span><span class="si">%s</span><span class="s2">, FN:</span><span class="si">%s</span><span class="s2">, TN:</span><span class="si">%s</span><span class="s2">, TOTAL: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Total evaluation records are low: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Confusion matrix initialized in init method of the class.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.array: The confusion matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span><span class="p">]])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;False positive rate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The false positive rate as a float between 0 and 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">precision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Precision.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The precision as a float between 0 and 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">recall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recall.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The recall as a float between 0 and 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">automation_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Automation Rate.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The approval rate as a float between 0 and 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tpfp_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rate of true positive to false positive.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The ratio of true positive to false positives</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mcc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Matthews correlation coefficient is a binary classification metric for when there is a high class imbalance.</span>
+
+<span class="sd">        https: // en.wikipedia.org/wiki/Matthews_correlation_coefficient</span>
+<span class="sd">          - 1 = perfect prediction</span>
+<span class="sd">          - 0 = random prediction</span>
+<span class="sd">          - -1 = total disagreement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The Matthews correlation coefficient</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mcc_denominator</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tn</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tn</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">mcc_denominator</span><span class="p">)</span> <span class="k">if</span> <span class="n">mcc_denominator</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pvr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Performance vs. random calculation.</span>
+
+<span class="sd">        PVR = approval_rate/false_positive_rate</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The performance vs. random</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">automation_rate</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fpr</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fpr</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="k">else</span> <span class="mf">0.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;F-measure.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           float: Standard F1 measure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sum_pr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_pr</span> <span class="k">if</span> <span class="n">sum_pr</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="k">else</span> <span class="mf">0.</span>
+
+<div class="viewcode-block" id="ConfusionMatrixMetrics.get_all_metrics"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.get_all_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return all metrics in a dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: contains all of the metrics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;tp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;fp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;fn&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;tn&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span>
+                <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+                <span class="s1">&#39;mcc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mcc</span><span class="p">,</span> <span class="s1">&#39;pvr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pvr</span><span class="p">,</span> <span class="s1">&#39;tpfp_ratio&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tpfp_ratio</span><span class="p">,</span>
+                <span class="s1">&#39;volume&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">,</span> <span class="s1">&#39;fpr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fpr</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="ConfusionMatrixMetrics.export_metrics_to_yaml"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.export_metrics_to_yaml">[docs]</a>    <span class="k">def</span> <span class="nf">export_metrics_to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write scores to yaml at a given output directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_dir (str): Path to the directory to save yaml</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_metrics</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_type</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">stringify</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">METRICS_DEFAULT_FILE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">METRICS_FILE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">yaml</span><span class="o">.</span><span class="n">representer</span><span class="o">.</span><span class="n">SafeRepresenter</span>
+                                 <span class="o">.</span><span class="n">represent_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;results exported to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> results exported to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_type</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ScoreCalculations"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ScoreCalculations">[docs]</a><span class="k">class</span> <span class="nc">ScoreCalculations</span><span class="p">(</span><span class="n">ConfusionMatrixMetrics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate metrics for evaluating CDR models.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">       predictions: List[float] of predicted probabilities</span>
+<span class="sd">       targets: List[float] of ground truth</span>
+<span class="sd">       threshold: float between 0 and 1 of threshold to be used for classification</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">split_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the class to score the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            predictions (List[float]): predicted probabilities</span>
+<span class="sd">            targets (List[float]): ground truth</span>
+<span class="sd">            threshold (float): threshold to be used for classification</span>
+<span class="sd">            split_type (str): the type of dataset split (train, test, valid etc.)</span>
+<span class="sd">            logger (logging.Logger): logger</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the volume is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Evaluation volume should be greater than 0.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="o">=</span> <span class="n">split_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_true</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+        <span class="n">predictions</span><span class="p">[</span><span class="n">predictions</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">]</span> <span class="o">=</span> <span class="n">POSITIVE_LABEL</span>
+        <span class="n">predictions</span><span class="p">[</span><span class="n">predictions</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span> <span class="o">=</span> <span class="n">NEGATIVE_LABEL</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_confusion_matrix</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">predictions</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confusion_matrix</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">split_type</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">auc_roc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate AUC RoC.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Area under curve for Receiver operator characteristic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_true</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">auc_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate AUC PR which is better than AUC RoC for imbalanced dataset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Area under curve for Precision Recall</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_true</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">auc</span><span class="p">(</span><span class="n">recall</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">average_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate AUC PR which is better than AUC RoC for imbalanced dataset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Area under curve for Precision Recall</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">average_precision_score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_true</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ScoreCalculations.get_all_metrics"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ScoreCalculations.get_all_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return all metrics in a dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: All metrics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;tp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tp</span><span class="p">,</span> <span class="s1">&#39;fp&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;fn&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;tn&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tn</span><span class="p">,</span>
+                <span class="s1">&#39;precision&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">recall</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="p">,</span>
+                <span class="s1">&#39;auc_roc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">auc_roc</span><span class="p">,</span> <span class="s1">&#39;auc_pr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">auc_pr</span><span class="p">,</span> <span class="s1">&#39;mcc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mcc</span><span class="p">,</span>
+                <span class="s1">&#39;pvr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pvr</span><span class="p">,</span> <span class="s1">&#39;tpfp_ratio&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tpfp_ratio</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">,</span>
+                <span class="s1">&#39;fpr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fpr</span><span class="p">,</span> <span class="s1">&#39;average_precision&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_precision</span><span class="p">,</span>
+                <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="ScoreCalculations.export_predicted_probas_to_csv"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.ScoreCalculations.export_predicted_probas_to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">export_predicted_probas_to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_cols</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write predicted probabilities to csv with header.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_dir (str): Path to the directory to save</span>
+<span class="sd">            extra_cols (List[Tuple[str, List[float]]): list of tuple of columns and values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="n">PROBABILITY</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="n">ACTUAL_LABEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_true</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="n">PROBABILITY</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span> <span class="n">PREDICTION</span><span class="p">]</span> <span class="o">=</span> <span class="n">POSITIVE_LABEL</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="n">PROBABILITY</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">,</span> <span class="n">PREDICTION</span><span class="p">]</span> <span class="o">=</span> <span class="n">NEGATIVE_LABEL</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">PROBABILITY_DEFAULT_FILE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">PROBABILITY_FILE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">extra_cols</span><span class="p">:</span>
+            <span class="n">dataset</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> %H:%m:%S&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;scores exported to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> scores exported to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_type</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="count_stats"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.count_stats">[docs]</a><span class="k">def</span> <span class="nf">count_stats</span><span class="p">(</span><span class="n">y_actual</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the number of FP,FN,TP, TN</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        y_actual: pd.Series that contains the true labels</span>
+<span class="sd">        y_pred: pd.Series that contains the predicted labels</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FP: Counts of false positives</span>
+<span class="sd">        FN: Counts of false negatives</span>
+<span class="sd">        TP: Counts of true positives</span>
+<span class="sd">        TN: Counts of true negatives</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TP</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FP</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">TN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">y_actual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">TP</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y_actual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">FP</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">y_actual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">TN</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y_actual</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">FN</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">TP</span><span class="p">,</span> <span class="n">FP</span><span class="p">,</span> <span class="n">TN</span><span class="p">,</span> <span class="n">FN</span></div>
+
+
+<div class="viewcode-block" id="compare_entity"><a class="viewcode-back" href="../../../../src.clpt.evaluation.score_calculations.html#src.clpt.evaluation.score_calculations.compare_entity">[docs]</a><span class="k">def</span> <span class="nf">compare_entity</span><span class="p">(</span><span class="n">gold_standards</span><span class="p">,</span> <span class="n">predictions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compare the gold standard entity with the predicted entity.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        gold_standards: a dictionary that contains the gold standard entity with the key equals the doc/clao name(s)</span>
+<span class="sd">                        and the value is a list of entities</span>
+<span class="sd">        predictions: a dictionary that contains the predicted entities</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        FP: Counts of false positives</span>
+<span class="sd">        FN: Counts of false negatives</span>
+<span class="sd">        TP: Counts of true positives</span>
+<span class="sd">        TN: Counts of true negatives</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TP</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FP</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">TN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gold_standards</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of documents in gold standards does not match with the number of document &quot;</span>
+                         <span class="s2">&quot;in the predictions.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gold_standards</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Evaluation volume should be greater than 0.&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">doc_name</span> <span class="ow">in</span> <span class="n">gold_standards</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">[</span><span class="n">doc_name</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">gold_standards</span><span class="p">[</span><span class="n">doc_name</span><span class="p">]:</span>
+                <span class="n">TP</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">FP</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">true_entity</span> <span class="ow">in</span> <span class="n">gold_standards</span><span class="p">[</span><span class="n">doc_name</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">true_entity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">[</span><span class="n">doc_name</span><span class="p">]:</span>
+                <span class="n">FN</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">TP</span><span class="p">,</span> <span class="n">FP</span><span class="p">,</span> <span class="n">TN</span><span class="p">,</span> <span class="n">FN</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

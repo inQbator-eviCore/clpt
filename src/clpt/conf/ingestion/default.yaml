@@ -1,4 +1,0 @@
-input_dir: ../../../resources/sample_docs
-data_type: text
-outcome_file_name: gold_standard_outcome.csv #sample_gold_standard_entity.json
-outcome_type: binary #entity

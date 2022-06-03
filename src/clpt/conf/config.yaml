@@ -1,5 +1,0 @@
-defaults:
-  - ingestion: default
-  - analysis: default #simple #spacy
-  - classification: default
-  - evaluation: default

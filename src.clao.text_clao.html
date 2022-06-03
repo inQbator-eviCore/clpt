@@ -1,0 +1,1243 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clao.text_clao &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src.clpt" href="src.clpt.html" />
+    <link rel="prev" title="src.clao.clao" href="src.clao.clao.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="src.clao.html">src.clao</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="src.clao.clao.html">src.clao.clao</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">src.clao.text_clao</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.clpt.html">src.clpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.constants.html">src.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.experiments.html">src.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.tests.html">src.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.main.html">src.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.utils.html">src.utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="src.html">src</a> &raquo;</li>
+        
+          <li><a href="src.clao.html">src.clao</a> &raquo;</li>
+        
+      <li>src.clao.text_clao</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.clao.text_clao.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-src.clao.text_clao">
+<span id="src-clao-text-clao"></span><h1>src.clao.text_clao<a class="headerlink" href="#module-src.clao.text_clao" title="Permalink to this headline">¶</a></h1>
+<p>Create a TextCALO.</p>
+<p>Initial version of the text annotation objects, in line with XML schema illustrated in 2022 NaaCL paper.</p>
+<dl class="py class">
+<dt id="src.clao.text_clao.ActualLabel">
+<em class="property">class </em><code class="sig-name descname">ActualLabel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">actual_label_value</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#ActualLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.ActualLabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>CLAO element representing an actual label.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.ActualLabel.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'actual_label'</em><a class="headerlink" href="#src.clao.text_clao.ActualLabel.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.ActualLabel.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#ActualLabel.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.ActualLabel.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with actual label attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with actual label attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.ActualLabel.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#ActualLabel.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.ActualLabel.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with actual label attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>actual label element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Embedding">
+<em class="property">class </em><code class="sig-name descname">Embedding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">vector</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Embedding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clao.clao.html#src.clao.clao.IdCLAOElement" title="src.clao.clao.IdCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.IdCLAOElement</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>CLAO element representing an embedding vector</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Embedding.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'embedding'</em><a class="headerlink" href="#src.clao.text_clao.Embedding.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Embedding.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.clao.html#src.clao.clao.ClinicalLanguageAnnotationObject" title="src.clao.clao.ClinicalLanguageAnnotationObject">src.clao.clao.ClinicalLanguageAnnotationObject</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Embedding.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Embedding.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Embedding element from CLAO.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Embedding.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Embedding.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Embedding.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Embedding attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Embedding.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Embedding.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Embedding.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Embedding attributes to XML.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.EmbeddingContainer">
+<em class="property">class </em><code class="sig-name descname">EmbeddingContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">embedding_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#EmbeddingContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EmbeddingContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElementContainer" title="src.clao.text_clao.TextCLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElementContainer</span></code></a></p>
+<p>Add class to any CLAOElement class to create a container for an embedding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_id</strong> (<em>int</em>) – embedding id</p></li>
+<li><p><strong>clao</strong> – the CLAO information to process</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.clao.text_clao.EmbeddingContainer.embedding">
+<em class="property">property </em><code class="sig-name descname">embedding</code><a class="headerlink" href="#src.clao.text_clao.EmbeddingContainer.embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Embedding element class, or single CLAOElement of Embedding element class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Entity">
+<em class="property">class </em><code class="sig-name descname">Entity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">entity_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.constants.annotation_constants.html#src.constants.annotation_constants.EntityType" title="src.constants.annotation_constants.EntityType">src.constants.annotation_constants.EntityType</a></span></em>, <em class="sig-param"><span class="n">confidence</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">literal</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">token_id_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">span_map</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.IdSpan</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.TokenContainer" title="src.clao.text_clao.TokenContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TokenContainer</span></code></a></p>
+<p>CLAO element representing an entity.</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>tokens: List of tokens that make up the entity</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Entity.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'entity'</em><a class="headerlink" href="#src.clao.text_clao.Entity.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Entity.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Entity.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Entity.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Entity element from CLAO in a XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Entity element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Entity.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Entity.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Entity.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Entity attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a dictionary with Entity attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Entity.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Entity.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Entity.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Entity attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a entity element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.EntityContainer">
+<em class="property">class </em><code class="sig-name descname">EntityContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entity_id_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#EntityContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EntityContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElementContainer" title="src.clao.text_clao.TextCLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElementContainer</span></code></a></p>
+<p>Create an EntityContainer.</p>
+<dl class="py method">
+<dt id="src.clao.text_clao.EntityContainer.entities">
+<em class="property">property </em><code class="sig-name descname">entities</code><a class="headerlink" href="#src.clao.text_clao.EntityContainer.entities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Entity element class, or single CLAOElement of Entity element class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.EntityGroup">
+<em class="property">class </em><code class="sig-name descname">EntityGroup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">entity_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.constants.annotation_constants.html#src.constants.annotation_constants.EntityType" title="src.constants.annotation_constants.EntityType">src.constants.annotation_constants.EntityType</a></span></em>, <em class="sig-param"><span class="n">literal</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#EntityGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EntityGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clao.clao.html#src.clao.clao.IdCLAOElement" title="src.clao.clao.IdCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.IdCLAOElement</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>CLAO element representing an entity group.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.EntityGroup.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'entity_group'</em><a class="headerlink" href="#src.clao.text_clao.EntityGroup.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.EntityGroup.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#EntityGroup.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EntityGroup.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get EntityGroup element from CLAO in a XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Entity element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.EntityGroup.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#EntityGroup.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EntityGroup.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Entity Group attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.EntityGroup.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#EntityGroup.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.EntityGroup.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Entity Group attributes to XML.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Heading">
+<em class="property">class </em><code class="sig-name descname">Heading</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.Span</span></code></a></p>
+<p>CLAO element representing a heading.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Heading.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'heading'</em><a class="headerlink" href="#src.clao.text_clao.Heading.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Heading.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Heading.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Heading.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Heading element from CLAO in a XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Heading element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Heading.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Heading.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Heading.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Heading attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a dictionary with Heading and Heading attributes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Heading.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Heading.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Heading.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Heading attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a heading with attributes in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.IdSpan">
+<em class="property">class </em><code class="sig-name descname">IdSpan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">span_map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#IdSpan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.IdSpan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clao.clao.html#src.clao.clao.IdCLAOElement" title="src.clao.clao.IdCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.IdCLAOElement</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.Span</span></code></a></p>
+<p>A basic Span with an id</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.IdSpan.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'id_span'</em><a class="headerlink" href="#src.clao.text_clao.IdSpan.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.IdSpan.from_span">
+<em class="property">classmethod </em><code class="sig-name descname">from_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span">src.clao.text_clao.Span</a></span></em>, <em class="sig-param"><span class="n">elemend_id</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan">src.clao.text_clao.IdSpan</a><a class="reference internal" href="_modules/src/clao/text_clao.html#IdSpan.from_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.IdSpan.from_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a Span and an id, create an IdSpan</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Paragraph">
+<em class="property">class </em><code class="sig-name descname">Paragraph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">sentence_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Paragraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Paragraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.SentenceContainer" title="src.clao.text_clao.SentenceContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.SentenceContainer</span></code></a></p>
+<p>CLAO element representing a paragraph</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>sentences: List of sentences contained in the paragraph</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Paragraph.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'paragraph'</em><a class="headerlink" href="#src.clao.text_clao.Paragraph.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Paragraph.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Paragraph.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Paragraph.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Paragraph element from CLAO in a XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Paragraph element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Paragraph.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Paragraph.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Paragraph.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Paragraph attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with Paragraph attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Paragraph.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Paragraph.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Paragraph.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Paragraph attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Paragraph element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.ParagraphContainer">
+<em class="property">class </em><code class="sig-name descname">ParagraphContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">paragraph_id_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#ParagraphContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.ParagraphContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElementContainer" title="src.clao.text_clao.TextCLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElementContainer</span></code></a></p>
+<p>Add class to any CLAOElement class to create a container for paragraphs</p>
+<dl class="py method">
+<dt id="src.clao.text_clao.ParagraphContainer.paragraphs">
+<em class="property">property </em><code class="sig-name descname">paragraphs</code><a class="headerlink" href="#src.clao.text_clao.ParagraphContainer.paragraphs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Paragraph element class, or single CLAOElement of Paragraph element class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.PredictProbabilities">
+<em class="property">class </em><code class="sig-name descname">PredictProbabilities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probability</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#PredictProbabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.PredictProbabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>CLAO element representing predicted probabilities.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.PredictProbabilities.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'probability'</em><a class="headerlink" href="#src.clao.text_clao.PredictProbabilities.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.PredictProbabilities.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#PredictProbabilities.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.PredictProbabilities.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with predicted probabilities attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with predicted probabilities attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.PredictProbabilities.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#PredictProbabilities.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.PredictProbabilities.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with predicted probabilities to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>predicted probabilities element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Predictions">
+<em class="property">class </em><code class="sig-name descname">Predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prediction</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>CLAO element representing predictions.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Predictions.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'predicted_label'</em><a class="headerlink" href="#src.clao.text_clao.Predictions.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Predictions.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Predictions.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Predictions.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with predictions attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with predictions attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Predictions.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Predictions.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Predictions.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with predictions to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>predictions element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Section">
+<em class="property">class </em><code class="sig-name descname">Section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">paragraph_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">heading_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.Span</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.ParagraphContainer" title="src.clao.text_clao.ParagraphContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.ParagraphContainer</span></code></a></p>
+<p>CLAO element representing a section</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>paragraphs: List of paragraphs contained in the section
+heading: Optional heading object for the section</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Section.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'section'</em><a class="headerlink" href="#src.clao.text_clao.Section.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Section.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Section.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Section.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Section element from CLAO in a XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Section element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Section.heading">
+<em class="property">property </em><code class="sig-name descname">heading</code><a class="headerlink" href="#src.clao.text_clao.Section.heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Heading element class, or single CLAOElement of Heading element class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Section.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Section.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Section.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Section attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with Section attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Section.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Section.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Section.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Section attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Section element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Sentence">
+<em class="property">class </em><code class="sig-name descname">Sentence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">entity_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">token_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">embedding_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">span_map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.IdSpan</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.TokenContainer" title="src.clao.text_clao.TokenContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TokenContainer</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.EntityContainer" title="src.clao.text_clao.EntityContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.EntityContainer</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.EmbeddingContainer" title="src.clao.text_clao.EmbeddingContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.EmbeddingContainer</span></code></a></p>
+<p>CLAO element representing a sentence.</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>tokens: List of tokens contained in the sentence
+entities: List of entities contained in the sentence
+embedding: Optional embedding for this Sentence</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.adjust_offsets">
+<code class="sig-name descname">adjust_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delta</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.adjust_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.adjust_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust the start and end offsets of this Sentence (and any existing spans therein) by the provided delta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delta</strong> – How much to shift the offsets. To reduce the offsets, this should be negative.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.all_subspans">
+<code class="sig-name descname">all_subspans</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span">src.clao.text_clao.Span</a><span class="p">]</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.all_subspans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.all_subspans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all Spans contained within this document in a single list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a unified list with all the members of this object that are Spans</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Sentence.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'sentence'</em><a class="headerlink" href="#src.clao.text_clao.Sentence.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.from_id_span">
+<em class="property">classmethod </em><code class="sig-name descname">from_id_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan">src.clao.text_clao.IdSpan</a></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">entity_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">token_id_range</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">embedding_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#src.clao.text_clao.Sentence" title="src.clao.text_clao.Sentence">src.clao.text_clao.Sentence</a><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.from_id_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.from_id_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an IdSpan and lists of Tokens, Entities, etc create a new Sentence</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Sentence element from CLAO in a XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Sentence element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.get_entity_spans_for_span">
+<code class="sig-name descname">get_entity_spans_for_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#src.clao.text_clao.Entity" title="src.clao.text_clao.Entity">src.clao.text_clao.Entity</a><span class="p">]</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.get_entity_spans_for_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.get_entity_spans_for_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Entities in this sentence that are covered by a given Span.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>span</strong> – the Span to retrieve Entities for</p></li>
+<li><p><strong>partial</strong> – if True, will return Entities that are only partially covered by the Span.
+Otherwise, a Entity will only be included if it is fully covered by the Span.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Entities covered by the Span</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.get_tokens_for_span">
+<code class="sig-name descname">get_tokens_for_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span">src.clao.text_clao.Span</a></span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#src.clao.text_clao.Token" title="src.clao.text_clao.Token">src.clao.text_clao.Token</a><span class="p">]</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.get_tokens_for_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.get_tokens_for_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Tokens in this sentence that are covered by a given Span.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>span</strong> – the Span to retrieve Tokens for</p></li>
+<li><p><strong>partial</strong> – if True, will return Tokens that are only partially covered by the Span.
+Otherwise, a Token will only be included if it is fully covered by the Span.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Tokens covered by the Span</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Sentence attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with Entities and Tokens attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Sentence.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Sentence.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Sentence.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Sentence attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sentence element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.SentenceContainer">
+<em class="property">class </em><code class="sig-name descname">SentenceContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sentence_id_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#SentenceContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.SentenceContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElementContainer" title="src.clao.text_clao.TextCLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElementContainer</span></code></a></p>
+<p>Add class to any CLAOElement class to create a container for sentences</p>
+<dl class="py method">
+<dt id="src.clao.text_clao.SentenceContainer.sentences">
+<em class="property">property </em><code class="sig-name descname">sentences</code><a class="headerlink" href="#src.clao.text_clao.SentenceContainer.sentences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Sentence element class, or single CLAOElement of Sentence element class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Span">
+<em class="property">class </em><code class="sig-name descname">Span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">span_map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElement</span></code></a></p>
+<p>TextCLAOElement representing a span of text.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Span.element_name">
+<code class="sig-name descname">element_name</code><a class="headerlink" href="#src.clao.text_clao.Span.element_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of element as it should appear in an XML tag, default is span</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Span.start_offset">
+<code class="sig-name descname">start_offset</code><a class="headerlink" href="#src.clao.text_clao.Span.start_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>start offset for a Span</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Span.end_offset">
+<code class="sig-name descname">end_offset</code><a class="headerlink" href="#src.clao.text_clao.Span.end_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>ending offset for a Span</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Span.span_map">
+<code class="sig-name descname">span_map</code><a class="headerlink" href="#src.clao.text_clao.Span.span_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>arbitrary dict of extra properties for this element. Default is None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.adjust_offsets">
+<code class="sig-name descname">adjust_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delta</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clao/text_clao.html#Span.adjust_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.adjust_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust the start and end offsets of this Span by the provided delta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delta</strong> (<em>int</em>) – How much to shift the offsets. To reduce the offsets, this should be negative.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.contains">
+<code class="sig-name descname">contains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Span.contains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether this Span contains another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – a Span</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether or not <cite>other</cite> is wholly contained within this Span</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id0">
+<code class="sig-name descname">element_name</code><em class="property"> = 'span'</em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.get_span_embedding">
+<code class="sig-name descname">get_span_embedding</code><span class="sig-paren">(</span><em class="sig-param">method: Callable[[List[numpy.ndarray], Any], numpy.ndarray] = &lt;function mean&gt;, **method_args</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/src/clao/text_clao.html#Span.get_span_embedding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.get_span_embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get embedding vector for a span.</p>
+<p>Span must either be a EmbeddingContainer or TokenContainer. If span is a TokenContainer, embedding will be
+calculated using <cite>method</cite> argument on all sub-embeddings. <cite>method</cite> must take a list of numpy.ndarrays as its
+first argument and return a single numpy.ndarray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> – method used to calculate Span embedding from sub embeddings. Defaults to numpy.mean()</p></li>
+<li><p><strong>**method_args</strong> – extra arguments to be passed in to <cite>method</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>embedding vector in np.ndarray format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.get_text_from">
+<code class="sig-name descname">get_text_from</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text_clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/src/clao/text_clao.html#Span.get_text_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.get_text_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the text for this Span from the TextCLAO that contains it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text_clao</strong> – The TextCLAO object that contains this Span</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text encompassed by this Span</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.overlaps">
+<code class="sig-name descname">overlaps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Span.overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.overlaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if this Span overlaps another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – a Span</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether or not these two spans overlap at all</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Span.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Span.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Span.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Span start and end attributes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Text">
+<em class="property">class </em><code class="sig-name descname">Text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rax_text</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">description</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.Span</span></code></a></p>
+<p>CLAO object representing unannotated text.</p>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Text.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'text'</em><a class="headerlink" href="#src.clao.text_clao.Text.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Text.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Text.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Text.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Text element from CLAO in a XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Text element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Text.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Text.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Text.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Text attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with Text attributes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Text.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Text.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Text.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Text attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Text element in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.TextCLAO">
+<em class="property">class </em><code class="sig-name descname">TextCLAO</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.Span</span></code></a>, <a class="reference internal" href="src.clao.clao.html#src.clao.clao.ClinicalLanguageAnnotationObject" title="src.clao.clao.ClinicalLanguageAnnotationObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.ClinicalLanguageAnnotationObject</span></code></a></p>
+<p>The CLAO object for handling textual data.</p>
+<dl class="simple">
+<dt>Class Attributes:</dt><dd><p>element_name: Name of element as it should appear in an XML tag; default is annotation
+_top_level_elements: List of elements to be serialized in the top level of the annotation schema. All other CLAO
+elements to be serialized should be contained within one of these</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.TextCLAO.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'annotation'</em><a class="headerlink" href="#src.clao.text_clao.TextCLAO.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.from_file">
+<em class="property">classmethod </em><code class="sig-name descname">from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new TextCLAO from a data file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.clao.html#src.clao.clao.ClinicalLanguageAnnotationObject" title="src.clao.clao.ClinicalLanguageAnnotationObject">src.clao.clao.ClinicalLanguageAnnotationObject</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load CLAO element from a XML file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.from_xml_file">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.from_xml_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.from_xml_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a CLAO element from an XML file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.get_base_name_from_path">
+<em class="property">static </em><code class="sig-name descname">get_base_name_from_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.get_base_name_from_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.get_base_name_from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the base name in a specified path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> – a specified path</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a base name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.get_text_for_offsets">
+<code class="sig-name descname">get_text_for_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.get_text_for_offsets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.get_text_for_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the text between two offsets.</p>
+<p>Offsets should not be adjusted to account for the document’s start_offset, as that is handled within this
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>int</em>) – Starting (absolute) offset</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – Ending (absolute) offset</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the text between the two specified offsets</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.get_text_for_span">
+<code class="sig-name descname">get_text_for_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.Span" title="src.clao.text_clao.Span">src.clao.text_clao.Span</a></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.get_text_for_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.get_text_for_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the text for a given Span contained within this document.</p>
+<p>clao.get_text_for_span(span) and span.get_text_from(clao) are equivalent calls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>span</strong> – the span class object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the text between the two specified offsets</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.text_clao_element_dict">
+<em class="property">classmethod </em><code class="sig-name descname">text_clao_element_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Type<span class="p">[</span><a class="reference internal" href="#src.clao.text_clao.TextCLAOElement" title="src.clao.text_clao.TextCLAOElement">src.clao.text_clao.TextCLAOElement</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.text_clao_element_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.text_clao_element_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get dict of TextCLAOElement.element_name -&gt; TextCLAOElement. Used for recreating CLAOs from files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Span start and end attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAO.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; lxml.etree.Element<a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAO.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAO.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with annotation attributes to XML.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.TextCLAOElement">
+<em class="property">class </em><code class="sig-name descname">TextCLAOElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAOElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAOElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clao.clao.html#src.clao.clao.CLAOElement" title="src.clao.clao.CLAOElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.CLAOElement</span></code></a></p>
+<p>Basic element of a Text CLAO object.</p>
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAOElement.from_json">
+<em class="property">classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_dict</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.clao.html#src.clao.clao.ClinicalLanguageAnnotationObject" title="src.clao.clao.ClinicalLanguageAnnotationObject">src.clao.clao.ClinicalLanguageAnnotationObject</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAOElement.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAOElement.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load CLAO element from a data file in the json format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.TextCLAOElement.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.clao.html#src.clao.clao.ClinicalLanguageAnnotationObject" title="src.clao.clao.ClinicalLanguageAnnotationObject">src.clao.clao.ClinicalLanguageAnnotationObject</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAOElement.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAOElement.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load CLAO element from a XML file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.TextCLAOElementContainer">
+<em class="property">class </em><code class="sig-name descname">TextCLAOElementContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TextCLAOElementContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TextCLAOElementContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clao.clao.html#src.clao.clao.CLAOElementContainer" title="src.clao.clao.CLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.clao.CLAOElementContainer</span></code></a></p>
+<p>Base class to create mix-ins that give container functionality to TextCLAOElements. i.e. Paragprahs contain
+Sentences, and Sentences contain Tokens</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.Token">
+<em class="property">class </em><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">end_offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">element_id</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">embedding_id</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">span_map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.IdSpan</span></code></a>, <a class="reference internal" href="#src.clao.text_clao.EmbeddingContainer" title="src.clao.text_clao.EmbeddingContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.EmbeddingContainer</span></code></a></p>
+<p>CLAO element representing a token.</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>embedding: Optional word embedding for this token</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_offset</strong> (<em>int</em>) – start offset for a Token</p></li>
+<li><p><strong>end_offset</strong> (<em>int</em>) – ending offset for a Token</p></li>
+<li><p><strong>element_id</strong> (<em>int</em>) – element id for Token</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – the text for the Token</p></li>
+<li><p><strong>embedding_id</strong> (<em>int</em>) – embedding id. The default is None</p></li>
+<li><p><strong>span_map</strong> – arbitrary dict of extra properties for this element. Default is None. The default is None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="src.clao.text_clao.Token.element_name">
+<code class="sig-name descname">element_name</code><em class="property"> = 'token'</em><a class="headerlink" href="#src.clao.text_clao.Token.element_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Token.from_id_span">
+<em class="property">classmethod </em><code class="sig-name descname">from_id_span</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">span</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.IdSpan" title="src.clao.text_clao.IdSpan">src.clao.text_clao.IdSpan</a></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#src.clao.text_clao.Token" title="src.clao.text_clao.Token">src.clao.text_clao.Token</a><a class="reference internal" href="_modules/src/clao/text_clao.html#Token.from_id_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Token.from_id_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an IdSpan, create a Token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>span</strong> – IdSpan element class</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – the text for the Token</p></li>
+<li><p><strong>clao</strong> – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Token element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Token.from_xml">
+<em class="property">classmethod </em><code class="sig-name descname">from_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xml_element</span><span class="p">:</span> <span class="n">lxml.etree._Element</span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Token.from_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Token.from_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Token element from CLAO in a XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xml_element</strong> (<em>etree._Element</em>) – Element from etree</p></li>
+<li><p><strong>clao</strong> (<a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Token element class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Token.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="_modules/src/clao/text_clao.html#Token.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Token.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Token attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a json dictionary with embedding id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clao.text_clao.Token.to_xml">
+<code class="sig-name descname">to_xml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>lxml.etree.Element<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">attribs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#Token.to_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.Token.to_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLAO element with Token attributes to XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a token with attributes in XML format</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clao.text_clao.TokenContainer">
+<em class="property">class </em><code class="sig-name descname">TokenContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token_id_range</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">clao</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clao/text_clao.html#TokenContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clao.text_clao.TokenContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clao.text_clao.TextCLAOElementContainer" title="src.clao.text_clao.TextCLAOElementContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clao.text_clao.TextCLAOElementContainer</span></code></a></p>
+<p>Create a TokenContainer.</p>
+<dl class="py method">
+<dt id="src.clao.text_clao.TokenContainer.tokens">
+<em class="property">property </em><code class="sig-name descname">tokens</code><a class="headerlink" href="#src.clao.text_clao.TokenContainer.tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of Token element class, or single CLAOElement of Token element class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="src.clpt.html" class="btn btn-neutral float-right" title="src.clpt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="src.clao.clao.html" class="btn btn-neutral float-left" title="src.clao.clao" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

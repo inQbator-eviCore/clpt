@@ -1,0 +1,589 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.evaluation.score_calculations &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src.clpt.ingestion" href="src.clpt.ingestion.html" />
+    <link rel="prev" title="src.clpt.evaluation.evaluator" href="src.clpt.evaluation.evaluator.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="src.clao.html">src.clao</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="src.clpt.html">src.clpt</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="src.clpt.evaluation.html">src.clpt.evaluation</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="src.clpt.evaluation.evaluator.html">src.clpt.evaluation.evaluator</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">src.clpt.evaluation.score_calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.ingestion.html">src.clpt.ingestion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.pipeline.html">src.clpt.pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.constants.html">src.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.experiments.html">src.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.tests.html">src.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.main.html">src.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.utils.html">src.utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="src.html">src</a> &raquo;</li>
+        
+          <li><a href="src.clpt.html">src.clpt</a> &raquo;</li>
+        
+          <li><a href="src.clpt.evaluation.html">src.clpt.evaluation</a> &raquo;</li>
+        
+      <li>src.clpt.evaluation.score_calculations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.clpt.evaluation.score_calculations.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-src.clpt.evaluation.score_calculations">
+<span id="src-clpt-evaluation-score-calculations"></span><h1>src.clpt.evaluation.score_calculations<a class="headerlink" href="#module-src.clpt.evaluation.score_calculations" title="Permalink to this headline">¶</a></h1>
+<p>Metrics Calculation module for evaluating models.</p>
+<dl class="py class">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics">
+<em class="property">class </em><code class="sig-name descname">ConfusionMatrixMetrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tp</span></em>, <em class="sig-param"><span class="n">fp</span></em>, <em class="sig-param"><span class="n">tn</span></em>, <em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">split_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging.Logger</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ConfusionMatrixMetrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to calculate the confusion matrix methods to evaluate a model.</p>
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tn">
+<code class="sig-name descname">tn</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tn" title="Permalink to this definition">¶</a></dt>
+<dd><p>a float that represents the number of true negatives</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fp">
+<code class="sig-name descname">fp</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fp" title="Permalink to this definition">¶</a></dt>
+<dd><p>a float that represents the number of false positives</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tp">
+<code class="sig-name descname">tp</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tp" title="Permalink to this definition">¶</a></dt>
+<dd><p>a float that represents the number of true positives</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fn">
+<code class="sig-name descname">fn</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>a float that represents the number of false negatives</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.split_type">
+<code class="sig-name descname">split_type</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.split_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>a string the represents the type of dataset split</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.logger">
+<code class="sig-name descname">logger</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>logger</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.automation_rate">
+<em class="property">property </em><code class="sig-name descname">automation_rate</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.automation_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automation Rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The approval rate as a float between 0 and 1</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.confusion_matrix">
+<em class="property">property </em><code class="sig-name descname">confusion_matrix</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confusion matrix initialized in init method of the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The confusion matrix</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.export_metrics_to_yaml">
+<code class="sig-name descname">export_metrics_to_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_dir</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ConfusionMatrixMetrics.export_metrics_to_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.export_metrics_to_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write scores to yaml at a given output directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>output_dir</strong> (<em>str</em>) – Path to the directory to save yaml</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.f1">
+<em class="property">property </em><code class="sig-name descname">f1</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.f1" title="Permalink to this definition">¶</a></dt>
+<dd><p>F-measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Standard F1 measure</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fpr">
+<em class="property">property </em><code class="sig-name descname">fpr</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.fpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>False positive rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The false positive rate as a float between 0 and 1</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.get_all_metrics">
+<code class="sig-name descname">get_all_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ConfusionMatrixMetrics.get_all_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.get_all_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all metrics in a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>contains all of the metrics</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.mcc">
+<em class="property">property </em><code class="sig-name descname">mcc</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.mcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matthews correlation coefficient is a binary classification metric for when there is a high class imbalance.</p>
+<dl class="simple">
+<dt>https: // en.wikipedia.org/wiki/Matthews_correlation_coefficient</dt><dd><ul class="simple">
+<li><p>1 = perfect prediction</p></li>
+<li><p>0 = random prediction</p></li>
+<li><p>-1 = total disagreement</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Matthews correlation coefficient</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.precision">
+<em class="property">property </em><code class="sig-name descname">precision</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precision.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The precision as a float between 0 and 1</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.pvr">
+<em class="property">property </em><code class="sig-name descname">pvr</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.pvr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performance vs. random calculation.</p>
+<p>PVR = approval_rate/false_positive_rate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The performance vs. random</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.recall">
+<em class="property">property </em><code class="sig-name descname">recall</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recall.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The recall as a float between 0 and 1</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tpfp_ratio">
+<em class="property">property </em><code class="sig-name descname">tpfp_ratio</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics.tpfp_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rate of true positive to false positive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ratio of true positive to false positives</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations">
+<em class="property">class </em><code class="sig-name descname">ScoreCalculations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">predictions</span></em>, <em class="sig-param"><span class="n">targets</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">split_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging.Logger</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ScoreCalculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics" title="src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clpt.evaluation.score_calculations.ConfusionMatrixMetrics</span></code></a></p>
+<p>Calculate metrics for evaluating CDR models.</p>
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.predictions">
+<code class="sig-name descname">predictions</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>List[float] of predicted probabilities</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.targets">
+<code class="sig-name descname">targets</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List[float] of ground truth</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.threshold">
+<code class="sig-name descname">threshold</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>float between 0 and 1 of threshold to be used for classification</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.auc_pr">
+<em class="property">property </em><code class="sig-name descname">auc_pr</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.auc_pr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate AUC PR which is better than AUC RoC for imbalanced dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Area under curve for Precision Recall</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.auc_roc">
+<em class="property">property </em><code class="sig-name descname">auc_roc</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.auc_roc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate AUC RoC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Area under curve for Receiver operator characteristic</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.average_precision">
+<em class="property">property </em><code class="sig-name descname">average_precision</code><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.average_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate AUC PR which is better than AUC RoC for imbalanced dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Area under curve for Precision Recall</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.export_predicted_probas_to_csv">
+<code class="sig-name descname">export_predicted_probas_to_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">extra_cols</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ScoreCalculations.export_predicted_probas_to_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.export_predicted_probas_to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write predicted probabilities to csv with header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – Path to the directory to save</p></li>
+<li><p><strong>extra_cols</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>float</em><em>]</em><em>]</em>) – list of tuple of columns and values</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.evaluation.score_calculations.ScoreCalculations.get_all_metrics">
+<code class="sig-name descname">get_all_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#ScoreCalculations.get_all_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.ScoreCalculations.get_all_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all metrics in a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All metrics</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.clpt.evaluation.score_calculations.compare_entity">
+<code class="sig-name descname">compare_entity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gold_standards</span></em>, <em class="sig-param"><span class="n">predictions</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#compare_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.compare_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the gold standard entity with the predicted entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gold_standards</strong> – a dictionary that contains the gold standard entity with the key equals the doc/clao name(s)
+and the value is a list of entities</p></li>
+<li><p><strong>predictions</strong> – a dictionary that contains the predicted entities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Counts of false positives
+FN: Counts of false negatives
+TP: Counts of true positives
+TN: Counts of true negatives</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FP</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.clpt.evaluation.score_calculations.count_stats">
+<code class="sig-name descname">count_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_actual</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/evaluation/score_calculations.html#count_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.evaluation.score_calculations.count_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of FP,FN,TP, TN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_actual</strong> – pd.Series that contains the true labels</p></li>
+<li><p><strong>y_pred</strong> – pd.Series that contains the predicted labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Counts of false positives
+FN: Counts of false negatives
+TP: Counts of true positives
+TN: Counts of true negatives</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FP</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="src.clpt.ingestion.html" class="btn btn-neutral float-right" title="src.clpt.ingestion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="src.clpt.evaluation.evaluator.html" class="btn btn-neutral float-left" title="src.clpt.evaluation.evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

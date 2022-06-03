@@ -1,1 +1,0 @@
-threshold: 0.70  # threshold is only needed when the outcome_type='binary' for predicted probabilities

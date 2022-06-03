@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.pipeline.stages.analysis.embeddings &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src.clpt.pipeline.stages.analysis.lemmatization" href="src.clpt.pipeline.stages.analysis.lemmatization.html" />
+    <link rel="prev" title="src.clpt.pipeline.stages.analysis.doc_cleaner" href="src.clpt.pipeline.stages.analysis.doc_cleaner.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="src.clao.html">src.clao</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="src.clpt.html">src.clpt</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.evaluation.html">src.clpt.evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.ingestion.html">src.clpt.ingestion</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="src.clpt.pipeline.html">src.clpt.pipeline</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="src.clpt.pipeline.stages.html">src.clpt.pipeline.stages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.clpt.pipeline.pipeline_processor.html">src.clpt.pipeline.pipeline_processor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.clpt.pipeline.pipeline_stage_creator.html">src.clpt.pipeline.pipeline_stage_creator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.constants.html">src.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.experiments.html">src.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.tests.html">src.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.main.html">src.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.utils.html">src.utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="src.html">src</a> &raquo;</li>
+        
+          <li><a href="src.clpt.html">src.clpt</a> &raquo;</li>
+        
+          <li><a href="src.clpt.pipeline.html">src.clpt.pipeline</a> &raquo;</li>
+        
+          <li><a href="src.clpt.pipeline.stages.html">src.clpt.pipeline.stages</a> &raquo;</li>
+        
+          <li><a href="src.clpt.pipeline.stages.analysis.html">src.clpt.pipeline.stages.analysis</a> &raquo;</li>
+        
+      <li>src.clpt.pipeline.stages.analysis.embeddings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.clpt.pipeline.stages.analysis.embeddings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-src.clpt.pipeline.stages.analysis.embeddings">
+<span id="src-clpt-pipeline-stages-analysis-embeddings"></span><h1>src.clpt.pipeline.stages.analysis.embeddings<a class="headerlink" href="#module-src.clpt.pipeline.stages.analysis.embeddings" title="Permalink to this headline">¶</a></h1>
+<p>NLP Analysis stage for creating embedding.</p>
+<dl class="py class">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage">
+<em class="property">class </em><code class="sig-name descname">EmbeddingsStage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">embeddings_file_path</span></em>, <em class="sig-param"><span class="n">binary</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#EmbeddingsStage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.clpt.pipeline.stages.pipeline_stage.html#src.clpt.pipeline.stages.pipeline_stage.PipelineStage" title="src.clpt.pipeline.stages.pipeline_stage.PipelineStage"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clpt.pipeline.stages.pipeline_stage.PipelineStage</span></code></a></p>
+<p>Abstract embedding class with trained embeddings able to be saved in word2vec format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embeddings_file_path</strong> – a file which stores the embedding vector</p></li>
+<li><p><strong>binary</strong> – if True, the data will be saved in binary word2vec format, else it will be saved in plain text.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage.process">
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao_info</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#EmbeddingsStage.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process text in CLAO with embedding method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.FastTextEmbeddings">
+<em class="property">class </em><code class="sig-name descname">FastTextEmbeddings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector_size</span></em>, <em class="sig-param"><span class="n">window</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">min_count</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">epochs</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">save_embeddings</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">saved_file_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#FastTextEmbeddings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.FastTextEmbeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings" title="src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings</span></code></a></p>
+<p>FastText Embedding.</p>
+<dl class="py method">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.FastTextEmbeddings.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">claos</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#FastTextEmbeddings.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.FastTextEmbeddings.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train embeddings on a corpus of tokenized CLAOs using Gensim’s implementation of FastText.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clao_info</strong> (<a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.SentenceEmbeddings">
+<em class="property">class </em><code class="sig-name descname">SentenceEmbeddings</code><a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#SentenceEmbeddings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.SentenceEmbeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage" title="src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage</span></code></a></p>
+<p>Embeddings can be generated on the fly for any sentence whose tokens have embeddings.</p>
+<dl class="py method">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.SentenceEmbeddings.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao_info</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#SentenceEmbeddings.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.SentenceEmbeddings.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create sentence embeddings for any CLAO with Sentences and Embeddings for Tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clao_info</strong> (<a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings">
+<em class="property">class </em><code class="sig-name descname">WordEmbeddings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">replace_oov</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#WordEmbeddings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage" title="src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.clpt.pipeline.stages.analysis.embeddings.EmbeddingsStage</span></code></a></p>
+<p>Create word embedding(s) using word2vec.</p>
+<dl class="py attribute">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings.replace_oov">
+<code class="sig-name descname">replace_oov</code><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings.replace_oov" title="Permalink to this definition">¶</a></dt>
+<dd><p>if to replace out-of-vocabulary (OOV)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao_info</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO">src.clao.text_clao.TextCLAO</a></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/clpt/pipeline/stages/analysis/embeddings.html#WordEmbeddings.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.pipeline.stages.analysis.embeddings.WordEmbeddings.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a single tokenized CLAOs to add embeddings for all tokens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clao_info</strong> (<a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.TextCLAO" title="src.clao.text_clao.TextCLAO"><em>TextCLAO</em></a>) – the CLAO information to process</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="src.clpt.pipeline.stages.analysis.lemmatization.html" class="btn btn-neutral float-right" title="src.clpt.pipeline.stages.analysis.lemmatization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="src.clpt.pipeline.stages.analysis.doc_cleaner.html" class="btn btn-neutral float-left" title="src.clpt.pipeline.stages.analysis.doc_cleaner" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

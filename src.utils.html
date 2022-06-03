@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.utils &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="src.main" href="src.main.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="src.clao.html">src.clao</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.clpt.html">src.clpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.constants.html">src.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.experiments.html">src.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.tests.html">src.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.main.html">src.main</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">src.utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="src.html">src</a> &raquo;</li>
+        
+      <li>src.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-src.utils">
+<span id="src-utils"></span><h1>src.utils<a class="headerlink" href="#module-src.utils" title="Permalink to this headline">¶</a></h1>
+<p>Utilities to be used throughout the CLAO and the pipeline.</p>
+<p>A set of utility functions.</p>
+<dl class="py function">
+<dt id="src.utils.add_new_key_to_cfg">
+<code class="sig-name descname">add_new_key_to_cfg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cfg</span><span class="p">:</span> <span class="n">omegaconf.dictconfig.DictConfig</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">keys</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/src/utils.html#add_new_key_to_cfg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.add_new_key_to_cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add value to config section following key path, where key(s) do not already exist in config</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> – config to add value to</p></li>
+<li><p><strong>value</strong> – value to add to config</p></li>
+<li><p><strong>*keys</strong> – config section names pointing to the desired key. Final item in list will be given value of value</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.extract_gold_standard_outcome_from_claos">
+<code class="sig-name descname">extract_gold_standard_outcome_from_claos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">claos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#extract_gold_standard_outcome_from_claos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.extract_gold_standard_outcome_from_claos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the gold standard entities or target label which have been inserted into CLAO.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.extract_group_entity_from_claos">
+<code class="sig-name descname">extract_group_entity_from_claos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">claos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#extract_group_entity_from_claos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.extract_group_entity_from_claos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the predicted entity_group from all CLAOs.
+:param clao: a list of ClinicalLanguageAnnotationObject, e.g. dc.claos</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a dictionary that contains the document name as the key and the list of predicted
+entity_group as the value</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>entity_groups_dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.extract_group_entity_to_list">
+<code class="sig-name descname">extract_group_entity_to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clao_info</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#extract_group_entity_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.extract_group_entity_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the predicted entity_group from a CLAO.
+:param clao: a ClinicalLanguageAnnotationObject</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list that contains the predicted entity</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>group_entity_list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.extract_predicted_probability_from_claos">
+<code class="sig-name descname">extract_predicted_probability_from_claos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">claos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#extract_predicted_probability_from_claos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.extract_predicted_probability_from_claos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the predicted probability from CLAO.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.extract_prediction_from_claos">
+<code class="sig-name descname">extract_prediction_from_claos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">claos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#extract_prediction_from_claos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.extract_prediction_from_claos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the prediction from CLAO.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.match">
+<code class="sig-name descname">match</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">regex</span><span class="p">:</span> <span class="n">re.Pattern</span></em>, <em class="sig-param"><span class="n">string</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">keep_between</span><span class="p">:</span> <span class="n">bool</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="src.clao.text_clao.html#src.clao.text_clao.Span" title="src.clao.text_clao.Span">src.clao.text_clao.Span</a><span class="p">]</span><a class="reference internal" href="_modules/src/utils.html#match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits given input string into a List of Spans based on provided regex
+:param regex: Compiled regular expression object
+:param string: The string to split
+:param offset: character index of the document that the input text starts at
+:param keep_between: true if text between matches should be included in list, else false</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of Spans split from the input text by the regex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="src.utils.stringify">
+<code class="sig-name descname">stringify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#stringify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.stringify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helps serialize numpy objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> – object that will be serialized</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>original value of the obj for actual data type of the object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="src.main.html" class="btn btn-neutral float-left" title="src.main" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

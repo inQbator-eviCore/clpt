@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.ingestion.truth_collector &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src.clpt.pipeline" href="src.clpt.pipeline.html" />
+    <link rel="prev" title="src.clpt.ingestion.document_collector" href="src.clpt.ingestion.document_collector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="src.clao.html">src.clao</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="src.clpt.html">src.clpt</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.evaluation.html">src.clpt.evaluation</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="src.clpt.ingestion.html">src.clpt.ingestion</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="src.clpt.ingestion.document_collector.html">src.clpt.ingestion.document_collector</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">src.clpt.ingestion.truth_collector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.clpt.pipeline.html">src.clpt.pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.constants.html">src.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.experiments.html">src.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.tests.html">src.tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.main.html">src.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.utils.html">src.utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="src.html">src</a> &raquo;</li>
+        
+          <li><a href="src.clpt.html">src.clpt</a> &raquo;</li>
+        
+          <li><a href="src.clpt.ingestion.html">src.clpt.ingestion</a> &raquo;</li>
+        
+      <li>src.clpt.ingestion.truth_collector</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.clpt.ingestion.truth_collector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-src.clpt.ingestion.truth_collector">
+<span id="src-clpt-ingestion-truth-collector"></span><h1>src.clpt.ingestion.truth_collector<a class="headerlink" href="#module-src.clpt.ingestion.truth_collector" title="Permalink to this headline">¶</a></h1>
+<p>Ingest the gold-standard annotations or the target outcome(s) into CLAOs.</p>
+<dl class="py class">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector">
+<em class="property">class </em><code class="sig-name descname">TruthCollector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dc</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.clpt.ingestion.document_collector.html#src.clpt.ingestion.document_collector.DocumentCollector" title="src.clpt.ingestion.document_collector.DocumentCollector">src.clpt.ingestion.document_collector.DocumentCollector</a></span></em>, <em class="sig-param"><span class="n">outcome_file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">outcome_type</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Ingest the gold standard outcome/annotations into each of CLAOs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dc</strong> (<a class="reference internal" href="src.clpt.ingestion.document_collector.html#src.clpt.ingestion.document_collector.DocumentCollector" title="src.clpt.ingestion.document_collector.DocumentCollector"><em>DocumentCollector</em></a>) – DocumentCollector with a list of CLAOs</p></li>
+<li><p><strong>outcome_file</strong> (<em>str</em>) – the file which contains the target outcomes, such as gold standard annotations or actual
+labels</p></li>
+<li><p><strong>outcome_type</strong> (<em>str</em>) – the type of outcome, such as entity or binary</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector.ingest">
+<code class="sig-name descname">ingest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector.ingest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector.ingest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector.load_entity_from_json">
+<code class="sig-name descname">load_entity_from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector.load_entity_from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector.load_entity_from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a gold-standard entity from the annotation file into a dictionary format and add to CLAOs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector.load_outcome_from_csv">
+<code class="sig-name descname">load_outcome_from_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector.load_outcome_from_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector.load_outcome_from_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a gold-standard outcome from a csv file into a Pandas DataFrame and add each label to CLAOs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector.load_span_from_json">
+<em class="property">static </em><code class="sig-name descname">load_span_from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector.load_span_from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector.load_span_from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a gold-standard span (start index, end index) from the annotation file into a dictionary format
+and add to CLAOs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.clpt.ingestion.truth_collector.TruthCollector.load_span_linking_from_json">
+<em class="property">static </em><code class="sig-name descname">load_span_linking_from_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/clpt/ingestion/truth_collector.html#TruthCollector.load_span_linking_from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.clpt.ingestion.truth_collector.TruthCollector.load_span_linking_from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a gold-standard span and entity (start index, end index, entity) from the annotation file into
+a dictionary format and add to CLAOs.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="src.clpt.pipeline.html" class="btn btn-neutral float-right" title="src.clpt.pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="src.clpt.ingestion.document_collector.html" class="btn btn-neutral float-left" title="src.clpt.ingestion.document_collector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

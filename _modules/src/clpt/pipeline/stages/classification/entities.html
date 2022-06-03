@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.pipeline.stages.classification.entities &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../src.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.clpt.pipeline.stages.classification.entities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.clpt.pipeline.stages.classification.entities</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;NLP classification stage for extracting entities and performing Mention Detection task.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">medspacy</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">blist</span> <span class="kn">import</span> <span class="n">blist</span>
+<span class="kn">from</span> <span class="nn">medspacy.target_matcher</span> <span class="kn">import</span> <span class="n">TargetRule</span>
+<span class="kn">from</span> <span class="nn">spacy.tokens</span> <span class="kn">import</span> <span class="n">Doc</span>
+
+<span class="kn">from</span> <span class="nn">src.clao.text_clao</span> <span class="kn">import</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">EntityGroup</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="n">TextCLAO</span>
+<span class="kn">from</span> <span class="nn">src.clpt.pipeline.stages.pipeline_stage</span> <span class="kn">import</span> <span class="n">PipelineStage</span>
+<span class="kn">from</span> <span class="nn">src.constants.annotation_constants</span> <span class="kn">import</span> <span class="n">ENTITY_GROUP</span><span class="p">,</span> <span class="n">EntityType</span>
+
+<span class="n">OOV</span> <span class="o">=</span> <span class="s1">&#39;&lt;OOV&gt;&#39;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MentionDetection"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.MentionDetection">[docs]</a><span class="k">class</span> <span class="nc">MentionDetection</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detect mentions.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        rules_file: a file that contains the rule set used for Mention Detection. In the default configs, this file is</span>
+<span class="sd">        `src/resources/mention-detection-rules.yaml`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load medspacy model.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MentionDetection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Load medspacy model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span> <span class="o">=</span> <span class="n">medspacy</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">rules_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">rules_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_rules</span> <span class="o">=</span> <span class="n">rules_dict</span>
+
+<div class="viewcode-block" id="MentionDetection.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.MentionDetection.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Extract mention based on the rules and add the extracted entities into CLAO(s) with the attributes of each of</span>
+<span class="sd">        entities.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info: the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">entity_type</span> <span class="o">=</span> <span class="n">EntityType</span><span class="o">.</span><span class="n">MENTION</span>
+
+        <span class="c1"># Add rules for target concept extraction</span>
+        <span class="n">target_matcher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span><span class="o">.</span><span class="n">get_pipe</span><span class="p">(</span><span class="s2">&quot;medspacy_target_matcher&quot;</span><span class="p">)</span>
+        <span class="n">target_rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">TargetRule</span><span class="p">(</span><span class="o">**</span><span class="n">rule</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_rules</span><span class="p">]</span>
+        <span class="n">target_matcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">target_rules</span><span class="p">)</span>
+
+        <span class="n">entity_index_offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Entity</span><span class="p">))</span>
+        <span class="n">sents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Sentence</span><span class="p">]</span> <span class="o">=</span> <span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Sentence</span><span class="p">)</span>
+        <span class="n">all_entities</span> <span class="o">=</span> <span class="n">blist</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">:</span>
+            <span class="n">token_id_offset</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">_token_id_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">Doc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nlp</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span> <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">sent</span><span class="o">.</span><span class="n">tokens</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nlp</span><span class="o">.</span><span class="n">pipeline</span><span class="p">:</span>
+                <span class="n">pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">doc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
+                <span class="n">entities</span> <span class="o">=</span> <span class="n">blist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">):</span>
+                    <span class="n">token_start</span> <span class="o">=</span> <span class="n">token_id_offset</span> <span class="o">+</span> <span class="n">ent</span><span class="o">.</span><span class="n">start</span>
+                    <span class="n">token_end</span> <span class="o">=</span> <span class="n">token_id_offset</span> <span class="o">+</span> <span class="n">ent</span><span class="o">.</span><span class="n">end</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">ent</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">literal</span>
+                    <span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">entity_index_offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">ent</span><span class="o">.</span><span class="n">label_</span><span class="p">,</span> <span class="p">(</span><span class="n">token_start</span><span class="p">,</span> <span class="n">token_end</span><span class="p">),</span>
+                                    <span class="n">clao_info</span><span class="p">)</span>
+                    <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+                <span class="n">entity_index_offset</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+                <span class="n">sent</span><span class="o">.</span><span class="n">_entity_id_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">entities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">element_id</span><span class="p">,</span> <span class="n">entities</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">element_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">all_entities</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+        <span class="n">clao_info</span><span class="o">.</span><span class="n">insert_annotations</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span> <span class="n">all_entities</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GroupEntities"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.GroupEntities">[docs]</a><span class="k">class</span> <span class="nc">GroupEntities</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Group entities into EntityGroup.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        entity_type (EntityType): the type of entity to group</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">=</span> <span class="n">EntityType</span><span class="p">(</span><span class="n">entity_type</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GroupEntities</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GroupEntities.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.GroupEntities.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Extract entities and group relevant entities into a entity group and add entity group to CLAO.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">entities</span> <span class="o">=</span> <span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Entity</span><span class="p">)</span>
+        <span class="n">entity_group_id_offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">EntityGroup</span><span class="p">))</span>
+        <span class="n">entity_groups</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="n">entity_tuples</span> <span class="o">=</span> <span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">literal</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">entity_tuples</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entity_groups</span><span class="p">:</span>
+                    <span class="n">entity_groups</span><span class="p">[</span><span class="n">entity_tuples</span><span class="p">]</span> <span class="o">=</span> <span class="n">EntityGroup</span><span class="p">(</span><span class="n">entity_group_id_offset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">entity_groups</span><span class="p">),</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">literal</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+
+                <span class="n">entity</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">ENTITY_GROUP</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity_groups</span><span class="p">[</span><span class="n">entity_tuples</span><span class="p">]</span><span class="o">.</span><span class="n">element_id</span>
+
+        <span class="n">clao_info</span><span class="o">.</span><span class="n">insert_annotations</span><span class="p">(</span><span class="n">EntityGroup</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">entity_groups</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div></div>
+
+
+<div class="viewcode-block" id="CoreferenceResolution"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.CoreferenceResolution">[docs]</a><span class="k">class</span> <span class="nc">CoreferenceResolution</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Group co-referential entities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CoreferenceResolution</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CoreferenceResolution.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.CoreferenceResolution.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Group co-referential entities in a single CLAO</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CoreferenceResolution not yet implemented. Skipping&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FactExtraction"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.FactExtraction">[docs]</a><span class="k">class</span> <span class="nc">FactExtraction</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract clinical concepts from found entities</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FactExtraction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FactExtraction.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.FactExtraction.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Extract clinical concepts from found entities in a single CLAO</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;FactExtraction not yet implemented. Skipping&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RelationExtraction"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.RelationExtraction">[docs]</a><span class="k">class</span> <span class="nc">RelationExtraction</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Link entities based on their relation to each other</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RelationExtraction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RelationExtraction.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.classification.entities.html#src.clpt.pipeline.stages.classification.entities.RelationExtraction.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Link entities within a single CLAO based on their relation to each other</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RelationExtraction not yet implemented. Skipping&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

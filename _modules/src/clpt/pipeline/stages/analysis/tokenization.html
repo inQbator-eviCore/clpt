@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.clpt.pipeline.stages.analysis.tokenization &mdash; clpt &#39;0.0.1&#39; documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+    <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html" class="icon icon-home" alt="Documentation Home"> clpt
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                '0.0.1'
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../src.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">clpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.clpt.pipeline.stages.analysis.tokenization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.clpt.pipeline.stages.analysis.tokenization</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;NLP pipeline stage for tokenizing sentences.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+
+<span class="kn">from</span> <span class="nn">blist</span> <span class="kn">import</span> <span class="n">blist</span>
+<span class="kn">from</span> <span class="nn">overrides</span> <span class="kn">import</span> <span class="n">overrides</span>
+
+<span class="kn">from</span> <span class="nn">src.clao.text_clao</span> <span class="kn">import</span> <span class="n">IdSpan</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="n">Span</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">TextCLAO</span><span class="p">,</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">src.clpt.pipeline.stages.pipeline_stage</span> <span class="kn">import</span> <span class="n">PipelineStage</span>
+<span class="kn">from</span> <span class="nn">src.constants.annotation_constants</span> <span class="kn">import</span> <span class="n">CLEANED_TEXT</span><span class="p">,</span> <span class="n">RAW_TEXT</span>
+<span class="kn">from</span> <span class="nn">src.constants.regex_constants</span> <span class="kn">import</span> <span class="n">BIGRAM_FOUR_DIGIT_YEAR_MONTH</span><span class="p">,</span> <span class="n">BIGRAM_TEXT_MONTH_DAY</span><span class="p">,</span> <span class="n">BIGRAM_TEXT_MONTH_YEAR</span><span class="p">,</span> \
+    <span class="n">BIGRAM_TEXT_YEAR_MONTH</span><span class="p">,</span> <span class="n">CONTRACTION</span><span class="p">,</span> <span class="n">DATE</span><span class="p">,</span> <span class="n">DOT_JOINED_NUMBER</span><span class="p">,</span> <span class="n">HYPHENATED_TOKEN</span><span class="p">,</span> <span class="n">ICD10_CODE</span><span class="p">,</span> <span class="n">INITIAL</span><span class="p">,</span> <span class="n">LONG_NUMBER</span><span class="p">,</span> \
+    <span class="n">NUMBER</span><span class="p">,</span> <span class="n">PERSONAL_TITLE</span><span class="p">,</span> <span class="n">TIME_12HR</span><span class="p">,</span> <span class="n">TIME_24HR</span><span class="p">,</span> <span class="n">TRIGRAM_QUADGRAM_DATE_DATETIME</span><span class="p">,</span> <span class="n">UNIGRAM_MONTH</span><span class="p">,</span> <span class="n">UNIGRAM_MONTH_YEAR</span><span class="p">,</span> \
+    <span class="n">UNIGRAM_YEAR</span><span class="p">,</span> <span class="n">UNIT_WITH_SLASH</span>
+<span class="kn">from</span> <span class="nn">src.utils</span> <span class="kn">import</span> <span class="n">match</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Tokenization"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.Tokenization">[docs]</a><span class="k">class</span> <span class="nc">Tokenization</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract tokenization stage&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="nd">@overrides</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Tokenization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Tokenization.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.Tokenization.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Tokenize sentences in the CLAO(s) and add the tokens back to CLAO(s).</span>
+
+<span class="sd">        If cleaned text exists, then will tokenize sentences from the cleaned text. If not, then will tokenize</span>
+<span class="sd">        sentences in the raw text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_text</span> <span class="o">=</span> <span class="p">(</span><span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">CLEANED_TEXT</span><span class="p">})</span>
+                    <span class="ow">or</span> <span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">RAW_TEXT</span><span class="p">}))</span><span class="o">.</span><span class="n">raw_text</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Sentence</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">clao_info</span><span class="o">.</span><span class="n">insert_annotation</span><span class="p">(</span><span class="n">Sentence</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_text</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Sentence</span><span class="p">):</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tokens</span><span class="p">(</span><span class="n">clao_info</span><span class="p">,</span> <span class="n">sentence</span><span class="p">)</span>
+            <span class="n">clao_info</span><span class="o">.</span><span class="n">insert_annotations</span><span class="p">(</span><span class="n">Token</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
+            <span class="n">sentence</span><span class="o">.</span><span class="n">_token_id_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">element_id</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">element_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tokenization.get_tokens"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.Tokenization.get_tokens">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">,</span> <span class="n">span</span><span class="p">:</span> <span class="n">Span</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get tokens.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Tokenization.fallback"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.Tokenization.fallback">[docs]</a>    <span class="nd">@overrides</span>
+    <span class="k">def</span> <span class="nf">fallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Split on whitespace.&quot;&quot;&quot;</span>
+        <span class="n">WhitespaceRegexTokenization</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">clao_info</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RegexTokenization"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.RegexTokenization">[docs]</a><span class="k">class</span> <span class="nc">RegexTokenization</span><span class="p">(</span><span class="n">Tokenization</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tokenization using regular expressions.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        token_regex: The regular expression to use for tokenization</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: use function from SpaCy</span>
+
+    <span class="n">TOKENIZATION_REGEXES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(?&lt;=^)(?&lt;=</span><span class="se">\\</span><span class="s2">W)&quot;</span> <span class="o">+</span> <span class="n">ICD10_CODE</span> <span class="o">+</span> <span class="s2">&quot;(?=</span><span class="se">\\</span><span class="s2">W|$)&quot;</span><span class="p">,</span>
+                            <span class="n">LONG_NUMBER</span><span class="p">,</span>
+                            <span class="n">PERSONAL_TITLE</span><span class="p">,</span>
+                            <span class="n">CONTRACTION</span><span class="p">,</span>
+                            <span class="n">INITIAL</span><span class="p">,</span>
+                            <span class="n">DOT_JOINED_NUMBER</span><span class="p">,</span>
+                            <span class="n">UNIT_WITH_SLASH</span><span class="p">,</span>
+                            <span class="n">TRIGRAM_QUADGRAM_DATE_DATETIME</span><span class="p">,</span>
+                            <span class="n">BIGRAM_FOUR_DIGIT_YEAR_MONTH</span><span class="p">,</span>
+                            <span class="n">BIGRAM_TEXT_MONTH_YEAR</span><span class="p">,</span>
+                            <span class="n">BIGRAM_TEXT_YEAR_MONTH</span><span class="p">,</span>
+                            <span class="n">BIGRAM_TEXT_MONTH_DAY</span><span class="p">,</span>
+                            <span class="n">UNIGRAM_MONTH_YEAR</span><span class="p">,</span>
+                            <span class="n">UNIGRAM_MONTH</span><span class="p">,</span>
+                            <span class="n">UNIGRAM_YEAR</span><span class="p">,</span>
+                            <span class="n">DATE</span><span class="p">,</span>
+                            <span class="n">TIME_12HR</span><span class="p">,</span>
+                            <span class="n">TIME_24HR</span><span class="p">,</span>
+                            <span class="n">HYPHENATED_TOKEN</span><span class="p">,</span>
+                            <span class="n">NUMBER</span><span class="p">,</span>
+                            <span class="s2">&quot;(</span><span class="se">\\</span><span class="s2">w+)&quot;</span><span class="p">]</span>
+
+    <span class="n">TOKEN_REGEX_MATCH_STRING</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TOKENIZATION_REGEXES</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RegexTokenization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TOKEN_REGEX_MATCH_STRING</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RegexTokenization.get_tokens"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.RegexTokenization.get_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">,</span> <span class="n">span</span><span class="p">:</span> <span class="n">Span</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get tokens based on regular expression.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            clao_info (TextCLAO): the CLAO information to process</span>
+<span class="sd">            span: Span class, which is a TextCLAOElement representing a span of text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Bring this more in line with nlp_pipeline</span>
+        <span class="n">token_spans</span> <span class="o">=</span> <span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token_regex</span><span class="p">,</span> <span class="n">span</span><span class="o">.</span><span class="n">get_text_from</span><span class="p">(</span><span class="n">clao_info</span><span class="p">),</span> <span class="n">span</span><span class="o">.</span><span class="n">start_offset</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">token_id_offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">clao_info</span><span class="o">.</span><span class="n">get_annotations</span><span class="p">(</span><span class="n">Token</span><span class="p">))</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">blist</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">token_spans</span><span class="p">:</span>
+            <span class="n">token_id</span> <span class="o">=</span> <span class="n">token_id_offset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_text_from</span><span class="p">(</span><span class="n">clao_info</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">from_id_span</span><span class="p">(</span><span class="n">IdSpan</span><span class="o">.</span><span class="n">from_span</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">token_id</span><span class="p">),</span> <span class="n">text</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ch</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">start_offset</span> <span class="o">+</span> <span class="n">i</span>
+                        <span class="n">end</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">start_offset</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Token</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">token_id</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">span_map</span><span class="o">=</span><span class="p">{}))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tokens</span></div></div>
+
+
+<div class="viewcode-block" id="WhitespaceRegexTokenization"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.WhitespaceRegexTokenization">[docs]</a><span class="k">class</span> <span class="nc">WhitespaceRegexTokenization</span><span class="p">(</span><span class="n">RegexTokenization</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tokenization on whitespace (used as a fallback).&quot;&quot;&quot;</span>
+    <span class="n">TOKENIZATION_REGEXES</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">S+&#39;</span>
+    <span class="n">TOKEN_REGEX_MATCH_STRING</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">S+&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WhitespaceRegexTokenization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WhitespaceRegexTokenization.process"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.WhitespaceRegexTokenization.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Process sentences based on whitespace (used as a fallback)..&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WhitespaceRegexTokenization.get_tokens"><a class="viewcode-back" href="../../../../../../src.clpt.pipeline.stages.analysis.tokenization.html#src.clpt.pipeline.stages.analysis.tokenization.WhitespaceRegexTokenization.get_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">get_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clao_info</span><span class="p">:</span> <span class="n">TextCLAO</span><span class="p">,</span> <span class="n">span</span><span class="p">:</span> <span class="n">Span</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get tokens.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Author
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
