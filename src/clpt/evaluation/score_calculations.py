@@ -86,6 +86,15 @@ class ConfusionMatrixMetrics:
         return self.tp / (self.tp + self.fn) if (self.tp + self.fn) > 0 else 0.
 
     @property
+    def automation_rate(self):
+        """Automation Rate.
+
+        Returns:
+            float: The approval rate as a float between 0 and 1
+        """
+        return (self.tp + self.fp) / self.volume if self.volume > 0 else 0.
+
+    @property
     def tpfp_ratio(self):
         """Rate of true positive to false positive.
 

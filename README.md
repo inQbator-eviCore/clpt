@@ -5,6 +5,7 @@ The clinical language pipeline toolkit (CLPT) is a framework developed with Pyth
 
 The CLPT is currently in active development. The current published version mainly focuses on the CLAO annotation creation, searching, insertion and deletion as well as some pre-processing methods. A light Mention Detection function is provided and more comprehensive functions to support classification tasks will be added for future release, including (1) acronym expansion; (2) mention detection; (3) fact extraction; (4) relationship extraction.
 
+
 ## Docs
 * [latest](Insert the document link generated with Sphinx package)
 
@@ -14,6 +15,12 @@ The CLPT is currently in active development. The current published version mainl
 **To build the environment that the code runs from:**
 
 `./app setup-environment`
+
+If you also need `en_core_web_sm` from spaCy. Installed it if you have not. For example,
+```
+wget https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.1.0/en_core_web_sm-3.1.0.tar.gz
+pip install en_core_web_sm-3.1.0.tar.gz
+```
 
 
 ## Testing
@@ -51,8 +58,38 @@ Each is responsible for a different processing in the pipeline. As the names imp
 
 ### Execute run
 `python main.py`
+
+
 ----------------------------------------------------
-### CLPT Workflow
+## CLPT Workflow
 
-TODO: insert the diagram
+### Clinical Language Pipeline Toolkit (CLPT) architecture
+![Clinical Language Pipeline Toolkit (CLPT) architecture](umls_diagrams/Architecture.jpg)
 
+### Data ingestion module
+![Data ingestion module](umls_diagrams/Ingestion.png)
+
+### Analysis engine module
+The diagram only presents the main class objects. Please refer to the `src/clpt/pipeline/stages/analysis`
+for all available pre-processing stages. Each class has a method named `process` (like the method `fit_transform` in
+sklearn.base.TransformerMixin) to conduct the pre-processing for each CLAO and the processed outcome will be stored 
+inside the CLAO after each stage.
+![Analysis engine module](umls_diagrams/Analysis_Engine.png)
+
+### Classification module
+![Classification module](umls_diagrams/Classification.png)
+
+### Evaluation module
+![Evaluation module](umls_diagrams/Evaluation_v3.png)
+
+
+----------------------------------------------------
+## Contributors
+- Saranya Krishnamoorthy
+- Yanyi Jiang 
+- William Buchanan 
+- Ayush Singh
+- John E. Ortega
+
+## Contact
+Please email Saranya.Krishnamoorthy@evicore if you have any questions.

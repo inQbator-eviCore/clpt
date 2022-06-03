@@ -25,9 +25,12 @@ class Evaluator:
         # TODO: make constant variables to an enum
         self.split_type = split_type
         self.target_dir = target_dir
-        self.threshold = threshold
 
         if outcome_type == 'binary':
+            if threshold:
+                self.threshold = threshold
+            else:
+                raise ValueError("The outcome type is binary and the threshold cannot be null.")
             actual_label_from_claos = extract_gold_standard_outcome_from_claos(claos)
             predicted_probs_from_claos = extract_predicted_probability_from_claos(claos)
             df_gold_standard = pd.DataFrame({DOCUMENT_NAME: list(actual_label_from_claos.keys()),
@@ -48,6 +51,7 @@ class Evaluator:
             self.predictions = self.df_merged[PROBABILITY]
 
         if outcome_type == 'entity':
+            self.threshold = None
             self.gold_standards = extract_gold_standard_outcome_from_claos(claos)
             self.predictions = extract_group_entity_from_claos(claos)
             self.tp, self.fp, self.tn, self.fn = compare_entity(self.gold_standards, self.predictions)
