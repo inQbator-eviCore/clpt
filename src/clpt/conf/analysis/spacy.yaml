@@ -6,6 +6,7 @@ pipeline_stages:
     break_sentences: True
   - type: SpellCorrectLevenshtein
   - type: PorterStemming
+  - type: SpacyAbbreviationExpand
   - type: WordEmbeddings
     embeddings_file_path: ../../../single_vec.bin
     binary: True

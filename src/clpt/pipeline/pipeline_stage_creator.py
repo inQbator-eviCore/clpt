@@ -14,7 +14,8 @@ from src.clpt.pipeline.stages.analysis.spacy_processing import SpaCyProcessing
 from src.clpt.pipeline.stages.analysis.spell_correct import SpellCorrectLevenshtein
 from src.clpt.pipeline.stages.analysis.stemming import PorterStemming
 from src.clpt.pipeline.stages.analysis.tokenization import RegexTokenization, WhitespaceRegexTokenization
-from src.clpt.pipeline.stages.classification.abbreviation_expansion import AbbreviationExpansion
+from src.clpt.pipeline.stages.classification.abbreviation_expansion import AbbreviationExpandWithDict, \
+    SpacyAbbreviationExpand
 from src.clpt.pipeline.stages.classification.entities import CoreferenceResolution, FactExtraction, GroupEntities, \
     MentionDetection, RelationExtraction
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
@@ -22,11 +23,12 @@ from src.constants.constants import CONFIG_STAGE_KEY
 
 logger = logging.getLogger(__name__)
 
-ALL_KNOWN_STAGES = [AbbreviationExpansion, ConvertToLowerCase, CoreferenceResolution, DoNothingDocCleaner,
-                    ExcludePunctuation, FactExtraction, FastTextEmbeddings, GroupEntities, MentionDetection,
-                    PorterStemming, RegexSentenceBreaking, RegexTokenization, RelationExtraction, RemoveStopWord,
-                    SentenceBreaking, SentenceEmbeddings, SimplePOSTagger, SpaCyLemma, SpaCyProcessing,
-                    SpellCorrectLevenshtein, WhitespaceRegexTokenization, WordEmbeddings, WordnetLemma]
+ALL_KNOWN_STAGES = [AbbreviationExpandWithDict, SpacyAbbreviationExpand, ConvertToLowerCase,
+                    CoreferenceResolution, DoNothingDocCleaner, ExcludePunctuation, FactExtraction, FastTextEmbeddings,
+                    GroupEntities, MentionDetection, PorterStemming, RegexSentenceBreaking, RegexTokenization,
+                    RelationExtraction, RemoveStopWord, SentenceBreaking, SentenceEmbeddings, SimplePOSTagger,
+                    SpaCyLemma, SpaCyProcessing, SpellCorrectLevenshtein, WhitespaceRegexTokenization, WordEmbeddings,
+                    WordnetLemma]
 STAGE_TYPES = {s.__name__: s for s in ALL_KNOWN_STAGES}
 
 
