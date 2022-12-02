@@ -266,7 +266,7 @@ class ClinicalLanguageAnnotationObject(ABC, Generic[T]):
             json_dict = self.to_json()
             file_path = os.path.join(output_directory, filename if filename else self.name) + '.json'
             with open(file_path, 'w') as json_out:
-                json.dump(json_dict, json_out, indent=True)
+                json.dump(json_dict, json_out, indent=True, default=str)
         except Exception as e:
             LOGGER.exception(f"Failed to save CLAO as JSON. "
                              f"Error of type {type(e).__name__} encountered with arguments '{e.args}'")

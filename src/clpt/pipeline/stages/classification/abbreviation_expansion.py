@@ -24,7 +24,6 @@ from src.clpt.pipeline.stages.analysis.spacy_processing import SpaCyStage
 from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT, ABBR_DICT
 from src.constants.annotation_constants import EXPAND_ABBREVIATION
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -90,4 +89,4 @@ class SpacyAbbreviationExpand(SpaCyStage):
                 if abrv.text == token.text:
                     token.map[EXPAND_ABBREVIATION] = abrv._.long_form
 
-        logger.info("Abbreviation Expansion by adding the abbreviation pipe to the spacy pipeline.")
+        logger.info("Adding the abbreviation pipe to the spacy pipeline.")

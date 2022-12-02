@@ -2,3 +2,8 @@ input_dir: ../../../resources/sample_docs
 data_type: text
 outcome_file_name: gold_standard_outcome.csv #sample_gold_standard_entity.json
 outcome_type: binary #entity
+project_name: CT
+project_desc: Conservative Treatment
+project_input_link: resources/sample_docs
+creation_date: CURRENT_TIMESTAMP
+project_version: 1

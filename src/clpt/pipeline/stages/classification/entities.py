@@ -1,13 +1,11 @@
 """NLP classification stage for extracting entities and performing Mention Detection task."""
 import logging
 from typing import List
-
 import medspacy
 import yaml
 from blist import blist
 from medspacy.target_matcher import TargetRule
 from spacy.tokens import Doc
-
 from src.clao.text_clao import Entity, EntityGroup, Sentence, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.constants.annotation_constants import ENTITY_GROUP, EntityType
@@ -41,12 +39,10 @@ class MentionDetection(PipelineStage):
             clao_info: the CLAO information to process
         """
         entity_type = EntityType.MENTION
-
         # Add rules for target concept extraction
         target_matcher = self.nlp.get_pipe("medspacy_target_matcher")
         target_rules = [TargetRule(**rule) for rule in self.custom_rules]
         target_matcher.add(target_rules)
-
         entity_index_offset = len(clao_info.get_annotations(Entity))
         sents: List[Sentence] = clao_info.get_annotations(Sentence)
         all_entities = blist()

@@ -1,0 +1,10 @@
+pipeline_stages:
+  # add params here
+  - type: RemoveStopWord
+  - type: ConvertToLowerCase
+  - type: ExcludeNumbers
+  - type: ExcludePunctuation
+  - type: RegexTokenization
+  - type: WordEmbeddings
+    embeddings_file_path: Pretrained_Models/BioWordVec/pubmed2018_w2v_200D.bin
+    binary: True

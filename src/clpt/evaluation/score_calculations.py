@@ -6,7 +6,8 @@ from math import sqrt
 import numpy as np
 import pandas as pd
 import yaml
-from sklearn.metrics import confusion_matrix, auc, precision_recall_curve, roc_auc_score, average_precision_score
+from sklearn.metrics import confusion_matrix, auc, average_precision_score, \
+    precision_recall_curve, roc_auc_score, precision_score, recall_score, f1_score
 from src.constants.constants import POSITIVE_LABEL, NEGATIVE_LABEL, METRICS_FILE, PROBABILITY_FILE, \
     METRICS_DEFAULT_FILE, PROBABILITY_DEFAULT_FILE
 from src.constants.annotation_constants import PROBABILITY, PREDICTION, ACTUAL_LABEL
@@ -74,7 +75,7 @@ class ConfusionMatrixMetrics:
         Returns:
             float: The precision as a float between 0 and 1
         """
-        return self.tp / (self.tp + self.fp) if (self.tp + self.fp) > 0 else 0.
+        return(precision_score(self.y_true, self.y_pred, average='micro'))
 
     @property
     def recall(self):
@@ -83,7 +84,7 @@ class ConfusionMatrixMetrics:
         Returns:
             float: The recall as a float between 0 and 1
         """
-        return self.tp / (self.tp + self.fn) if (self.tp + self.fn) > 0 else 0.
+        return(recall_score(self.y_true, self.y_pred, average='micro'))
 
     @property
     def automation_rate(self):
@@ -136,8 +137,7 @@ class ConfusionMatrixMetrics:
         Returns:
            float: Standard F1 measure
         """
-        sum_pr = self.precision + self.recall
-        return (2. * self.precision * self.recall) / sum_pr if sum_pr > 0. else 0.
+        return(f1_score(self.y_true, self.y_pred, average='micro'))
 
     def get_all_metrics(self) -> dict:
         """Return all metrics in a dictionary.
@@ -203,17 +203,14 @@ class ScoreCalculations(ConfusionMatrixMetrics):
         """
         if len(targets) == 0 or len(predictions) == 0:
             raise ValueError("Evaluation volume should be greater than 0.")
-
         self.split_type = split_type
-        self.y_true, self.y_pred = targets, predictions
         predictions = np.array(predictions)
         predictions[predictions >= threshold] = POSITIVE_LABEL
         predictions[predictions < threshold] = NEGATIVE_LABEL
-
         self.threshold = threshold
+        self.y_true, self.y_pred = targets, predictions
         self._confusion_matrix = confusion_matrix(targets, predictions).ravel()
         self.tn, self.fp, self.fn, self.tp = self._confusion_matrix
-
         super().__init__(self.tp, self.fp, self.tn, self.fn, split_type, logger)
 
     @property

@@ -1,5 +1,8 @@
 from enum import Enum
 
+
+META_INFO = 'metadata'
+METRIC = 'metric'
 ANNOTATION = 'annotation'
 ACTUAL_LABEL = 'actual_label'
 CLEANED_TEXT = 'cleaned_text'
@@ -33,6 +36,7 @@ TEXT_ELEMENT = 'text'
 TOKEN = 'token'
 TOKENS = 'tokens'
 VECTOR = 'vector'
+EMBEDDING_VECTOR = 'embedding_vector'
 
 
 class EntityType(Enum):

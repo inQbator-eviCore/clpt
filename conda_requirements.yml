@@ -15,7 +15,7 @@ dependencies:
     - flake8==3.8.4
     - func-timeout==4.3.5
     - future==0.18.2
-    - gensim==4.2.0
+    - gensim== 3.8.3 
     - hydra-core==1.1.1
     - importlib-metadata==4.8.3
     - importlib-resources==5.4.0

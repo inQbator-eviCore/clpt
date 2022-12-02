@@ -1,0 +1,9 @@
+pipeline_stages:
+  # add params here
+  - type: RemoveStopWord
+  - type: ConvertToLowerCase
+  - type: ExcludeNumbers
+  - type: ExcludePunctuation
+  - type: tfidf_vector_processor
+
+

@@ -7,7 +7,7 @@ from typing import List
 from omegaconf import DictConfig, OmegaConf, open_dict
 import numpy as np
 from datetime import datetime
-from src.clao.text_clao import Span, Entity, ActualLabel, PredictProbabilities, Predictions
+from src.clao.text_clao import Embedding, Span, Entity, ActualLabel, PredictProbabilities, Predictions, EmbeddingVector
 
 
 def add_new_key_to_cfg(cfg: DictConfig, value: str, *keys: str) -> None:
@@ -124,6 +124,24 @@ def extract_gold_standard_outcome_from_claos(claos):
         for t in clao.get_annotations(ActualLabel):
             gold_standard_dic[clao.name] = t.actual_label_value
     return gold_standard_dic
+
+
+def extract_vector_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(EmbeddingVector):
+            vector_dic[clao.name] = t.vector
+    return vector_dic
+
+
+def extract_embedding_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(Embedding):
+            vector_dic[clao.name] = t.vector
+    return vector_dic
 
 
 def extract_predicted_probability_from_claos(claos):

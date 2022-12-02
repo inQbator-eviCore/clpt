@@ -32,7 +32,13 @@ class TruthCollector:
         outcomes = pd.read_csv(self.outcome_file)
         for clao in self.dc.claos:
             if ACTUAL_LABEL in outcomes.columns:
-                actual_label = outcomes.loc[outcomes['doc_name'].astype(str) == clao.name, ACTUAL_LABEL].item()
+                try:
+                    actual_label = outcomes.loc[outcomes['doc_name'].astype(str) == clao.name, ACTUAL_LABEL].item()
+                except ValueError as e:
+                    # TODO Better handling for repeat lines
+                    logger.warning(f"Repeat line for file {clao.name} in outcomes csv. Inserting 0")
+                    logger.info(e)
+                    actual_label = 0
                 clao.insert_annotation(ActualLabel, ActualLabel(actual_label))
             if PREDICTION in outcomes.columns:
                 predicted_label = outcomes.loc[outcomes['doc_name'].astype(str) == clao.name, PREDICTION].item()

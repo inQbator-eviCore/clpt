@@ -4,15 +4,18 @@ from typing import List, Union
 import glob
 
 from src.clao.clao import CLAODataType, ClinicalLanguageAnnotationObject
-from src.clao.text_clao import TextCLAO
+from src.clao.text_clao import TextCLAO, METAINFO
 
 
 class DocumentCollector:
     """DocumentCollector to read in data and ingest the data in the CLAO(s)."""
-    def __init__(self, input_dir, data_type: Union[str, CLAODataType], files_to_ignore):
+    def __init__(self, input_dir, project_name, project_desc, creation_date,
+                 project_input_link, project_version,
+                 data_type: Union[str, CLAODataType],
+                 files_to_ignore):
         """Ingest raw data to a list of CLAOs.
 
-        Argus:
+        Args:
             input_dir: the path to the input file(s)
             data_type(Union[str, CLAODataType]): the type of raw data to ingest into CLAO
             file_to_ignore: files that will not be ingested with DocumentCollector()
@@ -20,6 +23,19 @@ class DocumentCollector:
         if isinstance(data_type, str):
             data_type = CLAODataType(data_type)
         self.claos = self.ingest(input_dir, data_type, files_to_ignore)
+        textclaos = self.claos
+        self.ingest_attributes_clao(textclaos, project_name, project_desc,
+                                    creation_date, project_input_link,
+                                    project_version)
+
+    @staticmethod
+    def ingest_attributes_clao(textclaos, project_name, project_desc,
+                               creation_date, project_input_link,
+                               project_version):
+        metdata = METAINFO(project_name, project_desc, creation_date,
+                           project_input_link, project_version)
+        for clao in textclaos:
+            clao.insert_annotation(METAINFO, metdata)
 
     @staticmethod
     def ingest(input_dir: str, data_type: CLAODataType, files_to_ignore) -> List[ClinicalLanguageAnnotationObject]:
@@ -51,4 +67,5 @@ class DocumentCollector:
             output_dir(str): an output location for the serialized CLAO(s)
         """
         for clao in self.claos:
-            clao.write_as_xml(output_dir)
+            # clao.write_as_xml(output_dir)
+            clao.write_as_json(output_dir)

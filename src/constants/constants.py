@@ -1,8 +1,6 @@
 CONFIG_FILE = "config.yaml"
 CONFIG_FILEPATH = "clpt/conf"
-
 CONFIG_STAGE_KEY = 'type'
-
 POSITIVE_LABEL = 1
 NEGATIVE_LABEL = 0
 METRICS_FILE = "{}_results.yaml"
