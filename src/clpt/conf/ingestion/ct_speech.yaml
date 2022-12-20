@@ -1,0 +1,9 @@
+input_dir: ../../../src/resources/audio
+data_type: audio
+outcome_file_name: wav
+outcome_type: html
+project_name: Speech
+project_desc: Clustering on call recording transcriptions
+creation_date: datetime.now()
+project_input_link: https://ehcuspd1orcasa.blob.core.windows.net/datasets/aruther/test/dataset_001.snappy.parquet
+project_version: 1

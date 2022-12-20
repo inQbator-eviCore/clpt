@@ -5,5 +5,3 @@ pipeline_stages:
   - type: ExcludeNumbers
   - type: ExcludePunctuation
   - type: tfidf_vector_processor
-
-

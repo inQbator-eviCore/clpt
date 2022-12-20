@@ -41,15 +41,16 @@ def main(cfg: DictConfig) -> None:
     logger.info("Running pipeline stages over individual CLAOs")
     for clao in dc.claos:
         pipeline.process(clao)
-        i = i+1
+        i += 1
         logger.info(i)
     logger.info("Running pipeline stages over entire corpus")
     pipeline.process_multiple(dc.claos)
 
     # evaluate the performance
-    eval = Evaluator(outcome_type=cfg.ingestion.outcome_type, target_dir=cfg.ingestion.output_dir, claos=dc.claos,
-                     threshold=cfg.evaluation.threshold)
-    eval.calculate_metrics(claos=dc.claos)
+    if "evaluation" in cfg:
+        eval = Evaluator(outcome_type=cfg.ingestion.outcome_type, target_dir=cfg.ingestion.output_dir, claos=dc.claos,
+                         threshold=cfg.evaluation.threshold)
+        eval.calculate_metrics(claos=dc.claos)
 
     # serialize CLAO to xml format or json format
     logger.info("Serializing CLAOs")

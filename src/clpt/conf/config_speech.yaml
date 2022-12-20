@@ -1,0 +1,4 @@
+defaults: 
+  - ingestion: ct_speech
+  - analysis: ct_preprocess_speech
+

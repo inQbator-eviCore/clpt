@@ -19,7 +19,7 @@ T = TypeVar("T")
 class CLAODataType(Enum):
     """CLAO supporting data type."""
     TEXT = 'text'
-    # AUDIO = 'audio'
+    AUDIO = 'audio'
     # VISUAL = 'visual'
 
 

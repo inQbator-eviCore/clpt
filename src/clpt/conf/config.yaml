@@ -2,4 +2,4 @@ defaults:
   - ingestion: default
   - analysis: default
   - classification: default
-  - evaluation: default
+  # - evaluation: default

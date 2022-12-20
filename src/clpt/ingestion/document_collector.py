@@ -2,6 +2,7 @@
 import os
 from typing import List, Union
 import glob
+from src.clao.audio_clao import AudioCLAO
 
 from src.clao.clao import CLAODataType, ClinicalLanguageAnnotationObject
 from src.clao.text_clao import TextCLAO, METAINFO
@@ -53,6 +54,8 @@ class DocumentCollector:
         # More types to be implemented in the future
         if data_type is CLAODataType.TEXT:
             clao_cls = TextCLAO
+        elif data_type is CLAODataType.AUDIO:
+            clao_cls = AudioCLAO
         else:
             raise NotImplementedError(f"DocumentCollector not implemented for data type '{data_type.name}'")
 
