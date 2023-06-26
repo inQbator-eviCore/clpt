@@ -1,0 +1,4 @@
+pipeline_stages:
+  - type: RuleBased
+    model_name: Denial_Rules
+    

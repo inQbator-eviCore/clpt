@@ -109,10 +109,11 @@ class ExcludePunctuation(DocumentCleaner):
         Args:
             raw_text: the raw text from CLAO(s)
         """
-        punctuations = '<[^<]+?>'
+        punctuations = '<[^<]+?>/&:;'
         raw_text = raw_text.replace('\r', ' ')
         raw_text = raw_text.replace('\n', ' ')
         raw_text = raw_text.replace('\t', ' ')
+
         return re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
 
 

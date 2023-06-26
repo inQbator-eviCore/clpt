@@ -3,7 +3,6 @@ import os
 from typing import List, Union
 import glob
 from src.clao.audio_clao import AudioCLAO
-
 from src.clao.clao import CLAODataType, ClinicalLanguageAnnotationObject
 from src.clao.text_clao import TextCLAO, METAINFO
 

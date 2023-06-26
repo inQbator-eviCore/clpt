@@ -1,0 +1,5 @@
+defaults: 
+  - ingestion: pi_taxonomy_ingest
+  - analysis: pi_preprocess_biosentvec
+  - classification: ct_classify_unsupervised
+  - evaluation: ct_threshold

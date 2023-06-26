@@ -5,6 +5,6 @@ pipeline_stages:
   - type: ExcludeNumbers
   - type: ExcludePunctuation
   - type: RegexTokenization
-  - type: WordEmbeddings
-    embeddings_file_path: Pretrained_Models/BioWordVec/pubmed2018_w2v_200D.bin
+  - type: SentenceEmbeddings
+    embeddings_file_path: Pretrained_Models/BioWordVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
     binary: True

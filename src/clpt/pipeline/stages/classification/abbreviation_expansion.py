@@ -16,7 +16,7 @@ from abc import abstractmethod
 from overrides import overrides
 
 # AbbreviationDetector is needed to add the abbreviation pipe to the spacy pipeline
-from scispacy.abbreviation import AbbreviationDetector  # noqa: F401
+# from scispacy.abbreviation import AbbreviationDetector  # noqa: F401
 
 from src.clao.text_clao import TextCLAO, Token, Text
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage

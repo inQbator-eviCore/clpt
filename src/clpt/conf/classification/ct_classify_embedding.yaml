@@ -1,4 +1,9 @@
 pipeline_stages:
-  - type: ML_Model
+  - type: MLModel
     model_name: RandomForestClassifier
-    params: bootstrap= True, criterion= 'entropy', max_depth= 85, max_features = 'sqrt', n_estimators = 90, random_state= 42
+    params: {'bootstrap':True,
+             'criterion':'entropy',
+             'max_depth':85,
+             'max_features':'sqrt',
+             'n_estimators':90,
+             'random_state':42}

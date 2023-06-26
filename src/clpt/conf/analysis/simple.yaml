@@ -3,7 +3,7 @@ pipeline_stages:
   - type: WordnetLemma
   - type: RegexSentenceBreaking
   - type: RegexTokenization #WhitespaceRegexTokenization
-  - type: SimplePOSTagger
+  #- type: SimplePOSTagger
   - type: PorterStemming
   - type: AbbreviationExpansion
   #  - type: SimpleWordEmbeddings

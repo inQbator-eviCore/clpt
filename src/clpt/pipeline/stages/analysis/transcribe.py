@@ -29,6 +29,7 @@ speech2text = Speech2Text(
     batch_size=1,
     nbest=1
 )
+
 STOPWORD = '<stopword>'
 
 

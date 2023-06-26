@@ -5,11 +5,9 @@ pipeline_stages:
   - type: ExcludeNumbers
   - type: ExcludePunctuation
   - type: VectorProcessor
-    vector_name: TfidfVectorizer
+    vector_name: CountVectorizer
     params: {'stop_words':'english',
-             'norm':'l2',
              'encoding':'latin-1',
              'max_features':300,
              'min_df':0.1}
-
 

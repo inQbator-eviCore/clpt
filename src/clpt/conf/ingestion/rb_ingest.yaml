@@ -1,0 +1,9 @@
+input_dir: ../../../resources/Denial_Rationale
+data_type: text
+outcome_file_name: gold_standard_outcome.csv
+outcome_type: multi_cols
+project_name: DR
+project_desc: Denial Rationale Classification
+creation_date: datetime.now()
+project_input_link: Evernorth via email
+project_version: 1

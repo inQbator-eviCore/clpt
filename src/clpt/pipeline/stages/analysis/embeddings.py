@@ -9,7 +9,8 @@ from gensim.models import Word2Vec
 # from gensim.models.keyedvectors import KeyedVectors
 from gensim.models import KeyedVectors
 import multiprocessing
-from src.clao.text_clao import Embedding, EmbeddingVector, Sentence, TextCLAO, Token
+import sent2vec
+from src.clao.text_clao import EmbeddingVector, Sentence, TextCLAO, Token
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 # from src.constants.annotation_constants import SPELL_CORRECTED_TOKEN
 
@@ -25,15 +26,11 @@ class EmbeddingsStage(PipelineStage):
         embeddings_file_path: a file which stores the embedding vector
         binary: if True, the data will be saved in binary word2vec format, else it will be saved in plain text.
     """
-    def __init__(self, embeddings_file_path, binary: bool = True, **kwargs):
+    def __init__(self, embeddings_file_path=None, binary: bool = True, **kwargs):
         super(EmbeddingsStage, self).__init__(**kwargs)
         self.vectors: KeyedVectors
-        if embeddings_file_path:
-            logger.info("INITIATE LOADING")
-            self.vectors = KeyedVectors.load_word2vec_format(embeddings_file_path, binary=binary)
-            logger.info("FINISH LOADING")
-            self.dim = len(self.vectors.wv.syn0[0])
-            self.single_clao = False
+        self.binary = binary
+        self.embeddings_file_path = embeddings_file_path
 
     @abstractmethod
     def process(self, claos: List[TextCLAO]) -> None:
@@ -48,24 +45,23 @@ class WordEmbeddings(EmbeddingsStage):
         replace_oov: if to replace out-of-vocabulary (OOV)
 
     """
-    def __init__(self, replace_oov: bool = True, **kwargs):
+    def __init__(self, embeddings_file_path=None, replace_oov: bool = True, binary: bool = True, **kwargs):
         super(WordEmbeddings, self).__init__(**kwargs)
         self.replace_oov = replace_oov
-        # self.single_clao = False
+        self.single_clao = False
+        self.embeddings_file_path = embeddings_file_path
+        self.binary = binary
+        if self.embeddings_file_path:
+            logger.info("INITIATE LOADING")
+            self.vectors = KeyedVectors.load_word2vec_format(embeddings_file_path, binary=binary)
+            logger.info("FINISH LOADING")
+            self.dim = len(self.vectors.wv.syn0[0])
 
     def process(self, claos: List[TextCLAO]) -> None:
         """Process a single tokenized CLAOs to add embeddings for each document
         Args:
             clao_info (TextCLAO): the CLAO information to process
         """
-        '''
-        if self.replace_oov:
-            # Add mean of all vectors as OOV placeholder
-            # embeddings.append(Embedding(0, self.vectors.get_mean_vector(self.vectors.key_to_index.keys())))
-            key_to_embedding_id = {OOV: 0}
-        else:
-            key_to_embedding_id = {}
-        '''
         transformed_X = []
         for clao in claos:
             sent_tokens = [token.text for token in clao.get_annotations(Token)]
@@ -83,27 +79,6 @@ class WordEmbeddings(EmbeddingsStage):
                 clao.insert_annotation(EmbeddingVector, vector)
             else:
                 continue
-        # Process a single tokenized CLAOs to add embeddings for all tokens.
-
-        '''
-        for token in clao_info.get_annotations(Token):
-            #key = token.map.get(SPELL_CORRECTED_TOKEN, token.text)
-            key = token.text
-            if key not in key_to_embedding_id:
-                try:
-                    embedding = Embedding(len(embeddings), self.vectors.get_vector(key))
-                    embeddings.append(embedding)
-                    key_to_embedding_id[key] = embedding.element_id
-                except KeyError as e:
-                    logger.debug(f"Key {key} not found in embeddings.")
-                    if self.replace_oov:
-                        key = OOV
-                    else:
-                        raise e
-            token._embedding_id = key_to_embedding_id[key]
-            #logger.info("FINISHED EMBEDDINg ")
-        clao_info.insert_annotations(Embedding, embeddings)
-       '''
 
 
 class FastTextEmbeddings(WordEmbeddings):
@@ -125,7 +100,7 @@ class FastTextEmbeddings(WordEmbeddings):
             **kwargs: Other arguments of gensim.models.FastText. See official documentation:
                       https://radimrehurek.com/gensim/models/fasttext.html
         """
-        super(FastTextEmbeddings, self).__init__(embeddings_file_path=None, replace_oov=False)
+        super(FastTextEmbeddings, self).__init__(replace_oov=False)
         self.model = FastText(size=vector_size, window=window, min_count=min_count, **kwargs)
         self.epochs = epochs
         if save_embeddings and not saved_file_name:
@@ -229,20 +204,26 @@ class WordVecEmbeddings(WordEmbeddings):
 
 class SentenceEmbeddings(EmbeddingsStage):
     """Embeddings can be generated on the fly for any sentence whose tokens have embeddings."""
-    def __init__(self):
-        super(SentenceEmbeddings, self).__init__(embeddings_file_path=None)
+    def __init__(self, embeddings_file_path=None, replace_oov: bool = True, **kwargs):
+        super(SentenceEmbeddings, self).__init__(embeddings_file_path, replace_oov=False)
+        self.single_clao = True
+        self.model = sent2vec.Sent2vecModel()
+        try:
+            logger.info(embeddings_file_path)
+            self.model.load_model(embeddings_file_path)
+            logger.info('model successfully loaded')
+        except Exception as e:
+            logger.info(e)
 
-    def process(self, clao_info: TextCLAO) -> None:
+    def process(self, clao: TextCLAO) -> None:
         """Create sentence embeddings for any CLAO with Sentences and Embeddings for Tokens.
 
         Args:
             clao_info (TextCLAO): the CLAO information to process
         """
-        embeddings = clao_info.get_annotations(Embedding)
-        embedding_id_offset = len(embeddings)
         sent_embeddings = blist()
-        for i, sent in enumerate(clao_info.get_annotations(Sentence)):
-            embedding = Embedding(embedding_id_offset + i, sent.get_span_embedding())
+        for i, sent in enumerate(clao.get_annotations(Sentence)):
+            sent2 = ' '.join([token.text for token in sent.tokens])
+            embedding = self.model.embed_sentence(sent2).flatten()
             sent_embeddings.append(embedding)
-            sent._embedding_id = embedding.element_id
-        clao_info.insert_annotations(Embedding, sent_embeddings)
+        clao.insert_annotation(EmbeddingVector, EmbeddingVector(sent_embeddings))
