@@ -145,7 +145,7 @@ class ConfusionMatrixMetrics:
            float: Standard accuracy measure
         """
         return(accuracy_score(self.y_true, self.y_pred))
-    
+
     def get_all_metrics(self) -> dict:
         """Return all metrics in a dictionary.
         Returns:
@@ -156,7 +156,7 @@ class ConfusionMatrixMetrics:
                 'acc': self.acc_score, 'mcc': self.mcc, 'pvr': self.pvr,
                 'tpfp_ratio': self.tpfp_ratio,
                 'volume': self.volume, 'fpr': self.fpr}
-    
+ 
     def export_metrics_to_yaml(self, output_dir: str):
         """Write scores to yaml at a given output directory.
 
@@ -319,7 +319,7 @@ class ScoreCalculationsMultiLabels(ConfusionMatrixMetrics):
         self.y_true, self.y_pred = targets, predictions
         self.logger = logger or logging.getLogger(__name__)
         super().__init__()
-    
+
     def get_all_metrics(self):
         """Return all metrics in a dictionary.
         Returns:

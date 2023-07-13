@@ -170,7 +170,7 @@ class Evaluator:
                 clao.insert_annotation(METRICS, metr_no_drugs)
                 clao.insert_annotation(METRICS, metr_age_lt_50)
                 clao.insert_annotation(METRICS, metr_age_lt_45)
-    
+
         if self.outcome_type == 'binary':
             if self.threshold is not None:
                 metrics = ScoreCalculations(self.predictions, self.gold_standards, self.threshold, self.split_type)
@@ -186,7 +186,7 @@ class Evaluator:
             metrics.export_metrics_to_yaml(self.target_dir)
             for clao in claos:
                 clao.insert_annotation(METRICS, metr)
-    
+
         if self.outcome_type == 'multi_labels':
             metrics = ScoreCalculationsMultiLabels(self.predictions, self.gold_standards, self.split_type)
             results = metrics.get_all_metrics()
