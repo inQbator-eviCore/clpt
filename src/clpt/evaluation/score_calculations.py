@@ -156,7 +156,7 @@ class ConfusionMatrixMetrics:
                 'acc': self.acc_score, 'mcc': self.mcc, 'pvr': self.pvr,
                 'tpfp_ratio': self.tpfp_ratio,
                 'volume': self.volume, 'fpr': self.fpr}
- 
+
     def export_metrics_to_yaml(self, output_dir: str):
         """Write scores to yaml at a given output directory.
 
