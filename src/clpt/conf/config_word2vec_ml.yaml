@@ -2,4 +2,4 @@ defaults:
   - ingestion: ct_ingest
   - analysis: ct_preprocess_word2vec
   - classification: ct_classify_embedding
-  - evaluation: ct_threshold
+  - evaluation: default

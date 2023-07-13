@@ -7,7 +7,6 @@ from src.clpt.pipeline.stages.analysis.doc_cleaner import ConvertToLowerCase, Do
     ExcludePunctuation, RemoveStopWord, ExcludeNumbers
 from src.clpt.pipeline.stages.analysis.embeddings import FastTextEmbeddings, WordVecEmbeddings, \
     SentenceEmbeddings, WordEmbeddings
-from src.clpt.pipeline.stages.analysis.tf_idf_processor import VectorProcessor
 from src.clpt.pipeline.stages.analysis.lemmatization import SpaCyLemma, WordnetLemma
 from src.clpt.pipeline.stages.analysis.pos_tagger import SimplePOSTagger
 from src.clpt.pipeline.stages.analysis.sentence_breaking import RegexSentenceBreaking, SentenceBreaking
@@ -18,6 +17,7 @@ from src.clpt.pipeline.stages.analysis.cluster import Cluster
 from src.clpt.pipeline.stages.analysis.transcribe import Transcribe
 from src.clpt.pipeline.stages.analysis.tokenization import RegexTokenization, WhitespaceRegexTokenization
 from src.clpt.pipeline.stages.classification.abbreviation_expansion import AbbreviationExpandWithDict
+from src.clpt.pipeline.stages.analysis.tf_idf_processor import VectorProcessor
 from src.clpt.pipeline.stages.classification.MLClassifier import MLModel
 from src.clpt.pipeline.stages.classification.RuleBasedClassifier import RuleBased
 from src.clpt.pipeline.stages.classification.DeepLearning import CNNModel

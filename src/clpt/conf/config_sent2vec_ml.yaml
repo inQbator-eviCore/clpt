@@ -2,5 +2,5 @@ defaults:
   - ingestion: pi_ingest
   - analysis: pi_preprocess_biosentvec
   - classification: ct_classify_tfidf
-  - evaluation: ct_threshold
+  - evaluation: default
 

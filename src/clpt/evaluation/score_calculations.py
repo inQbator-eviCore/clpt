@@ -145,7 +145,7 @@ class ConfusionMatrixMetrics:
            float: Standard accuracy measure
         """
         return(accuracy_score(self.y_true, self.y_pred))
-
+    
     def get_all_metrics(self) -> dict:
         """Return all metrics in a dictionary.
         Returns:
@@ -156,7 +156,7 @@ class ConfusionMatrixMetrics:
                 'acc': self.acc_score, 'mcc': self.mcc, 'pvr': self.pvr,
                 'tpfp_ratio': self.tpfp_ratio,
                 'volume': self.volume, 'fpr': self.fpr}
-
+    
     def export_metrics_to_yaml(self, output_dir: str):
         """Write scores to yaml at a given output directory.
 
@@ -211,10 +211,12 @@ class ScoreCalculations(ConfusionMatrixMetrics):
         if len(targets) == 0 or len(predictions) == 0:
             raise ValueError("Evaluation volume should be greater than 0.")
         self.split_type = split_type
-        predictions = np.array(predictions)
-        # predictions[predictions >= threshold] = POSITIVE_LABEL
-        # predictions[predictions < threshold] = NEGATIVE_LABEL
-        self.threshold = threshold
+        if(threshold > 0):
+            predictions[predictions >= threshold] = POSITIVE_LABEL
+            predictions[predictions < threshold] = NEGATIVE_LABEL
+            self.threshold = threshold
+        else:
+            predictions = np.array(predictions)
         self.y_true, self.y_pred = targets, predictions
         self._confusion_matrix = confusion_matrix(targets, predictions).ravel()
         if(len(self._confusion_matrix) >= 4):
@@ -316,12 +318,12 @@ class ScoreCalculationsMultiLabels(ConfusionMatrixMetrics):
         self.split_type = split_type
         self.y_true, self.y_pred = targets, predictions
         self.logger = logger or logging.getLogger(__name__)
-
-    @property
-    def get_all_metrics(self) -> dict:
-        """Calculate AUC PR which is better than AUC RoC for imbalanced dataset.
+        super().__init__()
+    
+    def get_all_metrics(self):
+        """Return all metrics in a dictionary.
         Returns:
-            float: Area under curve for Precision Recall
+            Dict: All metrics
         """
         self.precision, self.recall, self.f1, _ = precision_recall_fscore_support(self.y_true, self.y_pred)
         self.acc_score = accuracy_score(self.y_true, self.y_pred)

@@ -8,7 +8,7 @@ from src.clpt.ingestion.document_collector import DocumentCollector
 from src.clpt.ingestion.truth_collector import TruthCollector
 from src.clpt.pipeline.pipeline_processor import NlpPipelineProcessor
 from src.clpt.evaluation.evaluator import Evaluator
-from src.clpt.pipeline.stages.classification.Unsupervised import Embedding_Distance
+from src.clpt.pipeline.stages.classification.Unsupervised import EmbeddingDistance
 from src.constants.constants import CONFIG_FILE, CONFIG_FILEPATH
 from src.utils import add_new_key_to_cfg
 from datetime import datetime
@@ -63,20 +63,17 @@ def main(cfg: DictConfig) -> None:
     logger.info("Running pipeline stages over entire corpus")
 
     if("taxonomy_dir" in cfg.ingestion):
-        unsup = Embedding_Distance(model_name=cfg.classification.pipeline_stages[0].model_name)
+        unsup = EmbeddingDistance(model_name=cfg.classification.pipeline_stages[0].model_name)
         unsup.process(dc.claos, td.claos)
     else:
         pipeline.process_multi_labels(dc.claos)
 
     # evaluate the performance
     # to do better way to handle evaluation
-    if "evaluation" in cfg:
-        eval = Evaluator(outcome_type=cfg.ingestion.outcome_type, target_dir=cfg.ingestion.output_dir, claos=dc.claos,
-                         threshold=cfg.evaluation.threshold)
+    threshold = cfg.evaluation.threshold if "threshold" in cfg.evaluation else None
     eval = Evaluator(outcome_type=cfg.ingestion.outcome_type, target_dir=cfg.ingestion.output_dir, claos=dc.claos,
-                     threshold=None)
+                     threshold=threshold)
     eval.calculate_metrics(claos=dc.claos)
-
     # serialize CLAO to xml format or json format
     logger.info("Serializing CLAOs")
     dc.serialize_all(cfg.ingestion.output_dir)

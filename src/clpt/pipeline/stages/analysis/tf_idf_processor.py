@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class VectorProcessor(PipelineStage):
-    """TFIDF class to generate features for a document in matrix format.
+    """ Vector class to generate features for a document in matrix format.
     Args:
         vector_file_path: a file which stores the  vector
         binary: if True, the data will be saved in binary format, else it will be saved in plain text.
