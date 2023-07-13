@@ -187,7 +187,7 @@ class ConfusionMatrixMetrics:
 
 
 class ScoreCalculations(ConfusionMatrixMetrics):
-    """Calculate metrics for evaluating CDR models.
+    """Calculate metrics for evaluating binary models.
 
     Attributes:
        predictions: List[float] of predicted probabilities
@@ -296,7 +296,7 @@ class ScoreCalculations(ConfusionMatrixMetrics):
 
 
 class ScoreCalculationsMultiLabels(ConfusionMatrixMetrics):
-    """Calculate metrics for evaluating CDR models.
+    """Calculate metrics for evaluating multilabel models.
     Attributes:
         predictions: List[float] of predicted probabilities
         targets: List[float] of ground truth
