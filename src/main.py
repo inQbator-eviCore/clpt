@@ -69,7 +69,6 @@ def main(cfg: DictConfig) -> None:
         pipeline.process_multi_labels(dc.claos)
 
     # evaluate the performance
-    # to do better way to handle evaluation
     threshold = cfg.evaluation.threshold if "threshold" in cfg.evaluation else None
     eval = Evaluator(outcome_type=cfg.ingestion.outcome_type, target_dir=cfg.ingestion.output_dir, claos=dc.claos,
                      threshold=threshold)
