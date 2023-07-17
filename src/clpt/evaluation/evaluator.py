@@ -77,7 +77,7 @@ class Evaluator:
         if self.outcome_type == 'entity':
             metrics = ConfusionMatrixMetrics(self.tp, self.fp, self.tn, self.fn, self.split_type)
             metrics.export_metrics_to_yaml(self.target_dir)
-        
+
         if self.outcome_type == 'binary':
             if self.threshold is not None:
                 metrics = ScoreCalculations(self.predictions, self.gold_standards, self.threshold, self.split_type)

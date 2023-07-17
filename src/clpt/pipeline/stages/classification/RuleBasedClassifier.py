@@ -1,11 +1,10 @@
 '''
-Rule Based classifier class is intentionally left blank to create 
+Rule Based classifier class is intentionally left blank to create
 custom rules based on your needs
 '''
 import logging
-from src.clao.text_clao import PredictionsMultiLabels, Text, TextCLAO
+from src.clao.text_clao import TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
-from src.constants.annotation_constants import CLEANED_TEXT
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +22,10 @@ class RuleBased(PipelineStage):
 
     def process(self, clao: TextCLAO) -> None:
         """Perform classification on the data
-
         Args:
             clao: the CLAO information to process
-            
         """
         model_name = self.model
+        logger.info(model_name)
         logger.info("RuleBased engine is intentionally left blank to create \
                      custom rules based on your needs")
