@@ -1,6 +1,6 @@
 defaults: 
-  - ingestion: ct_ingest
-  - analysis: ct_preprocess_tfidf
-  - classification: ct_classify_tfidf
-  - evaluation: ct_threshold
+  - ingestion: pi_ingest
+  - analysis: preprocess_tfidf
+  - classification: classify_ml
+  - evaluation: default
 

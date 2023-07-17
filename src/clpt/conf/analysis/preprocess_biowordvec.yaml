@@ -6,5 +6,5 @@ pipeline_stages:
   - type: ExcludePunctuation
   - type: RegexTokenization
   - type: SentenceEmbeddings
-    embeddings_file_path: Pretrained_Models/BioWordVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+    embeddings_file_path: /Pretrained_Models/BioWordVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
     binary: True

@@ -43,8 +43,8 @@ class EmbeddingDistance(PipelineStage):
                 y_n = np.array(y)
                 b = np.array([r for r in y_n if any(r)])
                 cos_distance = distance.cdist(a, b, 'cosine')
-                hjh = np.mean(cos_distance, axis=1)
-                mins.append(hjh)
+                dist_mean = np.mean(cos_distance, axis=1)
+                mins.append(dist_mean)
             mins = np.array(mins)
             min_class_sent = st.mode(np.array(mins.argmin(0)))
             val = list(tax_embed.keys())[min_class_sent]

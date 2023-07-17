@@ -1,9 +1,9 @@
-input_dir: ../../../resources/PI_Sample
+input_dir: input data folder
 data_type: text
-outcome_file_name: gold_standard_pi_2.csv
+outcome_file_name: output file name
 outcome_type: multi_labels
 project_name: PI
 project_desc: Primary Indication
 creation_date: CURRENT_TIMESTAMP
-project_input_link: resources/sample_docs
-project_version: 1taxonomy_dir
+project_input_link: project link
+project_version: project version

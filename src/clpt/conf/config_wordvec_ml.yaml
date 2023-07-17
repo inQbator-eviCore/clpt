@@ -1,5 +1,5 @@
 defaults: 
   - ingestion: pi_ingest
-  - analysis: preprocess_fastText
+  - analysis: preprocess_biowordvec
   - classification: classify_embedding
   - evaluation: default

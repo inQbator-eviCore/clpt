@@ -1,6 +1,5 @@
 defaults: 
   - ingestion: pi_ingest
-  - analysis: preprocess_biosentvec
+  - analysis: preprocess_countvec
   - classification: classify_ml
   - evaluation: default
-

@@ -1,5 +1,0 @@
-defaults: 
-  - ingestion: ct_ingest
-  - analysis: ct_preprocess_biowordvec
-  - classification: ct_classify_embedding
-  - evaluation: default

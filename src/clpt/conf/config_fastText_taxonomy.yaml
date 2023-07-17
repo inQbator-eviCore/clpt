@@ -1,5 +1,5 @@
 defaults: 
   - ingestion: pi_taxonomy_ingest
-  - analysis: preprocess_biosentvec
+  - analysis: preprocess_fastText
   - classification: classify_unsupervised
   - evaluation: custom_threshold

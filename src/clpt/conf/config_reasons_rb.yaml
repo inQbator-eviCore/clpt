@@ -1,5 +1,0 @@
-defaults: 
-  - ingestion: rb_ingest
-  - analysis: rb_preprocess
-  - classification: rb_classify
-  - evaluation: default

@@ -1,9 +1,0 @@
-input_dir: ../../../resources/Conservative_Treatment_bb
-data_type: text
-outcome_file_name: op.csv
-outcome_type: binary
-project_name: CT
-project_desc: Conservative Treatment
-creation_date: datetime.now()
-project_input_link: https://ehcuspd1orcasa.blob.core.windows.net/datasets/aruther/test/dataset_001.snappy.parquet
-project_version: 1
