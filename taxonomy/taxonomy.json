@@ -64,8 +64,8 @@
         },
         {
             "annotator_id": 40,
-            "paragraph_one": NaN,
-            "paragraph_two": NaN
+            "paragraph_one": "",
+            "paragraph_two": ""
         }
     ],
     "Scoliosis or Kyphosis (SP-14.1)": [
@@ -114,8 +114,8 @@
         },
         {
             "annotator_id": 43,
-            "paragraph_one": NaN,
-            "paragraph_two": NaN
+            "paragraph_one": "",
+            "paragraph_two": ""
         }
     ],
     "Syringomyelia, Follow up imaging (SP-13.2)": [
@@ -129,12 +129,12 @@
         {
             "annotator_id": 14,
             "paragraph_one": "This topic/ Indication is the same as line 12 \"Ankylosing Spondylitis\" ",
-            "paragraph_two": NaN
+            "paragraph_two": ""
         },
         {
             "annotator_id": 26,
             "paragraph_one": "Same as Ankylosing Spondylitis (SP-10.2)",
-            "paragraph_two": NaN
+            "paragraph_two": ""
         }
     ],
     "Headache (HD-11)": [
@@ -206,8 +206,8 @@
         },
         {
             "annotator_id": 44,
-            "paragraph_one": NaN,
-            "paragraph_two": NaN
+            "paragraph_one": "",
+            "paragraph_two": ""
         }
     ],
     "Sacro-Iliac Joint Pain or Sacroiliitis (SP-10.1)": [
@@ -288,8 +288,8 @@
     "Multiple Sclerosis, Known (HD-16.1)": [
         {
             "annotator_id": 41,
-            "paragraph_one": NaN,
-            "paragraph_two": NaN
+            "paragraph_one": "",
+            "paragraph_two": ""
         }
     ],
     "Hemangiomas, Vertebral Body (SP-2.8)": [
