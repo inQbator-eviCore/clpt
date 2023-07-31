@@ -1,0 +1,9 @@
+input_dir: input data folder
+data_type: text
+outcome_file_name: output file name
+outcome_type: multi_labels
+project_name: PI
+project_desc: Primary Indication
+creation_date: CURRENT_TIMESTAMP
+project_input_link: project link
+project_version: project version

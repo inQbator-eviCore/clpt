@@ -3,10 +3,8 @@
 import logging
 from abc import ABC, abstractmethod
 from typing import List
-
 import nltk
 from func_timeout import FunctionTimedOut, func_timeout
-
 from src.clao.text_clao import TextCLAO
 
 logger = logging.getLogger(__name__)

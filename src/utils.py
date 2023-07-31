@@ -7,7 +7,9 @@ from typing import List
 from omegaconf import DictConfig, OmegaConf, open_dict
 import numpy as np
 from datetime import datetime
-from src.clao.text_clao import Span, Entity, ActualLabel, PredictProbabilities, Predictions
+from src.clao.text_clao import Embedding, PredictionsMultiLabels, Span, \
+    Entity, ActualLabel, ActualMultiLabels, ActualDataSource, \
+    PredictProbabilities, Predictions, EmbeddingVector
 
 
 def add_new_key_to_cfg(cfg: DictConfig, value: str, *keys: str) -> None:
@@ -124,6 +126,80 @@ def extract_gold_standard_outcome_from_claos(claos):
         for t in clao.get_annotations(ActualLabel):
             gold_standard_dic[clao.name] = t.actual_label_value
     return gold_standard_dic
+
+
+def extract_gold_standard_multi_outcome_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    gold_standard_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(ActualMultiLabels):
+            gold_standard_dic[clao.name] = t.actual_multi_value
+    return gold_standard_dic
+
+
+def extract_predict_multi_outcome_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    predictions_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(PredictionsMultiLabels):
+            predictions_dic[clao.name] = t.prediction_multi_labels
+    return predictions_dic
+
+
+def extract_gold_standard_ds_filter_from_claos(claos, flag):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    gold_standard_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(ActualLabel):
+            dataseter = [token.data_source_value for token in clao.get_annotations(ActualDataSource)]
+            if dataseter[0] == flag:
+                gold_standard_dic[clao.name] = t.actual_label_value
+    return gold_standard_dic
+
+
+def extract_vector_from_claos_ml(claos, flag):
+    """Extract the vector embeddings which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(EmbeddingVector):
+            dataseter = [token.data_source_value for token in clao.get_annotations(ActualDataSource)]
+            if dataseter[0] == flag:
+                if(np.array(t.vector).ndim == 2):
+                    vector_dic[clao.name] = np.mean(t.vector, axis=0)
+                else:
+                    vector_dic[clao.name] = t.vector
+    return vector_dic
+
+
+def extract_vector_from_claos(claos, flag):
+    """Extract the vector embeddings which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(EmbeddingVector):
+            dataseter = [token.data_source_value for token in clao.get_annotations(ActualDataSource)]
+            if dataseter[0] == flag:
+                vector_dic[clao.name] = t.vector
+    return vector_dic
+
+
+def extract_vectorembed_from_claos(claos, flag):
+    """Extract the vector embeddings which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(Embedding):
+            dataseter = [token.data_source_value for token in clao.get_annotations(ActualDataSource)]
+            if dataseter[0] == flag:
+                vector_dic[clao.name] = t.vector
+    return vector_dic
+
+
+def extract_embedding_from_claos(claos):
+    """Extract the gold standard entities or target label which have been inserted into CLAO."""
+    vector_dic = {}
+    for clao in claos:
+        for t in clao.get_annotations(EmbeddingVector):
+            vector_dic[clao.name] = t.vector
+    return vector_dic
 
 
 def extract_predicted_probability_from_claos(claos):

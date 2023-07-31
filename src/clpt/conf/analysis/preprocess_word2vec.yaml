@@ -1,0 +1,16 @@
+pipeline_stages:
+  # add params here
+  - type: RemoveStopWord
+  - type: ConvertToLowerCase
+  - type: ExcludeNumbers
+  - type: ExcludePunctuation
+  - type: RegexTokenization
+  - type: WordVecEmbeddings
+    min_count: 4
+    window: 4
+    size: 300
+    alpha: 0.03 
+    min_alpha: 0.0007 
+    sg: 1
+    workers: cores-1
+    epochs: 2

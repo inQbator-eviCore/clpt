@@ -1,12 +1,13 @@
-"""Metrics Calculation module for evaluating models."""
-
+""" Score Calculations """
 import logging
 import os
 from math import sqrt
 import numpy as np
 import pandas as pd
 import yaml
-from sklearn.metrics import confusion_matrix, auc, precision_recall_curve, roc_auc_score, average_precision_score
+from sklearn.metrics import confusion_matrix, auc, average_precision_score, \
+    precision_recall_curve, roc_auc_score, precision_score, recall_score, \
+    f1_score, precision_recall_fscore_support, accuracy_score
 from src.constants.constants import POSITIVE_LABEL, NEGATIVE_LABEL, METRICS_FILE, PROBABILITY_FILE, \
     METRICS_DEFAULT_FILE, PROBABILITY_DEFAULT_FILE
 from src.constants.annotation_constants import PROBABILITY, PREDICTION, ACTUAL_LABEL
@@ -24,9 +25,9 @@ class ConfusionMatrixMetrics:
         split_type: a string the represents the type of dataset split
         logger: logger
     """
+
     def __init__(self, tp, fp, tn, fn, split_type: str = None, logger: logging.Logger = None):
         """Initailize the class to calculate the confusion matric metrics.
-
         Args:
             tp (float): true posititve
             fp (float): false positive
@@ -34,7 +35,6 @@ class ConfusionMatrixMetrics:
             fn (float): false negative
             split_type (str): the type of dataset split
             logger (logging.Logger): logger
-
         Raises:
             ValueError: if the volume is 0
         """
@@ -74,7 +74,7 @@ class ConfusionMatrixMetrics:
         Returns:
             float: The precision as a float between 0 and 1
         """
-        return self.tp / (self.tp + self.fp) if (self.tp + self.fp) > 0 else 0.
+        return(precision_score(self.y_true, self.y_pred, average='micro'))
 
     @property
     def recall(self):
@@ -83,7 +83,7 @@ class ConfusionMatrixMetrics:
         Returns:
             float: The recall as a float between 0 and 1
         """
-        return self.tp / (self.tp + self.fn) if (self.tp + self.fn) > 0 else 0.
+        return(recall_score(self.y_true, self.y_pred, average='micro'))
 
     @property
     def automation_rate(self):
@@ -136,18 +136,25 @@ class ConfusionMatrixMetrics:
         Returns:
            float: Standard F1 measure
         """
-        sum_pr = self.precision + self.recall
-        return (2. * self.precision * self.recall) / sum_pr if sum_pr > 0. else 0.
+        return(f1_score(self.y_true, self.y_pred, average='micro'))
+
+    @property
+    def acc_score(self):
+        """accuracy-measure.
+        Returns:
+           float: Standard accuracy measure
+        """
+        return(accuracy_score(self.y_true, self.y_pred))
 
     def get_all_metrics(self) -> dict:
         """Return all metrics in a dictionary.
-
         Returns:
-            Dict: contains all of the metrics
+           Dict: contains all of the metrics
         """
         return {'tp': self.tp, 'fp': self.fp, 'fn': self.fn, 'tn': self.tn,
                 'precision': self.precision, 'recall': self.recall, 'f1': self.f1,
-                'mcc': self.mcc, 'pvr': self.pvr, 'tpfp_ratio': self.tpfp_ratio,
+                'acc': self.acc_score, 'mcc': self.mcc, 'pvr': self.pvr,
+                'tpfp_ratio': self.tpfp_ratio,
                 'volume': self.volume, 'fpr': self.fpr}
 
     def export_metrics_to_yaml(self, output_dir: str):
@@ -180,7 +187,7 @@ class ConfusionMatrixMetrics:
 
 
 class ScoreCalculations(ConfusionMatrixMetrics):
-    """Calculate metrics for evaluating CDR models.
+    """Calculate metrics for evaluating binary models.
 
     Attributes:
        predictions: List[float] of predicted probabilities
@@ -203,17 +210,22 @@ class ScoreCalculations(ConfusionMatrixMetrics):
         """
         if len(targets) == 0 or len(predictions) == 0:
             raise ValueError("Evaluation volume should be greater than 0.")
-
         self.split_type = split_type
+        if(threshold > 0):
+            predictions[predictions >= threshold] = POSITIVE_LABEL
+            predictions[predictions < threshold] = NEGATIVE_LABEL
+            self.threshold = threshold
+        else:
+            predictions = np.array(predictions)
         self.y_true, self.y_pred = targets, predictions
-        predictions = np.array(predictions)
-        predictions[predictions >= threshold] = POSITIVE_LABEL
-        predictions[predictions < threshold] = NEGATIVE_LABEL
-
-        self.threshold = threshold
         self._confusion_matrix = confusion_matrix(targets, predictions).ravel()
-        self.tn, self.fp, self.fn, self.tp = self._confusion_matrix
-
+        if(len(self._confusion_matrix) >= 4):
+            self.tn, self.fp, self.fn, self.tp = self._confusion_matrix
+        else:
+            self.tn = self._confusion_matrix
+            self.fp = 0
+            self.fn = 0
+            self.tp = 0
         super().__init__(self.tp, self.fp, self.tn, self.fn, split_type, logger)
 
     @property
@@ -246,7 +258,6 @@ class ScoreCalculations(ConfusionMatrixMetrics):
 
     def get_all_metrics(self) -> dict:
         """Return all metrics in a dictionary.
-
         Returns:
             Dict: All metrics
         """
@@ -255,7 +266,7 @@ class ScoreCalculations(ConfusionMatrixMetrics):
                 'auc_roc': self.auc_roc, 'auc_pr': self.auc_pr, 'mcc': self.mcc,
                 'pvr': self.pvr, 'tpfp_ratio': self.tpfp_ratio, 'volume': self.volume,
                 'fpr': self.fpr, 'average_precision': self.average_precision,
-                'threshold': self.threshold}
+                'threshold': self.threshold, 'acc': self.acc_score}
 
     def export_predicted_probas_to_csv(self, output_dir: str, extra_cols):
         """Write predicted probabilities to csv with header.
@@ -284,9 +295,65 @@ class ScoreCalculations(ConfusionMatrixMetrics):
             self.logger.info("%s scores exported to %s", self.split_type, path)
 
 
+class ScoreCalculationsMultiLabels(ConfusionMatrixMetrics):
+    """Calculate metrics for evaluating multilabel models.
+    Attributes:
+        predictions: List[float] of predicted probabilities
+        targets: List[float] of ground truth
+        threshold: float between 0 and 1 of threshold to be used for classification
+    """
+
+    def __init__(self, predictions, targets, split_type: str = None, logger: logging.Logger = None):
+        """Initialize the class to score the model.
+        Args:
+            predictions (List[float]): predicted probabilities
+            targets (List[float]): ground truth
+            split_type (str): the type of dataset split (train, test, valid etc.)
+            logger (logging.Logger): logger
+        Raises:
+        ValueError: if the volume is 0
+        """
+        if len(targets) == 0 or len(predictions) == 0:
+            raise ValueError("Evaluation volume should be greater than 0.")
+        self.split_type = split_type
+        self.y_true, self.y_pred = targets, predictions
+        self.logger = logger or logging.getLogger(__name__)
+        super().__init__()
+
+    def get_all_metrics(self):
+        """Return all metrics in a dictionary.
+        Returns:
+            Dict: All metrics
+        """
+        self.precision, self.recall, self.f1, _ = precision_recall_fscore_support(self.y_true, self.y_pred)
+        self.acc_score = accuracy_score(self.y_true, self.y_pred)
+        return {'precision': self.precision, 'recall': self.recall, 'f1': self.f1, 'acc': self.acc_score}
+
+    def export_predicted_probas_to_csv(self, output_dir: str, extra_cols):
+        """Write predicted probabilities to csv with header.
+        Args:
+            output_dir (str): Path to the directory to save
+            extra_cols (List[Tuple[str, List[float]]): list of tuple of columns and values
+        """
+        dataset = pd.DataFrame()
+        dataset[PROBABILITY] = np.array(self.y_pred)
+        dataset[ACTUAL_LABEL] = np.array(self.y_true)
+        if (self.split_type is None):
+            path = os.path.join(output_dir, PROBABILITY_DEFAULT_FILE)
+        else:
+            path = os.path.join(output_dir, PROBABILITY_FILE.format(self.split_type))
+
+        for col_name, values in extra_cols:
+            dataset[col_name] = pd.Series(values, index=dataset.index)
+        dataset.to_csv(path, index=False, header=True, date_format='%Y/%m/%d %H:%m:%S')
+        if (self.split_type is None):
+            self.logger.info("scores exported to %s", path)
+        else:
+            self.logger.info("%s scores exported to %s", self.split_type, path)
+
+
 def count_stats(y_actual, y_pred):
     """Get the number of FP,FN,TP, TN
-
     Args:
         y_actual: pd.Series that contains the true labels
         y_pred: pd.Series that contains the predicted labels

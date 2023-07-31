@@ -1,0 +1,3 @@
+pipeline_stages:
+  - type: EmbeddingDistance
+    model_name: Cosine_Similarity

@@ -15,6 +15,7 @@ pipeline_stages:
     epochs: 10
     save_embeddings: True
     saved_file_name: my_cool_embeddings.bin
+  - type: AbbreviationExpandWithDict
   - type: MentionDetection
     rules_file: ../../../resources/mention-detection-rules.yaml
   - type: GroupEntities

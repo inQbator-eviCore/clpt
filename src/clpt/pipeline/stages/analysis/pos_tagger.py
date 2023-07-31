@@ -8,8 +8,8 @@ from src.constants.annotation_constants import POS
 
 class SimplePOSTagger(NltkStage):
     """A simple part-of-speech (POS) tagging using NLTK."""
-    def __init__(self, **kwargs):
-        super(SimplePOSTagger, self).__init__(nltk_reqs=['taggers/averaged_perceptron_tagger'], **kwargs)
+    # def __init__(self, **kwargs):
+    # super(SimplePOSTagger, self).__init__(nltk_reqs=['taggers/averaged_perceptron_tagger'], **kwargs)
 
     def process(self, clao_info: TextCLAO) -> None:
         """Add tags to tokens in CLAO(s) and add the POS tags to CLAO(s).

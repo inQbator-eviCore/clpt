@@ -1,0 +1,13 @@
+pipeline_stages:
+  # add params here
+  - type: RemoveStopWord
+  - type: ConvertToLowerCase
+  - type: ExcludeNumbers
+  - type: ExcludePunctuation
+  - type: VectorProcessor
+    vector_name: CountVectorizer
+    params: {'stop_words':'english',
+             'encoding':'latin-1',
+             'max_features':300,
+             'min_df':0.1}
+

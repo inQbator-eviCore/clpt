@@ -1,0 +1,5 @@
+defaults: 
+  - ingestion: pi_ingest
+  - analysis: preprocess_tfidf
+  - classification: classify_ml
+  - evaluation: default

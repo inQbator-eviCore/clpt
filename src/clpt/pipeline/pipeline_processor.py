@@ -9,6 +9,7 @@ from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 
 
 class NlpPipelineProcessor:
+
     """Process CLAO(s) through the NLP pipeline."""
     def __init__(self, single_clao_stages: List[PipelineStage], all_claos_stages: List[PipelineStage]):
         """Class handling the processing of CLAO(s) through the NLP pipeline.
@@ -37,8 +38,8 @@ class NlpPipelineProcessor:
         for stage in [ps for ps in self.single_clao_pipeline_stages]:
             stage.process(clao_info)
 
-    def process_multiple(self, claos: List[TextCLAO]):
-        """Process documents through the NLP pipeline for multiple CLAOs
+    def process_multi_labels(self, claos: List[TextCLAO]):
+        """Process documents through the NLP pipeline for multi_labels CLAOs
 
         Args:
             claos: a list of CLAOs to process.
@@ -48,3 +49,17 @@ class NlpPipelineProcessor:
         """
         for stage in [ps for ps in self.all_claos_pipeline_stages]:
             stage.process(claos)
+
+    ''' Need to implement later
+    def process_multi_labels_claosets(self, claos: List[TextCLAO],claos_2: List[TextCLAO]):
+        """Process documents through the NLP pipeline for multi_labels CLAOs
+
+        Args:
+            claos: a list of CLAOs to process.
+
+        Returns:
+            None
+        """
+        for stage in [ps for ps in self.all_claos_pipeline_stages]:
+            stage.process(claos,claos_2)
+        '''

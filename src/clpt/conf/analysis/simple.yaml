@@ -3,7 +3,7 @@ pipeline_stages:
   - type: WordnetLemma
   - type: RegexSentenceBreaking
   - type: RegexTokenization #WhitespaceRegexTokenization
-  - type: SimplePOSTagger
+  #- type: SimplePOSTagger
   - type: PorterStemming
   - type: AbbreviationExpansion
   #  - type: SimpleWordEmbeddings
@@ -13,8 +13,8 @@ pipeline_stages:
   - type: FastTextEmbeddings
     vector_size: 200
     window: 3
-    min_count: 2
-    epochs: 10
+    min_count: 1
+    epochs: 2
     save_embeddings: True
     saved_file_name: my_cool_embeddings.bin
   - type: MentionDetection

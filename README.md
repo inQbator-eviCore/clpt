@@ -26,7 +26,7 @@ pip install en_core_web_sm-3.1.0.tar.gz
 ### Test some text examples
 Testing some text examples with default pipeline stages can be invoked manually by:
 
-`python main.py`
+`python main.py` or `python -m src.main analysis=ct_preprocess_speech ingestion=ct_speech`
 
 If you want to use other configuration file, you could provide the arguments, such as below to use the `simple.yaml` instead of `default.yaml`.
 

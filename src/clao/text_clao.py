@@ -1,17 +1,19 @@
-"""Create a TextCALO.
+"""Create a TextCLAO.
 
 Initial version of the text annotation objects, in line with XML schema illustrated in 2022 NaaCL paper."""
+from datetime import datetime
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type
-
 import numpy as np
 from lxml import etree
 from omegaconf import DictConfig
-
 from src.clao.clao import CLAOElement, CLAOElementContainer, ClinicalLanguageAnnotationObject, IdCLAOElement
-from src.constants.annotation_constants import ANNOTATION, CLEANED_TEXT, DESCRIPTION, EMBEDDING, EMBEDDING_ID, \
-    ENTITIES, ENTITY, ENTITY_GROUP, EntityType, HEADING, LITERAL, PARAGRAPH, PARAGRAPHS, RAW_TEXT, SECTION, SENTENCE, \
-    SENTENCES, SPAN, TEXT, TEXT_ELEMENT, TOKEN, TOKENS, VECTOR, ACTUAL_LABEL, PREDICTION, PROBABILITY
+from src.constants.annotation_constants import ANNOTATION, META_INFO, METRIC, \
+    CLEANED_TEXT, DESCRIPTION, EMBEDDING, EMBEDDING_ID, EMBEDDING_VECTOR, ENTITIES, \
+    ENTITY, ENTITY_GROUP, EntityType, HEADING, LITERAL, PARAGRAPH, PARAGRAPHS, \
+    RAW_TEXT, SECTION, SENTENCE, SENTENCES, SPAN, TEXT, TEXT_ELEMENT, TOKEN, \
+    TOKENS, VECTOR, ACTUAL_LABEL, ACTUAL_MULTIPLE, DATA_SOURCE, PREDICTION, \
+    PREDICTION_MULTIPLE, PROBABILITY
 
 
 class TextCLAOElement(CLAOElement):
@@ -150,7 +152,8 @@ class TextCLAO(Span, ClinicalLanguageAnnotationObject[str]):
         elements to be serialized should be contained within one of these
     """
     element_name = ANNOTATION
-    _top_level_elements = [TEXT_ELEMENT, SENTENCE, EMBEDDING, ENTITY_GROUP, ACTUAL_LABEL, PREDICTION, PROBABILITY]
+    _top_level_elements = [META_INFO, METRIC, TEXT_ELEMENT, SENTENCE, EMBEDDING, EMBEDDING_VECTOR,
+                           ENTITY_GROUP, ACTUAL_LABEL, DATA_SOURCE, PREDICTION, PROBABILITY]
     _text_clao_element_dict = None
 
     def __init__(self, raw_text: str, name: str, cfg: DictConfig = None, *args, **kwargs):
@@ -278,6 +281,47 @@ class IdSpan(IdCLAOElement, Span):
         return super().__eq__(other) and self.element_id == other.element_id
 
 
+class METAINFO(TextCLAOElement):
+
+    """CLAO object representing unannotated text."""
+    element_name = META_INFO
+
+    def __init__(self, project_name: str, project_desc: str, creation_date: datetime,
+                 input_data_link: str, project_version: str, **kwargs):
+        """Generic CLAOElement specifically for use with TextCLAOs"""
+        super(METAINFO, self).__init__(**kwargs)
+        self.project_name = project_name
+        self.project_desc = project_desc
+        self.creation_date = creation_date
+        self.input_data_link = input_data_link
+        self.project_version = project_version
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with Text attributes.
+        Returns:
+            a json dictionary with Text attributes
+        """
+        return {**super(METAINFO, self).to_json(),
+                'project_name': self.project_name,
+                'project_desc': self.project_desc,
+                'input_data_link': self.input_data_link,
+                'creation_date': self.creation_date,
+                'project_version': self.project_version
+                }
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with Embedding attributes to XML."""
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+
+        vector = attribs.pop(METAINFO)
+        metainfo = super(METAINFO, self).to_xml(parent, attribs)
+        metainfo.text = str(vector)
+        return metainfo
+
+
 class Embedding(IdCLAOElement, TextCLAOElement):
     """CLAO element representing an embedding vector"""
     element_name = EMBEDDING
@@ -318,6 +362,7 @@ class Embedding(IdCLAOElement, TextCLAOElement):
 class TextCLAOElementContainer(CLAOElementContainer):
     """Base class to create mix-ins that give container functionality to TextCLAOElements. i.e. Paragprahs contain
     Sentences, and Sentences contain Tokens"""
+
     def __init__(self, clao: TextCLAO, **kwargs):
         super(TextCLAOElementContainer, self).__init__(clao=clao, **kwargs)
 
@@ -1160,6 +1205,75 @@ class ActualLabel(TextCLAOElement):
         return actual_label
 
 
+'''
+class Taxonomy(TextCLAOElement):
+    """CLAO element representing an actual label."""
+    element_name = TAXONOMY
+
+    def __init__(self, actual_label_value, *args, **kwargs):
+        """Create a Taxonomy."""
+        super(Taxonomy, self).__init__(*args, **kwargs)
+        self.taxonomy_value = taxonomy_value
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with actual label attributes.
+
+        Returns:
+            a json dictionary with actual label attributes
+        """
+        return {**super(Taxonomy, self).to_json(), TAXONOMY: self.taxonomy_value}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with actual label attributes to XML.
+
+        Returns:
+            actual label element in XML format
+        """
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+        taxonomy_value = attribs.pop(TAXONOMY)
+        taxonomy_value = super(Taxonomy, self).to_xml(parent, attribs)
+        taxonomy_value.text = str(taxonomy_value)
+        return taxonomy_value
+'''
+
+
+class ActualDataSource(TextCLAOElement):
+    """CLAO element representing an actual label."""
+    element_name = DATA_SOURCE
+
+    def __init__(self, data_source_value, *args, **kwargs):
+        """Create a ActualLabel."""
+        super(ActualDataSource, self).__init__(*args, **kwargs)
+        self.data_source_value = data_source_value
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with actual label attributes.
+
+        Returns:
+            a json dictionary with actual label attributes
+        """
+        return {**super(ActualDataSource, self).to_json(), DATA_SOURCE: self.data_source_value}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with actual label attributes to XML.
+
+        Returns:
+            actual label element in XML format
+        """
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+
+        data_source_value = attribs.pop(DATA_SOURCE)
+        data_source = super(ActualDataSource, self).to_xml(parent, attribs)
+        data_source.text = str(data_source_value)
+        return data_source
+
+
 class PredictProbabilities(TextCLAOElement):
     """CLAO element representing predicted probabilities."""
     element_name = PROBABILITY
@@ -1213,7 +1327,6 @@ class Predictions(TextCLAOElement):
 
     def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
         """Add CLAO element with predictions to XML.
-
         Returns:
             predictions element in XML format
         """
@@ -1221,8 +1334,154 @@ class Predictions(TextCLAOElement):
             attribs.update(self.to_json())
         else:
             attribs = self.to_json()
-
         prediction = attribs.pop(PREDICTION)
         predictions = super(Predictions, self).to_xml(parent, attribs)
         predictions.text = str(prediction)
         return predictions
+
+
+class ActualMultiLabels(TextCLAOElement):
+    """CLAO element representing predictions."""
+    element_name = ACTUAL_MULTIPLE
+
+    def __init__(self, actual_multi_value, *args, **kwargs):
+        """Create a Prediction."""
+        super(ActualMultiLabels, self).__init__(*args, **kwargs)
+        self.actual_multi_value = actual_multi_value
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with predictions attributes
+        Returns:
+            a json dictionary with predictions attributes
+        """
+        return {**super(ActualMultiLabels, self).to_json(), ACTUAL_MULTIPLE: self.actual_multi_value}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with predictions to XML.
+        Returns:
+            predictions element in XML format
+        """
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+        actual_multi_value = attribs.pop(ACTUAL_MULTIPLE)
+        actual_multi_labels = super(ActualMultiLabels, self).to_xml(parent, attribs)
+        actual_multi_labels.text = str(actual_multi_value)
+        return actual_multi_labels
+
+
+class PredictionsMultiLabels(TextCLAOElement):
+    """CLAO element representing predictions."""
+    element_name = PREDICTION_MULTIPLE
+
+    def __init__(self, prediction_multi_labels: dict, *args, **kwargs):
+        """Create a Prediction."""
+        super(PredictionsMultiLabels, self).__init__(*args, **kwargs)
+        self.prediction_multi_labels = prediction_multi_labels
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with predictions attributes
+
+        Returns:
+            a json dictionary with predictions attributes
+        """
+        return {**super(PredictionsMultiLabels, self).to_json(), PREDICTION_MULTIPLE: self.prediction_multi_labels}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with predictions to XML.
+        Returns:
+            predictions element in XML format
+        """
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+        prediction_multi_labels = attribs.pop(PREDICTION_MULTIPLE)
+        prediction_multi_labels = super(PredictionsMultiLabels, self).to_xml(parent, attribs)
+        prediction_multi_labels.text = str(prediction_multi_labels)
+        return prediction_multi_labels
+
+
+class EmbeddingVector(TextCLAOElement):
+    """CLAO element representing an embedding vector"""
+    element_name = EMBEDDING_VECTOR
+
+    def __init__(self, vector: np.ndarray, *args, **kwargs):
+        """Create a Prediction."""
+        super(EmbeddingVector, self).__init__(*args, **kwargs)
+        self.vector = vector  # TODO implement sparse vector representation for xml/json serialization
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with Embedding attributes."""
+        return {**super(EmbeddingVector, self).to_json(), EMBEDDING_VECTOR: list(self.vector)}
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with Embedding attributes to XML."""
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+        vector = attribs.pop(EMBEDDING_VECTOR)
+        embedding = super(EmbeddingVector, self).to_xml(parent, attribs)
+        embedding.text = str(vector)
+        return embedding
+
+
+class METRICS(TextCLAOElement):
+    """CLAO object representing unannotated text."""
+    element_name = METRIC
+
+    def __init__(self, label_Name: str, tp: float, fp: float, fn: float, tn: float, precision: float,
+                 recall: float, f1: float, mcc: float, pvr: float,
+                 tpfpratio: float, volume: float, fpr: float, acc_score: float, **kwargs):
+        """Generic CLAOElement specifically for use with TextCLAOs"""
+        super(METRICS, self).__init__(**kwargs)
+        self.label_Name = label_Name
+        self.tp = tp
+        self.fp = fp
+        self.fn = fn
+        self.tn = tn
+        self.precision = precision
+        self.recall = recall
+        self.f1 = f1
+        self.mcc = mcc
+        self.pvr = pvr
+        self.tpfp_ratio = tpfpratio
+        self.volume = volume
+        self.fpr = fpr
+        self.acc = acc_score
+
+    def to_json(self) -> Dict:
+        """Add CLAO element with Text attributes.
+
+        Returns:
+            a json dictionary with Text attributes
+        """
+        return {**super(METRICS, self).to_json(),
+                'label_Name': self.label_Name,
+                'tp': self.tp,
+                'fp': self.fp,
+                'fn': self.fn,
+                'tn': self.tn,
+                'precision': self.precision,
+                'recall': self.recall,
+                'f1': self.f1,
+                'mcc': self.mcc,
+                'pvr': self.pvr,
+                'tpfp_ratio': self.tpfp_ratio,
+                'volume': self.volume,
+                'fpr': self.fpr
+                }
+
+    def to_xml(self, parent: Optional[etree.Element], attribs: Dict[str, str] = None):
+        """Add CLAO element with Embedding attributes to XML."""
+        if attribs:
+            attribs.update(self.to_json())
+        else:
+            attribs = self.to_json()
+
+        vector = attribs.pop(METRICS)
+        metrics = super(METRICS, self).to_xml(parent, attribs)
+        metrics.text = str(vector)
+        return metrics

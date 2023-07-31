@@ -7,7 +7,6 @@ from abc import abstractmethod
 
 from overrides import overrides
 from sklearn.feature_extraction import text
-
 from src.clao.text_clao import Text, TextCLAO
 from src.clpt.pipeline.stages.pipeline_stage import PipelineStage
 from src.constants.annotation_constants import CLEANED_TEXT, RAW_TEXT
@@ -110,8 +109,29 @@ class ExcludePunctuation(DocumentCleaner):
         Args:
             raw_text: the raw text from CLAO(s)
         """
-        punctuations = '.,!:;'
+        punctuations = '<[^<]+?>/&:;'
+        raw_text = raw_text.replace('\r', ' ')
+        raw_text = raw_text.replace('\n', ' ')
+        raw_text = raw_text.replace('\t', ' ')
+
         return re.sub("[" + re.escape(punctuations) + "]", '', raw_text)
+
+
+class ExcludeNumbers(DocumentCleaner):
+    """Exclude punctuations from the text."""
+
+    @overrides
+    def __init__(self, **kwargs):
+        super(ExcludeNumbers, self).__init__(**kwargs)
+
+    @overrides
+    def clean_text(self, raw_text: str) -> str:
+        """Exclude punctuations from the text.
+
+        Args:
+            raw_text: the raw text from CLAO(s)
+        """
+        return re.sub(r'\d+', '', raw_text)
 
 
 class DoNothingDocCleaner(DocumentCleaner):

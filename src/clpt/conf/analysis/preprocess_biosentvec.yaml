@@ -1,0 +1,11 @@
+pipeline_stages:
+  # add params here
+  - type: RemoveStopWord
+  - type: ConvertToLowerCase
+  - type: RegexTokenization
+  - type: ExcludeNumbers
+  - type: RegexSentenceBreaking
+  - type: ExcludePunctuation
+  - type: SentenceEmbeddings
+    embeddings_file_path: /Pretrained_Models/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+    binary: True
